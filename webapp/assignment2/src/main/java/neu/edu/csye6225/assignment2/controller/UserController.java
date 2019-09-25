@@ -12,7 +12,7 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-    @RequestMapping(value = "/auth",method= RequestMethod.GET)
+    @RequestMapping(value = "v1/user/self",method= RequestMethod.GET)
     public CommonResult findByAccountAndPassword(@RequestBody  User request)
     {
         CommonResult result=new CommonResult();
@@ -25,7 +25,7 @@ public class UserController {
             return result;
         }
     }
-    @RequestMapping(value="/register",method = RequestMethod.POST,produces="application/json", consumes="application/json")
+    @RequestMapping(value="v1/user",method = RequestMethod.POST,produces="application/json", consumes="application/json")
     @ResponseBody
     public String SaveUser(@RequestBody User request)
     {
@@ -42,7 +42,7 @@ public class UserController {
         }
     }
     //only permit update firstname,lastname,password
-    @RequestMapping(value="/update",method = RequestMethod.PUT)
+    @RequestMapping(value="v1/user/update",method = RequestMethod.PUT)
     public CommonResult updateSelf(@RequestBody User request){
         CommonResult result=new CommonResult();
             try{
