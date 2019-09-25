@@ -41,18 +41,65 @@ public class UserControllerTest {
     public void Test_insert_User() throws Exception {
         User u=new User();
         u.setEmail("testchen12@mail.com");
-        u.setPassword("123456");
+        u.setPassword("132$Abc23");
         u.setFirst_name("joe");
         u.setLast_name("joycon");
         ObjectMapper objectMapper=new ObjectMapper();
-//        given(userService.save(u))
         MvcResult mvcResult= mvc.perform(post("/v1/user")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(u))).andReturn();
         Assert.isTrue(String.valueOf(JSON.parseObject(mvcResult.getResponse().getContentAsString()).get("state")).equals("200"),"Register success");
-
         }
 
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void findByAccountAndPasswordSuccess() throws Exception {
+        String email = "test1@mail.com";
+        String password = "123456";
+        MvcResult mvcResult = mvc.perform(get("all")
+                .with(user(email).password(password)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void findByAccountAndPasswordFailure() throws Exception {
+        String email = "test2@mail.com";
+        String password = "123456";
+        MvcResult mvcResult = mvc.perform(get("all")
+                .with(user(email).password(password)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .andExpect(!status().isOk());
+    }
+
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void updateSelfSuccess() throws Exception {
+        User u=new User();
+        u.setPassword("1234567");
+        MvcResult mvcResult = mvc.perform(put("all"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JSON.toJSONString(u)))
+                .andExpect(status().isOk())
+                .andReturn();
+    }
+
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void updateSelfFailure() throws Exception {
+        User u=new User();
+        u.setEmail("test3@mail.com");
+        MvcResult mvcResult = mvc.perform(put("all"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JSON.toJSONString(u)))
+                .andExpect(!status().isOk())
+                .andReturn();
+    }
 
 }
 

@@ -7,6 +7,7 @@ import neu.edu.csye6225.assignment2.entity.User;
 import neu.edu.csye6225.assignment2.dao.UserDao;
 import neu.edu.csye6225.assignment2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +42,20 @@ public class UserServiceImpl  implements UserService {
         CommonResult result=new CommonResult();
         if(userDao.findByEmail(user.getEmail())!=null) {
             result.setState(400);
-            result.setMsg("email exists");
+            result.setMsg("Bad Request,Account exists");
+            return (JSONObject)JSON.toJSON(result);
+        }
+        if(!user.getEmail().matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$"))
+        {
+            result.setState(400);
+            result.setMsg("Bad Request,check your email format");
+            return (JSONObject)JSON.toJSON(result);
+        }
+        // At least 8 length and no more than 16 length, include number,uppercase lowercase,and special character
+        if(!user.getPassword().matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[$@$!%*?&])[A-Za-z\\d$@$!%*?&]{8,16}"))
+        {
+            result.setState(400);
+            result.setMsg("Bad Request,please follow password requirement");
             return (JSONObject)JSON.toJSON(result);
         }
         Date date =new Date();
@@ -62,7 +76,8 @@ public class UserServiceImpl  implements UserService {
         {
             Date date =new Date();
             user.setAccount_updated(date);
-            user.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
+
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             user.setFirst_name(request.getFirst_name());
             user.setLast_name(request.getLast_name());
             userDao.save(user);
