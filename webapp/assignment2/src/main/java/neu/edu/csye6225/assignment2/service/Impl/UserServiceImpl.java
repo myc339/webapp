@@ -55,15 +55,16 @@ public class UserServiceImpl  implements UserService {
     }
 
     @Override
-    public JSONObject updateSelf(User user) {
+    public JSONObject updateSelf(User request,User user) {
         CommonResult result=new CommonResult();
-        User user2=userDao.findByEmail(user.getEmail());
-        user.setEmail(user2.getEmail());
-        if(user.checkUpdateInfo())
+
+        if(request.checkUpdateInfo())
         {
             Date date =new Date();
             user.setAccount_updated(date);
-            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+            user.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
+            user.setFirst_name(request.getFirst_name());
+            user.setLast_name(request.getLast_name());
             userDao.save(user);
             result.setData(user);
             return (JSONObject)JSON.toJSON(result);

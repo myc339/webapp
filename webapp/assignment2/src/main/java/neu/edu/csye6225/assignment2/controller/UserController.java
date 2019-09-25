@@ -25,14 +25,15 @@ public class UserController {
 
     @RequestMapping(value = "v1/user/self",method= RequestMethod.GET)
 
-    public CommonResult findByAccountAndPassword(HttpServletRequest request, HttpServletResponse response)
+    public JSONObject findByAccountAndPassword(HttpServletRequest request, HttpServletResponse response)
     {
+        System.out.println(request.getContentLength());
         CommonResult result=new CommonResult();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user=userDao.findByEmail(auth.getName());
         result.setData(user);
         if(user!=null)
-            return result;
+            return (JSONObject)JSON.toJSON(result);
         return null;
 
     }
@@ -54,11 +55,13 @@ public class UserController {
         }
     }
     //only permit update firstname,lastname,password
-    @RequestMapping(value="v1/user/update",method = RequestMethod.PUT)
+    @RequestMapping(value="v1/user/self",method = RequestMethod.PUT)
     public JSONObject updateSelf(@RequestBody User request){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user=userDao.findByEmail(auth.getName());
         CommonResult result=new CommonResult();
             try{
-                return userService.updateSelf(request);
+                return userService.updateSelf(request, user);
             }catch (Exception e)
             {
                 e.printStackTrace();

@@ -29,14 +29,15 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter imple
     @Override
     protected  void configure(HttpSecurity http) throws Exception{
         http.authorizeRequests()
-                .antMatchers("/**").permitAll()
                 .antMatchers(HttpMethod.POST,"/v1/user").permitAll()
-                .antMatchers(HttpMethod.PUT,"/v1/user/self").permitAll()
-                .antMatchers(HttpMethod.GET,"/v1/user/self").permitAll()
+                .antMatchers(HttpMethod.GET,"/v1/user/self").authenticated()
+                .antMatchers(HttpMethod.PUT,"/v1/user/self").authenticated()
+                .antMatchers(HttpMethod.GET,"/**").permitAll()
+                .antMatchers(HttpMethod.POST,"/**").permitAll()
+                .antMatchers(HttpMethod.PUT,"/**").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and().csrf().disable();
-                super.configure(http);
 
         // 使用authenticationEntryPoint验证 user/password
         http.httpBasic().authenticationEntryPoint(authEntryPoint);
