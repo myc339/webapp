@@ -37,60 +37,19 @@ public class UserControllerTest {
         u.setPassword("123456");
         u.setFirst_name("joe");
         u.setLast_name("joycon");
-    //        given(userService.save(u))
+//        given(userService.save(u))
         MvcResult mvcResult= mvc.perform(post("/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JSON.toJSONString(u))).andReturn();
                 System.out.println(mvcResult.getResponse().getContentAsString());
-    //        CommonResult result=(CommonResult)toJSON.JsontoObject(userController.SaveUser(u));
-    //        System.out.println(result.getState());
-    //        assert (result.getState()==500);
+//        CommonResult result=(CommonResult)toJSON.JsontoObject(userController.SaveUser(u));
+//        System.out.println(result.getState());
+//        assert (result.getState()==500);
         // Displaying JSON String
 
         }
 
-    @Test
-    public void findByAccountAndPasswordSuccess() throws Exception {
-        String email = "test1@mail.com";
-        String password = "123456";
-        MvcResult mvcResult = mvc.perform(get("all")
-                .with(user(email).password(password)))
-                .contentType(MediaType.APPLICATION_JSON)
-                .andExpect(status().isOk());
-    }
 
-    @Test
-    public void findByAccountAndPasswordFailure() throws Exception {
-        String email = "test2@mail.com";
-        String password = "123456";
-        MvcResult mvcResult = mvc.perform(get("all")
-                .with(user(email).password(password)))
-                .contentType(MediaType.APPLICATION_JSON)
-                .andExpect(!status().isOk());
     }
-
-    @Test
-    public void updateSelfSuccess() throws Exception {
-        User u=new User();
-        u.setPassword("1234567");
-        MvcResult mvcResult = mvc.perform(put("all"))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JSON.toJSONString(u)))
-                .andExpect(status().isOk())
-                .andReturn();
-    }
-
-    @Test
-    public void updateSelfFailure() throws Exception {
-        User u=new User();
-        u.setEmail("test3@mail.com");
-        MvcResult mvcResult = mvc.perform(put("all"))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JSON.toJSONString(u)))
-                .andExpect(!status().isOk())
-                .andReturn();
-    }
-
-}
 
 
