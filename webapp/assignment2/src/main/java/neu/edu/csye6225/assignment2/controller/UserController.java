@@ -1,6 +1,7 @@
 package neu.edu.csye6225.assignment2.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import neu.edu.csye6225.assignment2.common.CommonResult;
 import neu.edu.csye6225.assignment2.entity.User;
 import neu.edu.csye6225.assignment2.service.UserService;
@@ -13,7 +14,7 @@ public class UserController {
     @Autowired
     private UserService userService;
     @RequestMapping(value = "v1/user/self",method= RequestMethod.GET)
-    public CommonResult findByAccountAndPassword(@RequestBody  User request)
+    public JSONObject findByAccountAndPassword(@RequestBody  User request)
     {
         CommonResult result=new CommonResult();
         try{
@@ -22,12 +23,12 @@ public class UserController {
             e.printStackTrace();
             result.setState(500);
             result.setMsg("failure");
-            return result;
+            return (JSONObject)JSON.toJSON(result);
         }
     }
     @RequestMapping(value="v1/user",method = RequestMethod.POST,produces="application/json", consumes="application/json")
     @ResponseBody
-    public String SaveUser(@RequestBody User request)
+    public JSONObject SaveUser(@RequestBody User request)
     {
         CommonResult result=new CommonResult();
         try{
@@ -38,12 +39,12 @@ public class UserController {
             e.printStackTrace();
             result.setState(500);
             result.setMsg("failure");
-            return JSON.toJSONString(result);
+            return (JSONObject)JSON.toJSON(result);
         }
     }
     //only permit update firstname,lastname,password
     @RequestMapping(value="v1/user/update",method = RequestMethod.PUT)
-    public CommonResult updateSelf(@RequestBody User request){
+    public JSONObject updateSelf(@RequestBody User request){
         CommonResult result=new CommonResult();
             try{
                 return userService.updateSelf(request);
@@ -52,7 +53,7 @@ public class UserController {
                 e.printStackTrace();
                 result.setState(500);
                 result.setMsg("failure");
-                return result;
+                return (JSONObject)JSON.toJSON(result);
             }
     }
 
