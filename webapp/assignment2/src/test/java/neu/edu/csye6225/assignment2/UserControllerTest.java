@@ -22,8 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import sun.security.util.ManifestDigester;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -54,41 +53,12 @@ public class UserControllerTest {
                 .content(objectMapper.writeValueAsString(u))).andExpect(status().isOk()).andReturn();
         Assert.isTrue(String.valueOf(JSON.parseObject(mvcResult.getResponse().getContentAsString()).get("state")).equals("200"),"Register success");
         }
-        @Test
-        public void Test_insert_ExistUser() throws Exception {
-            User u=new User();
-            u.setEmail("test1@mail.com");
-            u.setPassword("132$Abc23");
-            u.setFirst_name("joe");
-            u.setLast_name("joycon");
-            ObjectMapper objectMapper=new ObjectMapper();
-            MvcResult mvcResult=
-            mvc.perform(post("/v1/user")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(u))).andExpect(status().isOk()).andReturn();
-     Assert.isTrue(String.valueOf(JSON.parseObject(mvcResult.getResponse().getContentAsString()).get("state")).equals("400"),"Register success");
-        }
-    @Test
-//    @Transactional
-//    @Rollback(true)
-    public void Test_Update_User() throws Exception {
-//        User u=new User();
-//        u.setEmail("testchen12@mail.com");
-//        u.setPassword("132$Abc23");
-//        String basicDigestHeaderValue = "Basic " + new String(Base64.encodeBase64(("<testchen12@mail.com>:<132$Abc23>").getBytes()));
-//        this.mvc.perform(get("</get/v1/user/self>").header("Authorization", basicDigestHeaderValue).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
-//        ObjectMapper objectMapper=new ObjectMapper();
-//        MvcResult mvcResult= mvc.perform(get("/v1/user/self")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(objectMapper.writeValueAsString(u))).andReturn();
-//        Assert.isTrue(String.valueOf(JSON.parseObject(mvcResult.getResponse().getContentAsString()).get("state")).equals("200"),"Login Success");
-    }
-
+       
     @Test
 //    @Transactional
 //    @Rollback(true)
     public void Test_Get_User() throws Exception {
-        String basicDigestHeaderValue = "Basic " + new String(Base64.encodeBase64(("test@email.com:1234aABb!!").getBytes()));
+        String basicDigestHeaderValue = "Basic " + new String(Base64.encodeBase64(("test@email.com:1111Test!!").getBytes()));
         this.mvc.perform(get("/v1/user/self").header("Authorization", basicDigestHeaderValue).accept(MediaType.APPLICATION_JSON)).
                 andExpect(status().isOk());
     }
