@@ -1,5 +1,7 @@
 package neu.edu.csye6225.assignment2.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -14,6 +16,7 @@ public class User {
     @NotNull
     private String last_name;
     @NotNull
+    @JSONField(serialize=false)
     private String password;
     @NotNull
     @Column(unique = true)
