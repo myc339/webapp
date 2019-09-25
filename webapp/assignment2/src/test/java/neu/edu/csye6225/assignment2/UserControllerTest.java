@@ -41,7 +41,7 @@ public class UserControllerTest {
     public void Test_insert_User() throws Exception {
         User u=new User();
         u.setEmail("testchen12@mail.com");
-        u.setPassword("123456");
+        u.setPassword("132$Abc23");
         u.setFirst_name("joe");
         u.setLast_name("joycon");
         ObjectMapper objectMapper=new ObjectMapper();
