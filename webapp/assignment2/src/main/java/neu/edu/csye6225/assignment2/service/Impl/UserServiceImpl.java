@@ -85,7 +85,7 @@ public class UserServiceImpl  implements UserService {
             return (JSONObject)JSON.toJSON(result);
         }
         else{
-            result.setState(401);
+            result.setState(400);
             result.setMsg("Bad request");
             return (JSONObject)JSON.toJSON(result);
         }

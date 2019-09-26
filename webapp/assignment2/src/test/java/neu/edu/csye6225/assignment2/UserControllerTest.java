@@ -36,11 +36,11 @@ public class UserControllerTest {
     @Autowired
     private MockMvc mvc;
     @Test
-//    @
-//    @Rollback(true)
+    @Transactional
+    @Rollback(true)
     public void Test_insert_User() throws Exception {
         User u=new User();
-        u.setEmail("test1@mail.com");
+        u.setEmail("test1@email.com");
         u.setPassword("132$Abc23");
         u.setFirst_name("joe");
         u.setLast_name("joycon");
@@ -56,7 +56,7 @@ public class UserControllerTest {
     @Rollback(true)
     public void Test_insert_ExistEmail() throws Exception {
         User u=new User();
-        u.setEmail("test1@mail.com");
+        u.setEmail("test@email.com");
         u.setPassword("132$Abc23");
         u.setFirst_name("joe");
         u.setLast_name("joycon");
@@ -108,7 +108,7 @@ public class UserControllerTest {
     @Rollback(true)
     public void Test_insert_UserWithWrongPassword3() throws Exception {
         User u=new User();
-        u.setEmail("test1@mail.com");
+        u.setEmail("test1@email.com");
         u.setPassword("132$Abc23132$Abc23132$Abc23132$Abc23");
         u.setFirst_name("joe");
         u.setLast_name("joycon");
@@ -161,7 +161,7 @@ public class UserControllerTest {
         MvcResult mvcResult= this.mvc.perform(put("/v1/user/self").header("Authorization", basicDigestHeaderValue).accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(u))).
                 andReturn();
-        Assert.isTrue(String.valueOf(JSON.parseObject(mvcResult.getResponse().getContentAsString()).get("state")).equals("401"),"Bad request");
+        Assert.isTrue(String.valueOf(JSON.parseObject(mvcResult.getResponse().getContentAsString()).get("state")).equals("400"),"Bad request");
 
     }
     @Test
