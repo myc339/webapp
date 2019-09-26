@@ -37,25 +37,135 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UserControllerTest {
     @Autowired
     private MockMvc mvc;
-
     @Test
 //    @
 //    @Rollback(true)
     public void Test_insert_User() throws Exception {
-        User u = new User();
+        User u=new User();
         u.setEmail("test1@mail.com");
         u.setPassword("132$Abc23");
         u.setFirst_name("joe");
         u.setLast_name("joycon");
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        MvcResult mvcResult =
+        ObjectMapper objectMapper=new ObjectMapper();
+        MvcResult mvcResult=
                 mvc.perform(post("/v1/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(u))).andExpect(status().isOk()).andReturn();
-        Assert.isTrue(String.valueOf(JSON.parseObject(mvcResult.getResponse().getContentAsString()).get("state")).equals("200"), "Register success");
+        Assert.isTrue(String.valueOf(JSON.parseObject(mvcResult.getResponse().getContentAsString()).get("state")).equals("200"),"Register success");
+    }
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void Test_insert_ExistEmail() throws Exception {
+        User u=new User();
+        u.setEmail("test1@mail.com");
+        u.setPassword("132$Abc23");
+        u.setFirst_name("joe");
+        u.setLast_name("joycon");
+        ObjectMapper objectMapper=new ObjectMapper();
+        MvcResult mvcResult=
+                mvc.perform(post("/v1/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(u))).andExpect(status().isOk()).andReturn();
+        Assert.isTrue(String.valueOf(JSON.parseObject(mvcResult.getResponse().getContentAsString()).get("state")).equals("400"),"Email exist");
     }
 
+    // password length <8
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void Test_insert_UserWithWrongPassword1() throws Exception {
+        User u=new User();
+        u.setEmail("testpassword@mail.com");
+        u.setPassword("1234");
+        u.setFirst_name("joe");
+        u.setLast_name("joycon");
+        ObjectMapper objectMapper=new ObjectMapper();
+        MvcResult mvcResult=
+                mvc.perform(post("/v1/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(u))).andExpect(status().isOk()).andReturn();
+        Assert.isTrue(String.valueOf(JSON.parseObject(mvcResult.getResponse().getContentAsString()).get("state")).equals("400"),"Password length <8");
+    }
+    //password with simple char
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void Test_insert_UserWithWrongPassword2() throws Exception {
+        User u=new User();
+        u.setEmail("testpassword@mail.com");
+        u.setPassword("aabbcc121343");
+        u.setFirst_name("joe");
+        u.setLast_name("joycon");
+        ObjectMapper objectMapper=new ObjectMapper();
+        MvcResult mvcResult=
+                mvc.perform(post("/v1/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(u))).andExpect(status().isOk()).andReturn();
+        Assert.isTrue(String.valueOf(JSON.parseObject(mvcResult.getResponse().getContentAsString()).get("state")).equals("400"),"passwords are simple char combined");
+    }
+    //complex password and length is more than 16
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void Test_insert_UserWithWrongPassword3() throws Exception {
+        User u=new User();
+        u.setEmail("test1@mail.com");
+        u.setPassword("132$Abc23132$Abc23132$Abc23132$Abc23");
+        u.setFirst_name("joe");
+        u.setLast_name("joycon");
+        ObjectMapper objectMapper=new ObjectMapper();
+        MvcResult mvcResult=
+                mvc.perform(post("/v1/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(u))).andExpect(status().isOk()).andReturn();
+        Assert.isTrue(String.valueOf(JSON.parseObject(mvcResult.getResponse().getContentAsString()).get("state")).equals("400"),"password too complex");
+    }
+    //complex password
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void Test_insert_UserWittIllegalEmail() throws Exception {
+        User u=new User();
+        u.setEmail("testmail.com");
+        u.setPassword("1234%sdA42");
+        u.setFirst_name("joe");
+        u.setLast_name("joycon");
+        ObjectMapper objectMapper=new ObjectMapper();
+        MvcResult mvcResult=
+                mvc.perform(post("/v1/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(u))).andExpect(status().isOk()).andReturn();
+        Assert.isTrue(String.valueOf(JSON.parseObject(mvcResult.getResponse().getContentAsString()).get("state")).equals("400"),"Email invalid");
+    }
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void Test_Update_User() throws Exception {
+        User u=new User();
+        u.setPassword("2222Test!!!");
+        u.setFirst_name("joe_change");
+        u.setLast_name("joycon_change");
+        ObjectMapper objectMapper=new ObjectMapper();
+        String basicDigestHeaderValue = "Basic " + new String(Base64.encodeBase64(("test@email.com:1111Test!!").getBytes()));
+        this.mvc.perform(get("/v1/user/self").header("Authorization", basicDigestHeaderValue).accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(u))).
+                andExpect(status().isOk());
+    }
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void Test_Update_UserEmail() throws Exception {
+        User u=new User();
+        u.setEmail("test@exm.com");
+        ObjectMapper objectMapper=new ObjectMapper();
+        String basicDigestHeaderValue = "Basic " + new String(Base64.encodeBase64(("test@email.com:1111Test!!").getBytes()));
+        MvcResult mvcResult= this.mvc.perform(put("/v1/user/self").header("Authorization", basicDigestHeaderValue).accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(u))).
+                andReturn();
+        Assert.isTrue(String.valueOf(JSON.parseObject(mvcResult.getResponse().getContentAsString()).get("state")).equals("401"),"Bad request");
+
+    }
     @Test
 //    @Transactional
 //    @Rollback(true)
@@ -64,7 +174,9 @@ public class UserControllerTest {
         this.mvc.perform(get("/v1/user/self").header("Authorization", basicDigestHeaderValue).accept(MediaType.APPLICATION_JSON)).
                 andExpect(status().isOk());
     }
-    
+
 }
+
+
 
 
