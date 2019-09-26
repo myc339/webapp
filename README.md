@@ -38,7 +38,7 @@
 ### 4. Run project
 
 ## Running Tests
-### 1. When the server is in the initial state, the server needs to be restarted to obtain the newly added data. Therefore, we first run the project to inject a demo data into the database. Then we can update and get the stored data in the database.
+### 1. When the server is in the initial state, the server needs to be restarted to obtain the newly added data. Therefore, we first run the project to inject a demo data (email: test@email.com, password: 1111Test!!) into the database. Then we can update and get the stored data in the database.
 
 ### 2. Test the functions include insert/update/get user infomation. With multiple cases for insert data to a user from wrong password and illegal email scope; test update user name and password function works well; test user only be allowed to update First Name, Last Name and Password.
 
