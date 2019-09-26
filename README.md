@@ -20,7 +20,7 @@
 Install the Ubuntu, and then install the Java SDK, MariaDB, Intellj and Spring Boot on Linux
 
 ## Deploy Instructions
-
+Install idea, import project, project type select maven, then run it 
 
 ## Running Tests
 Test the functions include insert/update/get user infomation. With multiple cases for insert data to a user from wrong password and illegal email scope, and test update user name and password function works well and test update user email function is illegal.
