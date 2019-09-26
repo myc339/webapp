@@ -13,17 +13,34 @@
 #### Framework: Spring Boot
 #### Database: MariaDB
 #### Language: Java
-#### IDE: Intellij
+#### IDE: IntelliJ IDEA
 #### OS: Ubuntu
 
 ## Build Instructions
-Install the Ubuntu, and then install the Java SDK, MariaDB, Intellj and Spring Boot on Linux
+### 1. Install the Ubuntu
+### 2. Install the Java SDK
+#### sudo apt update
+#### sudo apt install openjdk-8-jdk
+### 3. Install the MariaDB
+#### sudo apt-get install software-properties-common
+#### sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
+#### sudo add-apt-repository 'deb [arch=amd64,arm64,ppc64el] http://mirror.host.ag/mariadb/repo/10.4/ubuntu bionic main'
+
+#### sudo apt update
+#### sudo apt install mariadb-server
+### 4. Install the IntellJ IDEA Ultimate
+#### https://www.jetbrains.com/idea/download/#section=linux
 
 ## Deploy Instructions
-Install idea, and import this project, choose maven project, then run it 
+### 1. Run IntelliJ IDEA
+### 2. Import this project
+### 3. Choose maven project
+### 4. Run project
 
 ## Running Tests
-Test the functions include insert/update/get user infomation. With multiple cases for insert data to a user from wrong password and illegal email scope, and test update user name and password function works well and test update user email function is illegal.
+### 1. When the server is in the initial state, the server needs to be restarted to obtain the newly added data. Therefore, we first run the project to inject a demo data into the database. Then we can update and get the stored data in the database.
+
+### 2. Test the functions include insert/update/get user infomation. With multiple cases for insert data to a user from wrong password and illegal email scope; test update user name and password function works well; test user only be allowed to update First Name, Last Name and Password.
 
 ## CI/CD
 
