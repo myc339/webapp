@@ -10,11 +10,11 @@
 | | | |
 
 ## Technology Stack
-#### Framework: Spring Boot
+#### Framework: Spring Boot 2.1.8
 #### Database: MariaDB
-#### Language: Java
-#### IDE: IntelliJ IDEA
-#### OS: Ubuntu
+#### Language: Java JDK 1.8
+#### IDE: IntelliJ IDEA Utilmate
+#### OS: Ubuntu 18.04
 
 ## Build Instructions
 ### 1. Install the Ubuntu
