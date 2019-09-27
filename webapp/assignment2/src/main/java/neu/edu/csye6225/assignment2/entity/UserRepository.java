@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Entity
 @Table(name="user")
-public class User {
+public class UserRepository {
     @Id
     private String id;
     @NotNull
@@ -50,7 +50,7 @@ public class User {
         return password;
     }
 
-    public User(){}
+    public UserRepository(){}
     public void setPassword(String password) {
         this.password = password;
     }

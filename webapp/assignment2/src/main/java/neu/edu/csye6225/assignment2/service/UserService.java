@@ -1,11 +1,11 @@
 package neu.edu.csye6225.assignment2.service;
 
 import com.alibaba.fastjson.JSONObject;
-import neu.edu.csye6225.assignment2.entity.User;
+import neu.edu.csye6225.assignment2.entity.UserRepository;
 
 
 public interface UserService {
-    JSONObject findByAccountAndPassword(User user);
-    JSONObject save(User user);
-    JSONObject updateSelf(User request, User user);
+    JSONObject findByAccountAndPassword(UserRepository userRepository);
+    JSONObject save(UserRepository userRepository);
+    JSONObject updateSelf(UserRepository request, UserRepository userRepository);
 }
