@@ -24,7 +24,6 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(value = "v1/user/self",method= RequestMethod.GET)
-
     public JSONObject findByAccountAndPassword(HttpServletRequest request, HttpServletResponse response)
     {
         CommonResult result=new CommonResult();
@@ -39,7 +38,7 @@ public class UserController {
 
     @RequestMapping(value="v1/user",method = RequestMethod.POST,produces="application/json", consumes="application/json")
     @ResponseBody
-    public JSONObject SaveUser(@RequestBody UserRepository request)
+    public JSONObject saveUser(@RequestBody UserRepository request)
     {
         CommonResult result=new CommonResult();
         try{
