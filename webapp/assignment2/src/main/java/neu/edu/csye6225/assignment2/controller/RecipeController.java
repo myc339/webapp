@@ -86,8 +86,18 @@ public class RecipeController {
     }
 
     @RequestMapping(value = "v1/recipe/{id}",method= RequestMethod.GET)
-    public JSONObject findRecipeById(HttpServletRequest request, HttpServletResponse response, @PathVariable int id)
-    {
-        return null;
+    public JSONObject findRecipeById(HttpServletRequest request, HttpServletResponse response, @PathVariable String id) {
+        UserRepository userRepository = userDao.getOne(id);
+        CommonResult result = new CommonResult();
+
+        try {
+            return recipeService.getRecipe(id);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            result.setState(404);
+            result.setMsg("Not Found");
+            return (JSONObject) JSON.toJSON(result);
+        }
     }
 }

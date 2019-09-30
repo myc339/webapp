@@ -134,10 +134,6 @@ public class RecipeRepository {
         this.servings = servings;
     }
 
-    public List<String> getIngredients() {
-        return ingredients1;
-    }
-    public void setIngredients(ArrayList<String> ingredients){this.ingredients1=ingredients;}
 
     public List<OrderedListRepository> getSteps() {
         return steps;
@@ -152,6 +148,14 @@ public class RecipeRepository {
     }
 
 
+    public ArrayList<String> getIngredients() {
+        return ingredients1;
+    }
+
+    public void setIngredients(ArrayList<String> ingredients) {
+        this.ingredients1 = ingredients;
+    }
+
     public String getIngredients1() {
         return ingredients;
     }
@@ -159,7 +163,4 @@ public class RecipeRepository {
     public void setIngredients1(String ingredients1) {
         this.ingredients = ingredients1;
     }
-
-
-
 }

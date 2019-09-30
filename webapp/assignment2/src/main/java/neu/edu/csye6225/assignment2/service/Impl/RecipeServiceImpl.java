@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -46,11 +48,7 @@ public class RecipeServiceImpl implements RecipeService {
         for(OrderedListRepository o : recipeRepository.getSteps()){
             o.setRecipe(recipeRepository);
         }
-        //System.out.println(JSON.toJSON(recipeRepository));
-//        System.out.println(recipeRepository.getIngredients());
-        System.out.println(recipeRepository.getIngredients().toString());
-        recipeRepository.setIngredients1(recipeRepository.getIngredients().toString().replace("[","").replace("]",""));
-
+        recipeRepository.setIngredients1(recipeRepository.getIngredients().toString());
        recipeDao.save(recipeRepository);
 
         result.setData(recipeRepository);
@@ -117,5 +115,15 @@ public class RecipeServiceImpl implements RecipeService {
             }
         }
         return false;
+    }
+
+    @Override
+    public JSONObject getRecipe(String id) {
+        CommonResult result = new CommonResult();
+        RecipeRepository recipeRepository = recipeDao.getOne(id);
+        result.setState(200);
+        result.setMsg("Success");
+        result.setData(recipeRepository);
+        return (JSONObject)JSON.toJSON(result);
     }
 }
