@@ -46,12 +46,26 @@ public class RecipeController {
     }
 
     @RequestMapping(value="v1/recipe/{id}",method = RequestMethod.PUT)
-    public JSONObject updateRecipe(@RequestBody RecipeRepository request, @PathVariable int id){
-        return null;
+    public JSONObject updateRecipe(@RequestBody RecipeRepository requestBody, HttpServletRequest request, HttpServletResponse response, @PathVariable String id){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserRepository userRepository =userDao.findByEmail(auth.getName());
+
+        CommonResult result=new CommonResult();
+
+        try{
+            return recipeService.updateRecipe(requestBody, userRepository.getId(), id);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            result.setState(500);
+            result.setMsg("failure");
+            return (JSONObject) JSON.toJSON(result);
+        }
+
     }
 
     @RequestMapping(value="v1/recipe/{id}",method = RequestMethod.DELETE)
-    public JSONObject deleteRecipe(@RequestBody RecipeRepository request, @PathVariable int id){
+    public JSONObject deleteRecipe(@PathVariable int id){
         return null;
     }
 

@@ -1,5 +1,7 @@
 package neu.edu.csye6225.assignment2.entity;
 
+import org.springframework.data.annotation.ReadOnlyProperty;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -9,13 +11,18 @@ import java.util.List;
 @Table(name="recipe")
 public class RecipeRepository {
     @Id
+    @ReadOnlyProperty
     private String id;//read-only
     @Temporal(TemporalType.TIMESTAMP)
+    @ReadOnlyProperty
     private Date created_ts;
     @Temporal(TemporalType.TIMESTAMP)
+    @ReadOnlyProperty
     private Date updated_ts;
     @NotNull
-    private String author_id;
+    @ReadOnlyProperty
+    @Column(name = "author")
+    private String author;
     @NotNull
     private Integer cook_time_in_min;
     @NotNull
@@ -66,12 +73,12 @@ public class RecipeRepository {
         this.updated_ts = updated_ts;
     }
 
-    public String getAuthor_id() {
-        return author_id;
+    public String getAuthor() {
+        return author;
     }
 
-    public void setAuthor_id(String author_id) {
-        this.author_id = author_id;
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public Integer getCook_time_in_min() {

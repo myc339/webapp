@@ -3,11 +3,10 @@ package neu.edu.csye6225.assignment2.service.Impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import neu.edu.csye6225.assignment2.common.CommonResult;
-import neu.edu.csye6225.assignment2.entity.UserRepository;
 import neu.edu.csye6225.assignment2.dao.UserDao;
+import neu.edu.csye6225.assignment2.entity.UserRepository;
 import neu.edu.csye6225.assignment2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
@@ -81,7 +79,7 @@ public class UserServiceImpl  implements UserService {
     @Override
     public JSONObject updateSelf(UserRepository request, UserRepository userRepository) {
         CommonResult result=new CommonResult();
-
+        //有bug，改密码没有正则匹配
         if(request.checkUpdateInfo())
         {
             Date date =new Date();
