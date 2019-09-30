@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import neu.edu.csye6225.assignment2.common.CommonResult;
 import neu.edu.csye6225.assignment2.dao.RecipeDao;
 import neu.edu.csye6225.assignment2.dao.UserDao;
+import neu.edu.csye6225.assignment2.entity.OrderedListRepository;
 import neu.edu.csye6225.assignment2.entity.RecipeRepository;
 import neu.edu.csye6225.assignment2.service.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +41,9 @@ public class RecipeServiceImpl implements RecipeService {
         recipeRepository.setId(UUID.randomUUID().toString());
         recipeRepository.setAuthor_id(authorId);
         recipeRepository.setTotal_time_in_min(recipeRepository.getCook_time_in_min()+recipeRepository.getPrep_time_in_min());
-//        for(OrderedListRepository o : recipeRepository.getSteps()){
-//            o.setRecipe(recipeRepository);
-//        }
+        for(OrderedListRepository o : recipeRepository.getSteps()){
+            o.setRecipe(recipeRepository);
+        }
         System.out.println(JSON.toJSON(recipeRepository));
 
         recipeDao.save(recipeRepository);

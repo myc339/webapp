@@ -1,6 +1,6 @@
 package neu.edu.csye6225.assignment2.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.alibaba.fastjson.annotation.JSONField;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -20,7 +20,7 @@ public class OrderedListRepository {
 
     @ManyToOne(cascade={CascadeType.MERGE,CascadeType.REFRESH},optional=false)//可选属性optional=false,表示recipe不能为空。删除步骤，不影响食谱
     @JoinColumn(name="recipe_id")//设置在orderedList表中的关联字段(外键)
-    @JsonIgnore
+    @JSONField(serialize = false)
     private RecipeRepository recipe;//所属recipe
 
     public Integer getId() {
