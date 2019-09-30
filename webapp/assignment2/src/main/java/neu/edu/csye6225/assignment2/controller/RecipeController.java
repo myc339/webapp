@@ -27,7 +27,7 @@ public class RecipeController {
 
     @RequestMapping(value="v1/recipe",method = RequestMethod.POST,produces="application/json", consumes="application/json")
     @ResponseBody
-    public JSONObject saveRecipe(@RequestBody RecipeRepository requestBody, HttpServletRequest request, HttpServletResponse response)
+    public JSONObject saveRecipe( @RequestBody RecipeRepository requestBody, HttpServletResponse response)
     {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findByEmail(auth.getName());
@@ -35,9 +35,10 @@ public class RecipeController {
         CommonResult result=new CommonResult();
 
         try{
-            return recipeService.save(requestBody, userRepository.getId());
+            return recipeService.save(requestBody,userRepository.getId(),response);
         }
         catch(Exception e){
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             e.printStackTrace();
             result.setState(500);
             result.setMsg("failure");
@@ -53,10 +54,11 @@ public class RecipeController {
         CommonResult result=new CommonResult();
 
         try{
-            return recipeService.updateRecipe(requestBody, userRepository.getId(), id);
+            return recipeService.updateRecipe(requestBody, userRepository.getId(), id,response);
         }
         catch(Exception e){
             e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             result.setState(500);
             result.setMsg("failure");
             return (JSONObject) JSON.toJSON(result);
@@ -65,17 +67,18 @@ public class RecipeController {
     }
 
     @RequestMapping(value="v1/recipe/{id}",method = RequestMethod.DELETE)
-    public JSONObject deleteRecipe(@PathVariable String id){
+    public JSONObject deleteRecipe(@PathVariable String id,HttpServletResponse response){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findByEmail(auth.getName());
 
         CommonResult result=new CommonResult();
 
         try{
-            return recipeService.deleteRecipe(id, userRepository.getId());
+            return recipeService.deleteRecipe(id, userRepository.getId(),response);
         }
         catch(Exception e){
             e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             result.setState(500);
             result.setMsg("failure");
             return (JSONObject) JSON.toJSON(result);
