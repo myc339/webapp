@@ -1,11 +1,35 @@
 package neu.edu.csye6225.assignment2.entity;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
+@Entity
+@Table(name = "nutritionInformation")
 public class NutritionInformationRepository {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "id", nullable = false)
+    private Integer id;
+
+    @NotNull
     private Integer calories;
+    @NotNull
     private float cholesterol_in_mg;
+    @NotNull
     private Integer sodium_in_mg;
+    @NotNull
     private float carbohydrates_in_grams;
+    @NotNull
     private float protein_in_grams;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public Integer getCalories() {
         return calories;
     }

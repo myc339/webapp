@@ -25,6 +25,12 @@ public class UserRepository {
     private Date account_created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date account_updated;
+//    @OneToMany(mappedBy = "user",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+//    //级联保存、更新、删除、刷新;延迟加载。当删除用户，会级联删除该用户的所有食谱
+//    //拥有mappedBy注解的实体类为关系被维护端
+//    //mappedBy="id"中的id是recipe中的author_id属性
+//    private List<RecipeRepository> recipeRepository;
+
     public String getFirst_name() {
         return first_name;
     }

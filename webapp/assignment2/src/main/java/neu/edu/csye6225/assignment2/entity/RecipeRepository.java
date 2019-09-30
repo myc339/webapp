@@ -2,6 +2,7 @@ package neu.edu.csye6225.assignment2.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 @Entity
@@ -28,11 +29,19 @@ public class RecipeRepository {
     @NotNull
     private Integer servings;
     @NotNull
-    private List<String> ingredients;
+    private ArrayList<String> ingredients;
+
     @NotNull
-    private OrderedListRepository steps;
+    @OneToMany(mappedBy = "recipe",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+    //级联保存、更新、删除、刷新;延迟加载。当删除食谱，会级联删除该食谱的所有步骤
+    //拥有mappedBy注解的实体类为关系被维护端
+    private List<OrderedListRepository> steps;
+
     @NotNull
+    @OneToOne(cascade=CascadeType.ALL)//Recipe 是关系的维护端，当删除 Recipe，会级联删除 nutrition_information
+    @JoinColumn(name = "nutrition_information", referencedColumnName = "id")
     private NutritionInformationRepository nutrition_information;
+
     public String getId() {
         return id;
     }
@@ -117,15 +126,15 @@ public class RecipeRepository {
         return ingredients;
     }
 
-    public void setIngredients(List<String> ingredients) {
+    public void setIngredients(ArrayList<String> ingredients) {
         this.ingredients = ingredients;
     }
 
-    public OrderedListRepository getSteps() {
+    public List<OrderedListRepository> getSteps() {
         return steps;
     }
 
-    public void setSteps(OrderedListRepository steps) {
+    public void setSteps(List<OrderedListRepository> steps) {
         this.steps = steps;
     }
 
