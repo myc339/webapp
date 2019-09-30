@@ -38,15 +38,16 @@ public class UserController {
 
     @RequestMapping(value="v1/user",method = RequestMethod.POST,produces="application/json", consumes="application/json")
     @ResponseBody
-    public JSONObject saveUser(@RequestBody UserRepository request)
+    public JSONObject saveUser(@RequestBody UserRepository request,HttpServletResponse response)
     {
         CommonResult result=new CommonResult();
         try{
 
-           return  userService.save(request);
+           return  userService.save(request,response);
         }
         catch(Exception e){
             e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             result.setState(500);
             result.setMsg("failure");
             return (JSONObject)JSON.toJSON(result);
@@ -54,15 +55,16 @@ public class UserController {
     }
     //only permit update firstname,lastname,password
     @RequestMapping(value="v1/user/self",method = RequestMethod.PUT)
-    public JSONObject updateSelf(@RequestBody UserRepository request){
+    public JSONObject updateSelf(@RequestBody UserRepository request,HttpServletResponse response){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findByEmail(auth.getName());
         CommonResult result=new CommonResult();
             try{
-                return userService.updateSelf(request, userRepository);
+                return userService.updateSelf(request, userRepository,response);
             }catch (Exception e)
             {
                 e.printStackTrace();
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 result.setState(500);
                 result.setMsg("failure");
                 return (JSONObject)JSON.toJSON(result);

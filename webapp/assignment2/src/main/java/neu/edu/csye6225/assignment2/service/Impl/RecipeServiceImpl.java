@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -32,10 +35,10 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public JSONObject save(RecipeRepository recipeRepository, String authorId)
+    public JSONObject save(RecipeRepository recipeRepository,String authorId, HttpServletResponse response)
     {
         CommonResult result=new CommonResult();
-
+//        RecipeRepository recipeRepository=new RecipeRepository();
         Date date =new Date();
         recipeRepository.setCreated_ts(date);
         recipeRepository.setUpdated_ts(date);
@@ -45,16 +48,15 @@ public class RecipeServiceImpl implements RecipeService {
         for(OrderedListRepository o : recipeRepository.getSteps()){
             o.setRecipe(recipeRepository);
         }
-        //System.out.println(JSON.toJSON(recipeRepository));
-
-        recipeDao.save(recipeRepository);
+        recipeRepository.setIngredients1(recipeRepository.getIngredients().toString());
+       recipeDao.save(recipeRepository);
 
         result.setData(recipeRepository);
-        return (JSONObject) JSON.toJSON(result);
+       return (JSONObject) JSON.toJSON(result);
     }
 
     @Override
-    public JSONObject updateRecipe(RecipeRepository request, String authorId, String recipeId) {
+    public JSONObject updateRecipe(RecipeRepository request, String authorId, String recipeId,HttpServletResponse response) {
         CommonResult result=new CommonResult();
         if(request.getAuthor()!=null || request.getId()!=null){
             result.setState(400);
@@ -87,7 +89,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public JSONObject deleteRecipe(String recipeId, String authorId) {
+    public JSONObject deleteRecipe(String recipeId, String authorId,HttpServletResponse response) {
         CommonResult result=new CommonResult();
         Boolean ownRecipe = exist(recipeId, authorId);
         if(!ownRecipe){

@@ -1,9 +1,11 @@
 package neu.edu.csye6225.assignment2.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,9 +37,12 @@ public class RecipeRepository {
     private String cusine;
     @NotNull
     private Integer servings;
+    @JSONField(serialize=false)
     @NotNull
-    private ArrayList<String> ingredients;
-
+    @Column(name="ingredients1")
+    private ArrayList<String> ingredients1;
+    @Column(name="ingredients")
+    private String ingredients;
     @NotNull
     @OneToMany(mappedBy = "recipe",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
     //级联保存、更新、删除、刷新;延迟加载。当删除食谱，会级联删除该食谱的所有步骤
@@ -129,13 +134,6 @@ public class RecipeRepository {
         this.servings = servings;
     }
 
-    public List<String> getIngredients() {
-        return ingredients;
-    }
-
-    public void setIngredients(ArrayList<String> ingredients) {
-        this.ingredients = ingredients;
-    }
 
     public List<OrderedListRepository> getSteps() {
         return steps;
@@ -149,9 +147,20 @@ public class RecipeRepository {
         return nutrition_information;
     }
 
-    public void setNutrition_information(NutritionInformationRepository nutrition_information) {
-        this.nutrition_information = nutrition_information;
+
+    public ArrayList<String> getIngredients() {
+        return ingredients1;
     }
 
+    public void setIngredients(ArrayList<String> ingredients) {
+        this.ingredients1 = ingredients;
+    }
 
+    public String getIngredients1() {
+        return ingredients;
+    }
+
+    public void setIngredients1(String ingredients1) {
+        this.ingredients = ingredients1;
+    }
 }
