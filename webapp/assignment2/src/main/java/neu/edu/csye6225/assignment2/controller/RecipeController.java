@@ -65,8 +65,21 @@ public class RecipeController {
     }
 
     @RequestMapping(value="v1/recipe/{id}",method = RequestMethod.DELETE)
-    public JSONObject deleteRecipe(@PathVariable int id){
-        return null;
+    public JSONObject deleteRecipe(@PathVariable String id){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserRepository userRepository =userDao.findByEmail(auth.getName());
+
+        CommonResult result=new CommonResult();
+
+        try{
+            return recipeService.deleteRecipe(id, userRepository.getId());
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            result.setState(500);
+            result.setMsg("failure");
+            return (JSONObject) JSON.toJSON(result);
+        }
     }
 
     @RequestMapping(value = "v1/recipe/{id}",method= RequestMethod.GET)

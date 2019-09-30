@@ -45,7 +45,7 @@ public class RecipeServiceImpl implements RecipeService {
         for(OrderedListRepository o : recipeRepository.getSteps()){
             o.setRecipe(recipeRepository);
         }
-        System.out.println(JSON.toJSON(recipeRepository));
+        //System.out.println(JSON.toJSON(recipeRepository));
 
         recipeDao.save(recipeRepository);
 
@@ -62,17 +62,8 @@ public class RecipeServiceImpl implements RecipeService {
             return (JSONObject)JSON.toJSON(result);
         }
 
-        System.out.println(authorId + ":::::"+recipeId);
-        List<RecipeRepository> recipeList = recipeDao.findByAuthor(authorId);
-        System.out.println("Before loop: "+ recipeList.get(0).getTitle());
-        Boolean ownRecipe = false;
-        for (RecipeRepository r : recipeList){
-            if(r.getId().equals(recipeId)){
-                ownRecipe = true;
-                System.out.println("in true");
-                break;
-            }
-        }
+        Boolean ownRecipe = exist(recipeId, authorId);
+
         if(!ownRecipe){
             result.setState(401);
             result.setMsg("Unauthorized");
@@ -93,5 +84,34 @@ public class RecipeServiceImpl implements RecipeService {
         result.setData(request);
         return (JSONObject)JSON.toJSON(result);
 
+    }
+
+    @Override
+    public JSONObject deleteRecipe(String recipeId, String authorId) {
+        CommonResult result=new CommonResult();
+        Boolean ownRecipe = exist(recipeId, authorId);
+        if(!ownRecipe){
+            result.setState(401);
+            result.setMsg("Unauthorized");
+            return (JSONObject) JSON.toJSON(result);
+        }
+
+        RecipeRepository recipeRepository = recipeDao.getOne(recipeId);
+        recipeDao.delete(recipeRepository);
+        result.setState(200);
+        result.setMsg("Success");
+        return (JSONObject)JSON.toJSON(result);
+    }
+
+    public boolean exist(String recipeId, String authorId){
+        //System.out.println(authorId + ":::::"+recipeId);
+        List<RecipeRepository> recipeList = recipeDao.findByAuthor(authorId);
+        //System.out.println("Before loop: "+ recipeList.get(0).getTitle());
+        for (RecipeRepository r : recipeList){
+            if(r.getId().equals(recipeId)){
+                return true;
+            }
+        }
+        return false;
     }
 }
