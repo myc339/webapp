@@ -2,8 +2,7 @@ package neu.edu.csye6225.assignment2;
 
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import neu.edu.csye6225.assignment2.entity.User;
-import neu.edu.csye6225.assignment2.service.UserService;
+import neu.edu.csye6225.assignment2.entity.UserRepository;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,7 +10,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -32,14 +30,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 //@Rollback(true)
 //@Transactional
-public class UserControllerTest {
+public class UserRepositoryControllerTest {
     @Autowired
     private MockMvc mvc;
     @Test
     @Transactional
     @Rollback(true)
     public void Test_insert_User() throws Exception {
-        User u=new User();
+        UserRepository u=new UserRepository();
         u.setEmail("test1@email.com");
         u.setPassword("132$Abc23");
         u.setFirst_name("joe");
@@ -55,7 +53,7 @@ public class UserControllerTest {
     @Transactional
     @Rollback(true)
     public void Test_insert_ExistEmail() throws Exception {
-        User u=new User();
+        UserRepository u=new UserRepository();
         u.setEmail("test@email.com");
         u.setPassword("132$Abc23");
         u.setFirst_name("joe");
@@ -73,7 +71,7 @@ public class UserControllerTest {
     @Transactional
     @Rollback(true)
     public void Test_insert_UserWithWrongPassword1() throws Exception {
-        User u=new User();
+        UserRepository u=new UserRepository();
         u.setEmail("testpassword@mail.com");
         u.setPassword("1234");
         u.setFirst_name("joe");
@@ -90,7 +88,7 @@ public class UserControllerTest {
     @Transactional
     @Rollback(true)
     public void Test_insert_UserWithWrongPassword2() throws Exception {
-        User u=new User();
+        UserRepository u=new UserRepository();
         u.setEmail("testpassword@mail.com");
         u.setPassword("aabbcc121343");
         u.setFirst_name("joe");
@@ -107,7 +105,7 @@ public class UserControllerTest {
     @Transactional
     @Rollback(true)
     public void Test_insert_UserWithWrongPassword3() throws Exception {
-        User u=new User();
+        UserRepository u=new UserRepository();
         u.setEmail("test1@email.com");
         u.setPassword("132$Abc23132$Abc23132$Abc23132$Abc23");
         u.setFirst_name("joe");
@@ -124,7 +122,7 @@ public class UserControllerTest {
     @Transactional
     @Rollback(true)
     public void Test_insert_UserWittIllegalEmail() throws Exception {
-        User u=new User();
+        UserRepository u=new UserRepository();
         u.setEmail("testmail.com");
         u.setPassword("1234%sdA42");
         u.setFirst_name("joe");
@@ -140,7 +138,7 @@ public class UserControllerTest {
     @Transactional
     @Rollback(true)
     public void Test_Update_User() throws Exception {
-        User u=new User();
+        UserRepository u=new UserRepository();
         u.setPassword("2222Test!!!");
         u.setFirst_name("joe_change");
         u.setLast_name("joycon_change");
@@ -154,7 +152,7 @@ public class UserControllerTest {
     @Transactional
     @Rollback(true)
     public void Test_Update_UserEmail() throws Exception {
-        User u=new User();
+        UserRepository u=new UserRepository();
         u.setEmail("test@exm.com");
         ObjectMapper objectMapper=new ObjectMapper();
         String basicDigestHeaderValue = "Basic " + new String(Base64.encodeBase64(("test@email.com:1111Test!!").getBytes()));
