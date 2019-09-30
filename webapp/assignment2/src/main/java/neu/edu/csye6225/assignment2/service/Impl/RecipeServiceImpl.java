@@ -114,4 +114,14 @@ public class RecipeServiceImpl implements RecipeService {
         }
         return false;
     }
+
+    @Override
+    public JSONObject getRecipe(String id) {
+        CommonResult result = new CommonResult();
+        RecipeRepository recipeRepository = recipeDao.getOne(id);
+        result.setState(200);
+        result.setMsg("Success");
+        result.setData(recipeRepository);
+        return (JSONObject)JSON.toJSON(result);
+    }
 }

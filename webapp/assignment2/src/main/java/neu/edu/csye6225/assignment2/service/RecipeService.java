@@ -7,4 +7,5 @@ public interface RecipeService {
     JSONObject save(RecipeRepository recipeRepository, String authorId);
     JSONObject updateRecipe(RecipeRepository request, String authorId, String recipeId);
     JSONObject deleteRecipe(String id, String authorId);
+    JSONObject getRecipe(String id);
 }
