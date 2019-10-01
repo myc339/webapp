@@ -26,12 +26,14 @@ public class UserController {
     @RequestMapping(value = "v1/user/self",method= RequestMethod.GET)
     public JSONObject findByAccountAndPassword(HttpServletRequest request, HttpServletResponse response)
     {
-        CommonResult result=new CommonResult();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserRepository userRepository =userDao.findByEmail(auth.getName());
-        result.setData(userRepository);
+        UserRepository userRepository =userDao.findQuery(auth.getName());
         if(userRepository !=null)
-            return (JSONObject)JSON.toJSON(result);
+        {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return (JSONObject)JSON.toJSON(userRepository);
+        }
+
         return null;
 
     }
@@ -40,34 +42,29 @@ public class UserController {
     @ResponseBody
     public JSONObject saveUser(@RequestBody UserRepository request,HttpServletResponse response)
     {
-        CommonResult result=new CommonResult();
         try{
-
+            response.setStatus(HttpServletResponse.SC_CREATED);
            return  userService.save(request,response);
         }
         catch(Exception e){
             e.printStackTrace();
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            result.setState(500);
-            result.setMsg("failure");
-            return (JSONObject)JSON.toJSON(result);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return null;
         }
     }
     //only permit update firstname,lastname,password
     @RequestMapping(value="v1/user/self",method = RequestMethod.PUT)
     public JSONObject updateSelf(@RequestBody UserRepository request,HttpServletResponse response){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserRepository userRepository =userDao.findByEmail(auth.getName());
-        CommonResult result=new CommonResult();
+        UserRepository userRepository =userDao.findQuery(auth.getName());
             try{
+                response.setStatus(HttpServletResponse.SC_NO_CONTENT);
                 return userService.updateSelf(request, userRepository,response);
             }catch (Exception e)
             {
                 e.printStackTrace();
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                result.setState(500);
-                result.setMsg("failure");
-                return (JSONObject)JSON.toJSON(result);
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return null;
             }
     }
 

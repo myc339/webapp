@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,8 +38,6 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public JSONObject save(RecipeRepository recipeRepository,String authorId, HttpServletResponse response)
     {
-        CommonResult result=new CommonResult();
-//        RecipeRepository recipeRepository=new RecipeRepository();
         Date date =new Date();
         recipeRepository.setCreated_ts(date);
         recipeRepository.setUpdated_ts(date);
@@ -49,29 +48,32 @@ public class RecipeServiceImpl implements RecipeService {
             o.setRecipe(recipeRepository);
         }
         recipeRepository.setIngredients1(recipeRepository.getIngredients().toString());
-       recipeDao.save(recipeRepository);
-
-        result.setData(recipeRepository);
-       return (JSONObject) JSON.toJSON(result);
+        recipeDao.save(recipeRepository);
+       return (JSONObject) JSON.toJSON(recipeRepository);
     }
 
     @Override
     public JSONObject updateRecipe(RecipeRepository request, String authorId, String recipeId,HttpServletResponse response) {
-        CommonResult result=new CommonResult();
-        if(request.getAuthor()!=null || request.getId()!=null){
-            result.setState(400);
-            result.setMsg("Bad request");
-            return (JSONObject)JSON.toJSON(result);
-        }
-
         Boolean ownRecipe = exist(recipeId, authorId);
-
         if(!ownRecipe){
-            result.setState(401);
-            result.setMsg("Unauthorized");
-            return (JSONObject) JSON.toJSON(result);
+            try {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "you can't update others recipes ");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
+        if(request.getAuthor()!=null || request.getId()!=null||request.getTotal_time_in_min()!=null||request.getCreated_ts()!=null
+                ||request.getUpdated_ts()!=null){
 
+            try {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "you can't update field including id,created_ts,updated_ts," +
+                        "author_id and total_time_in_min!");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
         RecipeRepository recipe = recipeDao.getOne(recipeId);
         request.setId(recipeId);
         request.setAuthor(authorId);
@@ -82,27 +84,25 @@ public class RecipeServiceImpl implements RecipeService {
             o.setRecipe(request);
         }
         recipeDao.save(request);
-
-        result.setData(request);
-        return (JSONObject)JSON.toJSON(result);
+        return (JSONObject)JSON.toJSON(request);
 
     }
 
     @Override
     public JSONObject deleteRecipe(String recipeId, String authorId,HttpServletResponse response) {
-        CommonResult result=new CommonResult();
         Boolean ownRecipe = exist(recipeId, authorId);
         if(!ownRecipe){
-            result.setState(401);
-            result.setMsg("Unauthorized");
-            return (JSONObject) JSON.toJSON(result);
+            try {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "you can't delete others recipes ");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
 
         RecipeRepository recipeRepository = recipeDao.getOne(recipeId);
         recipeDao.delete(recipeRepository);
-        result.setState(200);
-        result.setMsg("Success");
-        return (JSONObject)JSON.toJSON(result);
+        return (JSONObject)JSON.toJSON(recipeRepository);
     }
 
     public boolean exist(String recipeId, String authorId){
@@ -119,11 +119,7 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public JSONObject getRecipe(String id) {
-        CommonResult result = new CommonResult();
         RecipeRepository recipeRepository = recipeDao.getOne(id);
-        result.setState(200);
-        result.setMsg("Success");
-        result.setData(recipeRepository);
-        return (JSONObject)JSON.toJSON(result);
+        return (JSONObject)JSON.toJSON(recipeRepository);
     }
 }

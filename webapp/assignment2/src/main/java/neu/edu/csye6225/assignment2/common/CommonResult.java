@@ -1,14 +1,16 @@
 package neu.edu.csye6225.assignment2.common;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class CommonResult {
+//    @JSONField(serialize = false)
     private Integer state;
     private String msg;
     private Object data;
     public CommonResult(){
-        this.state=200;
-        this.msg="success";
+//        this.state=200;
+//        this.msg="success";
     }
     public CommonResult(Integer state,String msg){
         this.state=state;

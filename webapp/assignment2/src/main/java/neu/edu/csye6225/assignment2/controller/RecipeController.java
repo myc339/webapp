@@ -30,38 +30,30 @@ public class RecipeController {
     public JSONObject saveRecipe( @RequestBody RecipeRepository requestBody, HttpServletResponse response)
     {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserRepository userRepository =userDao.findByEmail(auth.getName());
-
-        CommonResult result=new CommonResult();
-
+        UserRepository userRepository =userDao.findQuery(auth.getName());
         try{
+            response.setStatus(HttpServletResponse.SC_CREATED);
             return recipeService.save(requestBody,userRepository.getId(),response);
         }
         catch(Exception e){
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             e.printStackTrace();
-            result.setState(500);
-            result.setMsg("failure");
-            return (JSONObject) JSON.toJSON(result);
+            return null;
         }
     }
 
     @RequestMapping(value="v1/recipe/{id}",method = RequestMethod.PUT)
     public JSONObject updateRecipe(@RequestBody RecipeRepository requestBody, HttpServletRequest request, HttpServletResponse response, @PathVariable String id){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserRepository userRepository =userDao.findByEmail(auth.getName());
-
-        CommonResult result=new CommonResult();
-
+        UserRepository userRepository =userDao.findQuery(auth.getName());
         try{
+            response.setStatus(HttpServletResponse.SC_OK);
             return recipeService.updateRecipe(requestBody, userRepository.getId(), id,response);
         }
         catch(Exception e){
             e.printStackTrace();
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            result.setState(500);
-            result.setMsg("failure");
-            return (JSONObject) JSON.toJSON(result);
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
         }
 
     }
@@ -69,35 +61,28 @@ public class RecipeController {
     @RequestMapping(value="v1/recipe/{id}",method = RequestMethod.DELETE)
     public JSONObject deleteRecipe(@PathVariable String id,HttpServletResponse response){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserRepository userRepository =userDao.findByEmail(auth.getName());
-
-        CommonResult result=new CommonResult();
-
+        UserRepository userRepository =userDao.findQuery(auth.getName());
         try{
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
             return recipeService.deleteRecipe(id, userRepository.getId(),response);
         }
         catch(Exception e){
             e.printStackTrace();
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            result.setState(500);
-            result.setMsg("failure");
-            return (JSONObject) JSON.toJSON(result);
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
         }
     }
 
     @RequestMapping(value = "v1/recipe/{id}",method= RequestMethod.GET)
     public JSONObject findRecipeById(HttpServletRequest request, HttpServletResponse response, @PathVariable String id) {
-        UserRepository userRepository = userDao.getOne(id);
-        CommonResult result = new CommonResult();
-
         try {
+            response.setStatus(HttpServletResponse.SC_OK);
             return recipeService.getRecipe(id);
         }
         catch(Exception e) {
             e.printStackTrace();
-            result.setState(404);
-            result.setMsg("Not Found");
-            return (JSONObject) JSON.toJSON(result);
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
         }
     }
 }

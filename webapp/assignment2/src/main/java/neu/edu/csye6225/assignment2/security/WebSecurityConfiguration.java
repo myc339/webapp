@@ -71,7 +71,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter imple
         //add whatever other user you need
         List<UserRepository> list = userDao.findAll();
         for(UserRepository u: list){
-            UserDetails userDetails = User.withUsername(u.getEmail()).password(u.getPassword()).roles("USER").build();
+            UserDetails userDetails = User.withUsername(u.getEmail_address()).password(u.getPassword()).roles("USER").build();
             usersList.add(userDetails);
         }
         return new InMemoryUserDetailsManager(usersList);
