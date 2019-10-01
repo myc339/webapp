@@ -20,7 +20,7 @@ public class UserRepository {
     private String password;
     @NotNull
     @Column(unique = true)
-    private String email;
+    private String email_address;
     @Temporal(TemporalType.TIMESTAMP)
     private Date account_created;
     @Temporal(TemporalType.TIMESTAMP)
@@ -60,14 +60,6 @@ public class UserRepository {
     public void setPassword(String password) {
         this.password = password;
     }
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email_address) {
-        this.email = email_address;
-    }
-
     public void setAccount_created(Date account_created) {
         this.account_created = account_created;
     }
@@ -82,16 +74,25 @@ public class UserRepository {
     public Date getAccount_updated() {
         return account_updated;
     }
+
+    public String getEmail_address() {
+        return email_address;
+    }
+
+    public void setEmail_address(String email_address) {
+        this.email_address = email_address;
+    }
+
     @Override
     public String toString()
     {
 
-        return "User[first_name="+first_name+",last_name="+last_name+",email="+email+
+        return "User[first_name="+first_name+",last_name="+last_name+",email="+email_address+
                 ",password="+password+"]";
     }
     public boolean checkUpdateInfo()
     {
-        if(this.email!=null||this.id!=null||this.account_created!=null&&this.account_updated!=null)
+        if(this.email_address!=null||this.id!=null||this.account_created!=null&&this.account_updated!=null)
             return false;
         return true;
     }

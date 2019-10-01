@@ -1,5 +1,7 @@
 package neu.edu.csye6225.assignment2.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -9,6 +11,7 @@ public class NutritionInformationRepository {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)
+    @JSONField(serialize = false)
     private Integer id;
 
     @NotNull
