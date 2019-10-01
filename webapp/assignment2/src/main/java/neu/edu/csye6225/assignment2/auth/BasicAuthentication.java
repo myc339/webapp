@@ -19,11 +19,12 @@ public class BasicAuthentication extends BasicAuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authEx)throws IOException, ServletException {
         response.addHeader("WWW-Authenticate", "Basic realm=" + getRealmName());
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        PrintWriter writer = response.getWriter();
-        CommonResult commonResult = new CommonResult();
-        commonResult.setMsg(authEx.getMessage());
-        commonResult.setState(401);
-        writer.print((JSONObject) JSON.toJSON(commonResult));
+        try {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED,"password or email wrong");
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,17 +54,26 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public JSONObject updateRecipe(RecipeRepository request, String authorId, String recipeId,HttpServletResponse response) {
-        if(request.getAuthor()!=null || request.getId()!=null||request.getTotal_time_in_min()!=null||request.getCreated_ts()!=null
-                ||request.getUpdated_ts()!=null){
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return null;
-        }
         Boolean ownRecipe = exist(recipeId, authorId);
         if(!ownRecipe){
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            try {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "you can't update others recipes ");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return null;
         }
+        if(request.getAuthor()!=null || request.getId()!=null||request.getTotal_time_in_min()!=null||request.getCreated_ts()!=null
+                ||request.getUpdated_ts()!=null){
 
+            try {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "you can't update field including id,created_ts,updated_ts," +
+                        "author_id and total_time_in_min!");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
         RecipeRepository recipe = recipeDao.getOne(recipeId);
         request.setId(recipeId);
         request.setAuthor(authorId);
@@ -82,7 +92,11 @@ public class RecipeServiceImpl implements RecipeService {
     public JSONObject deleteRecipe(String recipeId, String authorId,HttpServletResponse response) {
         Boolean ownRecipe = exist(recipeId, authorId);
         if(!ownRecipe){
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            try {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "you can't delete others recipes ");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return null;
         }
 
