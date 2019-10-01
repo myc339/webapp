@@ -38,7 +38,7 @@ public class UserRepositoryControllerTest {
     @Rollback(true)
     public void Test_insert_User() throws Exception {
         UserRepository u=new UserRepository();
-        u.setEmail("test1@email.com");
+        u.setEmail_address("test1@email.com");
         u.setPassword("132$Abc23");
         u.setFirst_name("joe");
         u.setLast_name("joycon");
@@ -54,7 +54,7 @@ public class UserRepositoryControllerTest {
     @Rollback(true)
     public void Test_insert_ExistEmail() throws Exception {
         UserRepository u=new UserRepository();
-        u.setEmail("test@email.com");
+        u.setEmail_address("test@email.com");
         u.setPassword("132$Abc23");
         u.setFirst_name("joe");
         u.setLast_name("joycon");
@@ -72,7 +72,7 @@ public class UserRepositoryControllerTest {
     @Rollback(true)
     public void Test_insert_UserWithWrongPassword1() throws Exception {
         UserRepository u=new UserRepository();
-        u.setEmail("testpassword@mail.com");
+        u.setEmail_address("testpassword@mail.com");
         u.setPassword("1234");
         u.setFirst_name("joe");
         u.setLast_name("joycon");
@@ -89,7 +89,7 @@ public class UserRepositoryControllerTest {
     @Rollback(true)
     public void Test_insert_UserWithWrongPassword2() throws Exception {
         UserRepository u=new UserRepository();
-        u.setEmail("testpassword@mail.com");
+        u.setEmail_address("testpassword@mail.com");
         u.setPassword("aabbcc121343");
         u.setFirst_name("joe");
         u.setLast_name("joycon");
@@ -106,7 +106,7 @@ public class UserRepositoryControllerTest {
     @Rollback(true)
     public void Test_insert_UserWithWrongPassword3() throws Exception {
         UserRepository u=new UserRepository();
-        u.setEmail("test1@email.com");
+        u.setEmail_address("test1@email.com");
         u.setPassword("132$Abc23132$Abc23132$Abc23132$Abc23");
         u.setFirst_name("joe");
         u.setLast_name("joycon");
@@ -123,7 +123,7 @@ public class UserRepositoryControllerTest {
     @Rollback(true)
     public void Test_insert_UserWittIllegalEmail() throws Exception {
         UserRepository u=new UserRepository();
-        u.setEmail("testmail.com");
+        u.setEmail_address("testmail.com");
         u.setPassword("1234%sdA42");
         u.setFirst_name("joe");
         u.setLast_name("joycon");
@@ -153,7 +153,7 @@ public class UserRepositoryControllerTest {
     @Rollback(true)
     public void Test_Update_UserEmail() throws Exception {
         UserRepository u=new UserRepository();
-        u.setEmail("test@exm.com");
+        u.setEmail_address("test@exm.com");
         ObjectMapper objectMapper=new ObjectMapper();
         String basicDigestHeaderValue = "Basic " + new String(Base64.encodeBase64(("test@email.com:1111Test!!").getBytes()));
         MvcResult mvcResult= this.mvc.perform(put("/v1/user/self").header("Authorization", basicDigestHeaderValue).accept(MediaType.APPLICATION_JSON)

@@ -11,6 +11,7 @@ public class OrderedListRepository {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)
+    @JSONField(serialize = false)
     private Integer id;
 
     @NotNull
