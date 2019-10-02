@@ -44,7 +44,7 @@ public class UserRepositoryControllerTest {
         ObjectMapper objectMapper=new ObjectMapper();
         mvc.perform(post("/v1/user")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(u))).andExpect(status().isCreated()).andReturn();
+                .content(objectMapper.writeValueAsString(u))).andExpect(status().isCreated());
     }
     @Test
     public void Test_insert_User2() throws Exception {
@@ -53,7 +53,7 @@ public class UserRepositoryControllerTest {
         ObjectMapper objectMapper=new ObjectMapper();
         mvc.perform(post("/v1/user")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(u))).andExpect(status().isCreated()).andReturn();
+                .content(objectMapper.writeValueAsString(u))).andExpect(status().isCreated());
     }
     @Test
     @Transactional
@@ -62,7 +62,7 @@ public class UserRepositoryControllerTest {
         ObjectMapper objectMapper=new ObjectMapper();
         mvc.perform(post("/v1/user")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(u))).andExpect(status().isCreated()).andReturn();
+                        .content(objectMapper.writeValueAsString(u))).andExpect(status().isCreated());
     }
     @Test
     @Transactional
@@ -72,7 +72,7 @@ public class UserRepositoryControllerTest {
         ObjectMapper objectMapper=new ObjectMapper();
                 mvc.perform(post("/v1/user")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(u))).andExpect(status().isBadRequest()).andReturn();
+                        .content(objectMapper.writeValueAsString(u))).andExpect(status().isBadRequest());
     }
 
     // password length <8
@@ -82,10 +82,9 @@ public class UserRepositoryControllerTest {
     public void Test_insert_UserWithWrongPassword1() throws Exception {
         u.setPassword("1234");
         ObjectMapper objectMapper=new ObjectMapper();
-        MvcResult mvcResult=
                 mvc.perform(post("/v1/user")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(u))).andExpect(status().isBadRequest()).andReturn();
+                        .content(objectMapper.writeValueAsString(u))).andExpect(status().isBadRequest());
     }
     //password with simple char
     @Test
@@ -94,10 +93,9 @@ public class UserRepositoryControllerTest {
     public void Test_insert_UserWithWrongPassword2() throws Exception {
         u.setPassword("aabbcc121343");
         ObjectMapper objectMapper=new ObjectMapper();
-        MvcResult mvcResult=
                 mvc.perform(post("/v1/user")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(u))).andExpect(status().isBadRequest()).andReturn();
+                        .content(objectMapper.writeValueAsString(u))).andExpect(status().isBadRequest());
     }
     //complex password and length is more than 16
     @Test
@@ -106,10 +104,9 @@ public class UserRepositoryControllerTest {
     public void Test_insert_UserWithWrongPassword3() throws Exception {
         u.setPassword("132$Abc23132$Abc23132$Abc23132$Abc23");
         ObjectMapper objectMapper=new ObjectMapper();
-        MvcResult mvcResult=
                 mvc.perform(post("/v1/user")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(u))).andExpect(status().isBadRequest()).andReturn();
+                        .content(objectMapper.writeValueAsString(u))).andExpect(status().isBadRequest());
     }
     //complex password
     @Test
@@ -118,10 +115,9 @@ public class UserRepositoryControllerTest {
     public void Test_insert_UserWittIllegalEmail() throws Exception {
         u.setEmail_address("testmail.com");
         ObjectMapper objectMapper=new ObjectMapper();
-        MvcResult mvcResult=
                 mvc.perform(post("/v1/user")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(u))).andExpect(status().isBadRequest()).andReturn();
+                        .content(objectMapper.writeValueAsString(u))).andExpect(status().isBadRequest());
     }
     @Test
     @Transactional
@@ -146,7 +142,7 @@ public class UserRepositoryControllerTest {
         String basicDigestHeaderValue = "Basic " + new String(Base64.encodeBase64(("test@email.com:1111Test!!").getBytes()));
         this.mvc.perform(put("/v1/user/self").header("Authorization", basicDigestHeaderValue).accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(u))).
-                andExpect(status().isBadRequest()).andReturn();
+                andExpect(status().isBadRequest());
     }
     @Test
 //    @Transactional
