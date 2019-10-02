@@ -60,8 +60,8 @@ public class RecipeRepositoryControllerTest {
                 .header("Authorization", basicDigestHeaderValue)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(r)))
+                .andExpect(status().isCreated())
                 .andReturn();
-        Assert.notNull(JSON.parseObject(mvcResult.getResponse().getContentAsString()), "Post Recipe Error");
     }
 
 
@@ -69,8 +69,9 @@ public class RecipeRepositoryControllerTest {
     @Transactional
     @Rollback(true)
     public void Test_Get_Recipe() throws Exception {
-        this.mvc.perform(get("/v1/recipe/{id}").accept(MediaType.APPLICATION_JSON)).
-                andExpect(status().isOk());
+        this.mvc.perform(get("/v1/recipe/{id}")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
 
@@ -88,8 +89,8 @@ public class RecipeRepositoryControllerTest {
                 .header("Authorization", basicDigestHeaderValue)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(r)))
+                .andExpect(status().isOk())
                 .andReturn();
-        Assert.notNull(JSON.parseObject(mvcResult.getResponse().getContentAsString()), "Update Recipe Error");
     }
 
 
@@ -99,6 +100,8 @@ public class RecipeRepositoryControllerTest {
     public void Test_Delete_Recipe() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         String basicDigestHeaderValue = "Basic " + new String(Base64.encodeBase64(("test@email.com:1111Test!!").getBytes()));
-        this.mvc.perform(delete("/v1/recipe/{id}").accept(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
+        this.mvc.perform(delete("/v1/recipe/{id}")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
     }
 }
