@@ -53,7 +53,19 @@ public class RecipeRepository {
     @OneToOne(cascade=CascadeType.ALL)//Recipe 是关系的维护端，当删除 Recipe，会级联删除 nutrition_information
     @JoinColumn(name = "nutrition_information", referencedColumnName = "id")
     private NutritionInformationRepository nutrition_information;
+    public RecipeRepository(){}
+    public RecipeRepository(Integer cook_time_in_min,Integer prep_time_in_min,String title,String cusine,Integer servings,ArrayList<String> ingredients,
+                            NutritionInformationRepository nutrition_information,List<OrderedListRepository> steps){
+        this.cook_time_in_min=cook_time_in_min;
+        this.prep_time_in_min=prep_time_in_min;
+        this.title=title;
+        this.cusine=cusine;
+        this.servings=servings;
+        this.ingredients1=ingredients;
+        this.nutrition_information=nutrition_information;
+        this.steps=steps;
 
+    }
     public String getId() {
         return id;
     }
@@ -142,18 +154,18 @@ public class RecipeRepository {
     public void setSteps(List<OrderedListRepository> steps) {
         this.steps = steps;
     }
-
     public NutritionInformationRepository getNutrition_information() {
         return nutrition_information;
     }
 
 
-    public ArrayList<String> getIngredients() {
-        return ingredients1;
-    }
 
     public void setIngredients(ArrayList<String> ingredients) {
         this.ingredients1 = ingredients;
+    }
+
+    public ArrayList<String> getIngredients() {
+        return ingredients1;
     }
 
     public String getIngredients1() {
@@ -162,5 +174,9 @@ public class RecipeRepository {
 
     public void setIngredients1(String ingredients1) {
         this.ingredients = ingredients1;
+    }
+
+    public void setNutrition_information(NutritionInformationRepository nutrition_information) {
+        this.nutrition_information = nutrition_information;
     }
 }

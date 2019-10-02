@@ -46,6 +46,7 @@ public class RecipeServiceImpl implements RecipeService {
         for(OrderedListRepository o : recipeRepository.getSteps()){
             o.setRecipe(recipeRepository);
         }
+        System.out.println(recipeRepository.getIngredients().toString());
         recipeRepository.setIngredients1(recipeRepository.getIngredients().toString());
         recipeDao.save(recipeRepository);
        return (JSONObject) JSON.toJSON(recipeRepository);

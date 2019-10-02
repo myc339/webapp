@@ -30,7 +30,12 @@ public class UserRepository {
 //    //拥有mappedBy注解的实体类为关系被维护端
 //    //mappedBy="id"中的id是recipe中的author_id属性
 //    private List<RecipeRepository> recipeRepository;
-
+    public UserRepository(String email_address,String password,String first_name,String last_name){
+        this.email_address=email_address;
+        this.password=password;
+        this.first_name=first_name;
+        this.last_name=last_name;
+    }
     public String getFirst_name() {
         return first_name;
     }

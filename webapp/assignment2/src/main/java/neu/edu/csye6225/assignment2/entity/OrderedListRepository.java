@@ -25,7 +25,11 @@ public class OrderedListRepository {
     @JoinColumn(name="recipe_id")//设置在orderedList表中的关联字段(外键)
     @JSONField(serialize = false)
     private RecipeRepository recipe;//所属recipe
-
+    public OrderedListRepository(){}
+    public OrderedListRepository (Integer position,String items){
+        this.position=position;
+        this.items=items;
+    }
     public Integer getId() {
         return id;
     }
