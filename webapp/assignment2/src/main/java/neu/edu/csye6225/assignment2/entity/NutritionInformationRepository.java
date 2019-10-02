@@ -3,6 +3,7 @@ package neu.edu.csye6225.assignment2.entity;
 import com.alibaba.fastjson.annotation.JSONField;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -24,7 +25,15 @@ public class NutritionInformationRepository {
     private float carbohydrates_in_grams;
     @NotNull
     private float protein_in_grams;
-
+    public NutritionInformationRepository(){}
+    public NutritionInformationRepository(Integer calories, float cholesterol_in_mg, Integer sodium_in_mg,float carbohydrates_in_grams,float protein_in_grams)
+    {
+        this.calories=calories;
+        this.cholesterol_in_mg=cholesterol_in_mg;
+        this.sodium_in_mg=sodium_in_mg;
+        this.carbohydrates_in_grams=carbohydrates_in_grams;
+        this.protein_in_grams=protein_in_grams;
+    }
     public Integer getId() {
         return id;
     }
