@@ -65,6 +65,33 @@ public class RecipeRepositoryControllerTest {
     @Test
     @Transactional
     @Rollback(true)
+    public void Test_Create_Recipe_Without_Auth() throws Exception {
+        RecipeRepository r = new RecipeRepository();
+        ArrayList<String> ingredients = new ArrayList<>();
+        ingredients.add("4 ounces linguine pasta");
+        OrderedListRepository ol = new OrderedListRepository();
+        ol.setPosition(1);
+        ol.setItems("some text here");
+        ArrayList<OrderedListRepository> orderlist = new ArrayList<>();
+        r.setCook_time_in_min(15);
+        r.setPrep_time_in_min(15);
+        r.setTitle("Spicy Chicken");
+        r.setCusine("America");
+        r.setServings(2);
+        r.setIngredients(ingredients);
+        r.setSteps(orderlist);
+        // nutrition_information ??
+        ObjectMapper objectMapper = new ObjectMapper();
+        this.mvc.perform(post("/v1/recipe")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(r)))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+    }
+
+    @Test
+    @Transactional
+    @Rollback(true)
     public void Test_Get_Recipe() throws Exception {
         this.mvc.perform(get("/v1/recipe/{id}")
                 .accept(MediaType.APPLICATION_JSON))
