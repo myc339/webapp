@@ -7,8 +7,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configurers.provisioning.InMemoryUserDetailsManagerConfigurer;
-import org.springframework.security.config.annotation.authentication.configurers.provisioning.JdbcUserDetailsManagerConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -20,10 +18,8 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 
 @Configuration
@@ -40,6 +36,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter imple
                 .antMatchers(HttpMethod.POST,"/v1/user").permitAll()
                 .antMatchers(HttpMethod.GET,"/v1/user/self").authenticated()
                 .antMatchers(HttpMethod.PUT,"/v1/user/self").authenticated()
+                .antMatchers(HttpMethod.POST,"/v1/recipe").authenticated()
+                .antMatchers(HttpMethod.GET,"/v1/recipe/{id}").permitAll()
+                .antMatchers(HttpMethod.PUT,"/v1/recipe/{id}").authenticated()
+                .antMatchers(HttpMethod.DELETE,"/v1/recipe/{id}").authenticated()
                 .antMatchers(HttpMethod.GET,"/**").permitAll()
                 .antMatchers(HttpMethod.POST,"/**").permitAll()
                 .antMatchers(HttpMethod.PUT,"/**").permitAll()

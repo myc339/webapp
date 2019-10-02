@@ -3,6 +3,7 @@ package neu.edu.csye6225.assignment2.entity;
 import com.alibaba.fastjson.annotation.JSONField;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -15,6 +16,7 @@ public class OrderedListRepository {
     private Integer id;
 
     @NotNull
+    @Min(1)
     private Integer position;
     @NotNull
     private String items;
