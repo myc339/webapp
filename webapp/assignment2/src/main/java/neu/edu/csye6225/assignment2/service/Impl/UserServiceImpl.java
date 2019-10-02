@@ -2,7 +2,6 @@ package neu.edu.csye6225.assignment2.service.Impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.parser.Feature;
 import neu.edu.csye6225.assignment2.common.CommonResult;
 import neu.edu.csye6225.assignment2.dao.UserDao;
 import neu.edu.csye6225.assignment2.entity.UserRepository;
@@ -36,6 +35,7 @@ public class UserServiceImpl  implements UserService {
     @Override
     public JSONObject save(UserRepository userRepository,HttpServletResponse response)
     {
+        System.out.print(userRepository.getEmail_address());
         CommonResult result=new CommonResult();
         if(userDao.findQuery(userRepository.getEmail_address())!=null) {
 //            response.setStatus();

@@ -63,7 +63,7 @@ public class UserRepositoryControllerTest {
                 mvc.perform(post("/v1/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(u))).andExpect(status().isOk()).andReturn();
-        Assert.isTrue(String.valueOf(JSON.parseObject(mvcResult.getResponse().getContentAsString()).get("state")).equals("400"),"Email exist");
+        Assert.isTrue(String.valueOf(JSON.parseObject(mvcResult.getResponse().getContentAsString()).get("state")).equals("400"),"Email ownRecipe");
     }
 
     // password length <8
