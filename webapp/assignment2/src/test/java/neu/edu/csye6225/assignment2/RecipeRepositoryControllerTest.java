@@ -56,7 +56,7 @@ public class RecipeRepositoryControllerTest {
         // nutrition_information ??
         ObjectMapper objectMapper = new ObjectMapper();
         String basicDigestHeaderValue = "Basic " + new String(Base64.encodeBase64(("test@email.com:1111Test!!").getBytes()));
-        MvcResult mvcResult = mvc.perform(post("/v1/recipe")
+        this.mvc.perform(post("/v1/recipe")
                 .header("Authorization", basicDigestHeaderValue)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(r)))
@@ -85,7 +85,7 @@ public class RecipeRepositoryControllerTest {
         // nutrition_information ??
         ObjectMapper objectMapper = new ObjectMapper();
         String basicDigestHeaderValue = "Basic " + new String(Base64.encodeBase64(("test@email.com:1111Test!!").getBytes()));
-        MvcResult mvcResult = mvc.perform(put("/v1/recipe/{id}")
+        this.mvc.perform(put("/v1/recipe/{id}")
                 .header("Authorization", basicDigestHeaderValue)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(r)))
@@ -98,9 +98,9 @@ public class RecipeRepositoryControllerTest {
     @Transactional
     @Rollback(true)
     public void Test_Delete_Recipe() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         String basicDigestHeaderValue = "Basic " + new String(Base64.encodeBase64(("test@email.com:1111Test!!").getBytes()));
         this.mvc.perform(delete("/v1/recipe/{id}")
+                .header("Authorization", basicDigestHeaderValue)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
