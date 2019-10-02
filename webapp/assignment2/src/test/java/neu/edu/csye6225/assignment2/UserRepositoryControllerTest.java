@@ -38,6 +38,24 @@ public class UserRepositoryControllerTest {
     private MockMvc mvc;
     final UserRepository u=new UserRepository("testcase@email.com","132$Abc23","test","admin");
     @Test
+    public void Test_insert_User1() throws Exception {
+        u.setEmail_address("test@email.com");
+        u.setPassword("1111Test!!");
+        ObjectMapper objectMapper=new ObjectMapper();
+        mvc.perform(post("/v1/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(u))).andExpect(status().isCreated()).andReturn();
+    }
+    @Test
+    public void Test_insert_User2() throws Exception {
+        u.setEmail_address("test1@email.com");
+        u.setPassword("1111Test!!");
+        ObjectMapper objectMapper=new ObjectMapper();
+        mvc.perform(post("/v1/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(u))).andExpect(status().isCreated()).andReturn();
+    }
+    @Test
     @Transactional
     @Rollback(true)
     public void Test_insert_User() throws Exception {
