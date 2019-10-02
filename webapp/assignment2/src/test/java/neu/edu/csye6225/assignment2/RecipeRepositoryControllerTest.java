@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import neu.edu.csye6225.assignment2.entity.OrderedListRepository;
 import neu.edu.csye6225.assignment2.entity.RecipeRepository;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
@@ -11,17 +12,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -32,6 +33,8 @@ public class RecipeRepositoryControllerTest {
     @Autowired
     private MockMvc mvc;
     @Test
+    @Transactional
+    @Rollback(true)
     public void Test_Create_Recipe() throws Exception {
         RecipeRepository r = new RecipeRepository();
         ArrayList<String> ingredients = new ArrayList<>();
@@ -52,10 +55,50 @@ public class RecipeRepositoryControllerTest {
         r.setSteps(orderlist);
         // nutrition_information ??
         ObjectMapper objectMapper = new ObjectMapper();
+        String basicDigestHeaderValue = "Basic " + new String(Base64.encodeBase64(("test@email.com:1111Test!!").getBytes()));
         MvcResult mvcResult = mvc.perform(post("/v1/recipe")
+                .header("Authorization", basicDigestHeaderValue)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(r)))
                 .andReturn();
-        Assert.notNull(JSON.parseObject(mvcResult.getResponse().getContentAsString()), "Post Error");
+        Assert.notNull(JSON.parseObject(mvcResult.getResponse().getContentAsString()), "Post Recipe Error");
+    }
+
+
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void Test_Get_Recipe() throws Exception {
+        this.mvc.perform(get("/v1/recipe/{id}").accept(MediaType.APPLICATION_JSON)).
+                andExpect(status().isOk());
+    }
+
+
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void Test_Update_Recipe() throws Exception {
+        RecipeRepository r = new RecipeRepository();
+        r.setCook_time_in_min(30);
+        r.setPrep_time_in_min(20);
+        // nutrition_information ??
+        ObjectMapper objectMapper = new ObjectMapper();
+        String basicDigestHeaderValue = "Basic " + new String(Base64.encodeBase64(("test@email.com:1111Test!!").getBytes()));
+        MvcResult mvcResult = mvc.perform(put("/v1/recipe/{id}")
+                .header("Authorization", basicDigestHeaderValue)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(r)))
+                .andReturn();
+        Assert.notNull(JSON.parseObject(mvcResult.getResponse().getContentAsString()), "Update Recipe Error");
+    }
+
+
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void Test_Delete_Recipe() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String basicDigestHeaderValue = "Basic " + new String(Base64.encodeBase64(("test@email.com:1111Test!!").getBytes()));
+        this.mvc.perform(delete("/v1/recipe/{id}").accept(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
     }
 }
