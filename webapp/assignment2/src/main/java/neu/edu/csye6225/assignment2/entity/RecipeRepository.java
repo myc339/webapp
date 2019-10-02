@@ -143,6 +143,10 @@ public class RecipeRepository {
         this.steps = steps;
     }
 
+    public void setNutrition_information(NutritionInformationRepository nutrition_information) {
+        this.nutrition_information = nutrition_information;
+    }
+
     public NutritionInformationRepository getNutrition_information() {
         return nutrition_information;
     }
