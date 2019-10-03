@@ -3,91 +3,109 @@ package neu.edu.csye6225.assignment2.service.Impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import neu.edu.csye6225.assignment2.common.CommonResult;
-import neu.edu.csye6225.assignment2.entity.User;
 import neu.edu.csye6225.assignment2.dao.UserDao;
+import neu.edu.csye6225.assignment2.entity.UserRepository;
 import neu.edu.csye6225.assignment2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
 
 @Service
 @Transactional
 public class UserServiceImpl  implements UserService {
+//    private final JSONObject jsonObject=new JSONObject(true);
     @Autowired
     private UserDao userDao;
     @Resource
     private BCryptPasswordEncoder bCryptPasswordEncoder;
-    @Override
-    public JSONObject findByAccountAndPassword(User user) {
-        CommonResult result=new CommonResult();
-        User user2=userDao.findByEmail(user.getEmail());
-        if(user2==null||!bCryptPasswordEncoder.matches(user.getPassword(),user2.getPassword()))
-        {
-            result.setState(400);
-            result.setMsg("user not exists or password is not correct");
-            return (JSONObject)JSON.toJSON(result);
-        }
-        result.setData(user2);
-        return (JSONObject)JSON.toJSON(result);
+    private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
+    @Autowired
+    public UserServiceImpl(InMemoryUserDetailsManager inMemoryUserDetailsManager) {
+        this.inMemoryUserDetailsManager = inMemoryUserDetailsManager;
     }
     @Override
-    public JSONObject save(User user)
+    public JSONObject save(UserRepository userRepository,HttpServletResponse response)
     {
+        System.out.print(userRepository.getEmail_address());
         CommonResult result=new CommonResult();
-        if(userDao.findByEmail(user.getEmail())!=null) {
-            result.setState(400);
-            result.setMsg("Bad Request,Account exists");
-            return (JSONObject)JSON.toJSON(result);
+        if(userDao.findQuery(userRepository.getEmail_address())!=null) {
+//            response.setStatus();
+            try {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "email exists");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
-        if(!user.getEmail().matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$"))
+        if(!userRepository.getEmail_address().matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$"))
         {
-            result.setState(400);
-            result.setMsg("Bad Request,check your email format");
-            return (JSONObject)JSON.toJSON(result);
+            try {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "email format invalid");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
         // At least 8 length and no more than 16 length, include number,uppercase lowercase,and special character
-        if(!user.getPassword().matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[$@$!%*?&])[A-Za-z\\d$@$!%*?&]{8,16}"))
+        if(!userRepository.getPassword().matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[$@$!%*?&])[A-Za-z\\d$@$!%*?&]{8,16}"))
         {
-            result.setState(400);
-            result.setMsg("Bad Request,please follow password requirement");
-            return (JSONObject)JSON.toJSON(result);
+            try {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "password too weak!");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
         Date date =new Date();
-        user.setAccount_created(date);
-        user.setAccount_updated(date);
-        user.setId(UUID.randomUUID().toString());
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        userDao.save(user);
-        result.setData(user);
-        return (JSONObject)JSON.toJSON(result);
+        userRepository.setAccount_created(date);
+        userRepository.setAccount_updated(date);
+        userRepository.setId(UUID.randomUUID().toString());
+        userRepository.setPassword(bCryptPasswordEncoder.encode(userRepository.getPassword()));
+        userDao.save(userRepository);
+        inMemoryUserDetailsManager.createUser(User.withUsername(userRepository.getEmail_address()).password(userRepository.getPassword()).roles("USER").build());
+
+        return (JSONObject)JSON.toJSON(userRepository);
     }
 
     @Override
-    public JSONObject updateSelf(User request,User user) {
-        CommonResult result=new CommonResult();
-
+    public JSONObject updateSelf(UserRepository request, UserRepository userRepository,HttpServletResponse response) {
         if(request.checkUpdateInfo())
         {
             Date date =new Date();
-            user.setAccount_updated(date);
-
-            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-            user.setFirst_name(request.getFirst_name());
-            user.setLast_name(request.getLast_name());
-            userDao.save(user);
-            result.setData(user);
-            return (JSONObject)JSON.toJSON(result);
+            userRepository.setAccount_updated(date);
+            if(!request.getPassword().matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[$@$!%*?&])[A-Za-z\\d$@$!%*?&]{8,16}"))
+            {
+                try {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "password too weak!");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+            userRepository.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
+            userRepository.setFirst_name(request.getFirst_name());
+            userRepository.setLast_name(request.getLast_name());
+            inMemoryUserDetailsManager.updateUser(User.withUsername(userRepository.getEmail_address()).password(userRepository.getPassword()).roles("USER").build());
+            userDao.save(userRepository);
+            return (JSONObject)JSON.toJSON(userRepository);
         }
         else{
-            result.setState(400);
-            result.setMsg("Bad request");
-            return (JSONObject)JSON.toJSON(result);
+//            System.out.println("info invalid");
+            try {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "you can't update field besides first_name,last_name and password");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
 
     }
