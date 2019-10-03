@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Entity
 @Table(name="user")
-public class User {
+public class UserRepository {
     @Id
     private String id;
     @NotNull
@@ -20,11 +20,22 @@ public class User {
     private String password;
     @NotNull
     @Column(unique = true)
-    private String email;
+    private String email_address;
     @Temporal(TemporalType.TIMESTAMP)
     private Date account_created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date account_updated;
+//    @OneToMany(mappedBy = "user",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+//    //级联保存、更新、删除、刷新;延迟加载。当删除用户，会级联删除该用户的所有食谱
+//    //拥有mappedBy注解的实体类为关系被维护端
+//    //mappedBy="id"中的id是recipe中的author_id属性
+//    private List<RecipeRepository> recipeRepository;
+    public UserRepository(String email_address,String password,String first_name,String last_name){
+        this.email_address=email_address;
+        this.password=password;
+        this.first_name=first_name;
+        this.last_name=last_name;
+    }
     public String getFirst_name() {
         return first_name;
     }
@@ -50,18 +61,10 @@ public class User {
         return password;
     }
 
-    public User(){}
+    public UserRepository(){}
     public void setPassword(String password) {
         this.password = password;
     }
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email_address) {
-        this.email = email_address;
-    }
-
     public void setAccount_created(Date account_created) {
         this.account_created = account_created;
     }
@@ -76,16 +79,25 @@ public class User {
     public Date getAccount_updated() {
         return account_updated;
     }
+
+    public String getEmail_address() {
+        return email_address;
+    }
+
+    public void setEmail_address(String email_address) {
+        this.email_address = email_address;
+    }
+
     @Override
     public String toString()
     {
 
-        return "User[first_name="+first_name+",last_name="+last_name+",email="+email+
+        return "User[first_name="+first_name+",last_name="+last_name+",email="+email_address+
                 ",password="+password+"]";
     }
     public boolean checkUpdateInfo()
     {
-        if(this.email!=null||this.id!=null||this.account_created!=null&&this.account_updated!=null)
+        if(this.email_address!=null||this.id!=null||this.account_created!=null&&this.account_updated!=null)
             return false;
         return true;
     }
