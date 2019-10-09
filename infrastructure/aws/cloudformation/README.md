@@ -12,7 +12,7 @@
 # Configuring the AWS CLI
 ## Linux:
 1.Type this command
-<pre><code>aws configure --profile "your profile name"<pre><code>
+<pre><code>aws configure --profile "your profile name"</code></pre>
 2.When you type this command, the AWS CLI prompts you for four pieces of information (access key, secret access key, AWS Region, and output format). Like following:
 <pre><code>AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE</code></pre>
 <pre><code>AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY</code></pre>
