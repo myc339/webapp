@@ -2,6 +2,7 @@
 # and can be swapped out as necessary.
 data "aws_availability_zones" "available" {}
 
+<<<<<<< HEAD
 resource "aws_vpc" "demo" {
   cidr_block = "${var.vpc_cidr_block}"
   tags = {
@@ -24,29 +25,51 @@ resource "aws_subnet" "demo" {
   tags = {
     Name = "${var.vpc_name}+${count.index}"
   }
-}
-
-resource "aws_internet_gateway" "demo" {
-  vpc_id = "${aws_vpc.demo.id}"
-}
-
-resource "aws_route_table" "demo" {
-  vpc_id = "${aws_vpc.demo.id}"
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = "${aws_internet_gateway.demo.id}"
+=======
+resource "aws_vpc" "demo1" {
+  cidr_block = "10.0.0.0/16"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+  tags={
+    Name        = "VPC-Terra1"
   }
 }
 
-resource "aws_route_table_association" "demo" {
+resource "aws_subnet" "demo1" {
   count = 3
 
-  subnet_id      = "${aws_subnet.demo.*.id[count.index]}"
-  route_table_id = "${aws_route_table.demo.id}"
+  availability_zone = "${data.aws_availability_zones.available.names[count.index]}"
+  cidr_block        = "10.0.${count.index}.0/24"
+  vpc_id            = "${aws_vpc.demo1.id}"
+>>>>>>> yumeng/assignment4
+}
+
+resource "aws_internet_gateway" "demo1" {
+  vpc_id = "${aws_vpc.demo1.id}"
+}
+
+resource "aws_route_table" "demo1" {
+  vpc_id = "${aws_vpc.demo1.id}"
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = "${aws_internet_gateway.demo1.id}"
+  }
+}
+
+resource "aws_route_table_association" "demo2" {
+  count = 3
+
+  subnet_id      = "${aws_subnet.demo1.*.id[count.index]}"
+  route_table_id = "${aws_route_table.demo1.id}"
 }
 
 provider "aws" {
+<<<<<<< HEAD
   profile    = "${var.profile_name}"
   region = "${var.aws_region}"
+=======
+  region = "us-east-1"
+  profile    = "dev"
+>>>>>>> yumeng/assignment4
 }
