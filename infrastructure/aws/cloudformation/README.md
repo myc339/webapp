@@ -3,11 +3,10 @@
 1.You need first install Python(recommend Python3), then proceed to installing pip(recommend pip3) and the AWS CLI.
 <pre><code>sudo apt-get install python3</code></pre>
 2.Install pip
-<pre><code>curl -O https://bootstrap.pypa.io/get-pip.py</code></pre>
-<pre><code>python3 get-pip.py --user</code></pre>
-<pre><code>export PATH=~/.local/bin:$PATH</code></pre>
+<pre><code>sudo apt-get install pip3</code></pre>
 3.Install the AWS CLI with pip
 <pre><code>pip3 install awscli --upgrade --user</code></pre>
+<pre><code>export PATH=~/.local/bin:$PATH</code></pre>>
 
 # Configuring the AWS CLI
 ## Linux:
