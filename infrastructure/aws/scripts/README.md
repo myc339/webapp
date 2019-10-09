@@ -6,7 +6,7 @@
 <pre><code>sudo apt-get install pip3</code></pre>
 3.Install the AWS CLI with pip
 <pre><code>pip3 install awscli --upgrade --user</code></pre>
-<pre><code>export PATH=~/.local/bin:$PATH</code></pre>>
+<pre><code>export PATH=~/.local/bin:$PATH</code></pre>
 
 # Configuring the AWS CLI
 ## Linux
