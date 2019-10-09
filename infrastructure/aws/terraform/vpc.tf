@@ -3,15 +3,27 @@
 data "aws_availability_zones" "available" {}
 
 resource "aws_vpc" "demo" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block = "${var.vpc_cidr_block}"
+  tags = {
+    Name = "${var.vpc_name}"
+  }
 }
+
+# variable "name" {
+  
+# }
+
 
 resource "aws_subnet" "demo" {
   count = 3
 
   availability_zone = "${data.aws_availability_zones.available.names[count.index]}"
-  cidr_block        = "10.0.${count.index}.0/24"
+  cidr_block        = "${element(split(",", "${var.all_subnet_cidr_block}"), count.index)}"
   vpc_id            = "${aws_vpc.demo.id}"
+
+  tags = {
+    Name = "${var.vpc_name}+${count.index}"
+  }
 }
 
 resource "aws_internet_gateway" "demo" {
@@ -34,8 +46,7 @@ resource "aws_route_table_association" "demo" {
   route_table_id = "${aws_route_table.demo.id}"
 }
 
-
 provider "aws" {
-  profile    = "dev"
-  region = "us-east-1"
+  profile    = "${var.profile_name}"
+  region = "${var.aws_region}"
 }
