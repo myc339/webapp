@@ -1,5 +1,5 @@
-#Install the AWS CLI
-##Linux:
+# Install the AWS CLI
+## Linux:
 1.You need first install Python(recommend Python3), then proceed to installing pip(recommend pip3) and the AWS CLI.
 <pre><code>sudo apt-get install python3</code></pre>
 2.Install pip
@@ -9,8 +9,8 @@
 3.Install the AWS CLI with pip
 <pre><code>pip3 install awscli --upgrade --user</code></pre>
 
-#Configuring the AWS CLI
-##Linux:
+# Configuring the AWS CLI
+## Linux:
 1.Type this command
 <pre><code>aws configure --profile "your profile name"<pre><code>
 2.When you type this command, the AWS CLI prompts you for four pieces of information (access key, secret access key, AWS Region, and output format). Like following:
@@ -19,8 +19,8 @@
 <pre><code>Default region name [None]: us-west-2</code></pre>
 <pre><code>Default output format [None]: json</code></pre>
 
-#install jq dependency 
-##linux:
+# Install jq dependency 
+## Linux:
 1.Open your sources file in a text editor:
 <pre><code>sudo vim /etc/apt/sources.list</code></pre>
 2.Add the following line to the end of that file (note deb is not a command, more info):
@@ -30,7 +30,7 @@
 4.Then do the normal install and you should be the proud new user of jq!
 <pre><code>sudo apt-get install jq </code></pre>
 
-#run 
+# Run 
 Run command below in scripts directory:
 <li>Switch User</li>
 <pre><code>aws s3 ls --profile [profile name]</code></pre>

@@ -1,5 +1,5 @@
-#Install the AWS CLI
-##Linux:
+# Install the AWS CLI
+## Linux:
 1.You need first install Python(recommend Python3), then proceed to installing pip(recommend pip3) and the AWS CLI.
 <pre><code>sudo apt-get install python3</code></pre>
 2.Install pip
@@ -9,8 +9,8 @@
 3.Install the AWS CLI with pip
 <pre><code>pip3 install awscli --upgrade --user</code></pre>
 
-#Configuring the AWS CLI
-##Linux:
+# Configuring the AWS CLI
+## Linux:
 1.Type this command
 <pre><code>aws configure --profile "your profile name"<pre><code>
 2.When you type this command, the AWS CLI prompts you for four pieces of information (access key, secret access key, AWS Region, and output format). Like following:
@@ -19,8 +19,8 @@
 <pre><code>Default region name [None]: us-west-2</code></pre>
 <pre><code>Default output format [None]: json</code></pre>
 
-#Install the Terraform
-##Linux:
+# Install the Terraform
+## Linux:
 1.Make sure you have installed wget
 <pre><code>sudo apt-get install wget </code></pre>
 2.Use wget to istanll the Terraform
@@ -31,7 +31,7 @@
 4.Move the Terraform binary file to "/usr/local/bin/"</code></pre>
 <pre><code>sudo mv terraform /usr/local/bin/</code></pre>
 
-#Run the Terraform
+# Run the Terraform
 1.In terminal, move to your work directory
 2.Initial Terraform work environment
 <pre><code>terraform init</code></pre>
