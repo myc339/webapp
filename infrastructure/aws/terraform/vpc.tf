@@ -2,7 +2,6 @@
 # and can be swapped out as necessary.
 data "aws_availability_zones" "available" {}
 
-<<<<<<< HEAD
 resource "aws_vpc" "demo" {
   cidr_block = "${var.vpc_cidr_block}"
   tags = {
@@ -25,24 +24,7 @@ resource "aws_subnet" "demo" {
   tags = {
     Name = "${var.vpc_name}+${count.index}"
   }
-=======
-resource "aws_vpc" "demo1" {
-  cidr_block = "10.0.0.0/16"
-  enable_dns_support   = true
-  enable_dns_hostnames = true
-  tags={
-    Name        = "VPC-Terra1"
-  }
-}
 
-resource "aws_subnet" "demo1" {
-  count = 3
-
-  availability_zone = "${data.aws_availability_zones.available.names[count.index]}"
-  cidr_block        = "10.0.${count.index}.0/24"
-  vpc_id            = "${aws_vpc.demo1.id}"
->>>>>>> yumeng/assignment4
-}
 
 resource "aws_internet_gateway" "demo1" {
   vpc_id = "${aws_vpc.demo1.id}"
