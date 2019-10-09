@@ -24,6 +24,7 @@ resource "aws_subnet" "demo" {
   tags = {
     Name = "${var.vpc_name}+${count.index}"
   }
+}
 
 
 resource "aws_internet_gateway" "demo1" {
@@ -47,11 +48,6 @@ resource "aws_route_table_association" "demo2" {
 }
 
 provider "aws" {
-<<<<<<< HEAD
   profile    = "${var.profile_name}"
   region = "${var.aws_region}"
-=======
-  region = "us-east-1"
-  profile    = "dev"
->>>>>>> yumeng/assignment4
 }
