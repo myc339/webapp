@@ -53,8 +53,6 @@ ParameterKey=VpcCIDR,ParameterValue="$vpc_cidr_block" ParameterKey=PublicSubnet1
 ParameterKey=PublicSubnet2CIDR,ParameterValue="$sub2_cidr_block" ParameterKey=PublicSubnet3CIDR,ParameterValue="$sub3_cidr_block")
 aws cloudformation wait stack-create-complete --stack-name "$name"
 aws cloudformation describe-stack-events --stack-name "$name" | jq -r  '.StackEvents[] | select(.ResourceStatus=="CREATE_FAILED" and .ResourceStatusReason!=null and .ResourceStatusReason!="Resource creation cancelled" ) .ResourceStatusReason'
-#echo aws cloudformation describe-stack-events --stack-name "$name" | jq -r ".StackEvents[].ResourceStatusReason"
 
 
 
-#aws cloudformation describe-stack-events --stack-name dsd | jq -r ".StackEvents[].ResourceStatusReason"

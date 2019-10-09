@@ -19,3 +19,4 @@ Run command below in scripts directory:
 <pre><code>./csye6225-aws-networking-setup.sh</code></pre>
 <li>Delete VPC Resource</li>
 <pre><code>./csye6225-aws-networking-teardown.sh</code></pre>
+
