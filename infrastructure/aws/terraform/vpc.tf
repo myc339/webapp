@@ -8,7 +8,6 @@ resource "aws_vpc" "demo" {
     Name = "${var.vpc_name}"
   }
 }
-
 resource "aws_subnet" "demo" {
   count = 3
 
@@ -20,12 +19,6 @@ resource "aws_subnet" "demo" {
     Name = "${var.vpc_name}+${count.index}"
   }
 }
-
-module "name" {
-  source = "source"
-  
-}
-
 
 resource "aws_internet_gateway" "demo" {
   vpc_id = "${aws_vpc.demo.id}"
@@ -51,5 +44,3 @@ provider "aws" {
   profile    = "${var.profile_name}"
   region = "${var.aws_region}"
 }
-
-enable_classiclink_dns_support = true
