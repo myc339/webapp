@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import neu.edu.csye6225.assignment2.common.CommonResult;
 import neu.edu.csye6225.assignment2.dao.UserDao;
-import neu.edu.csye6225.assignment2.entity.User;
+import neu.edu.csye6225.assignment2.entity.UserRepository;
 import neu.edu.csye6225.assignment2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -24,50 +24,47 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(value = "v1/user/self",method= RequestMethod.GET)
-
     public JSONObject findByAccountAndPassword(HttpServletRequest request, HttpServletResponse response)
     {
-        System.out.println(request.getContentLength());
-        CommonResult result=new CommonResult();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user=userDao.findByEmail(auth.getName());
-        result.setData(user);
-        if(user!=null)
-            return (JSONObject)JSON.toJSON(result);
+        UserRepository userRepository =userDao.findQuery(auth.getName());
+        if(userRepository !=null)
+        {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return (JSONObject)JSON.toJSON(userRepository);
+        }
+
         return null;
 
     }
 
     @RequestMapping(value="v1/user",method = RequestMethod.POST,produces="application/json", consumes="application/json")
     @ResponseBody
-    public JSONObject SaveUser(@RequestBody User request)
+    public JSONObject saveUser(@RequestBody UserRepository request,HttpServletResponse response)
     {
-        CommonResult result=new CommonResult();
         try{
-
-           return  userService.save(request);
+            response.setStatus(HttpServletResponse.SC_CREATED);
+           return  userService.save(request,response);
         }
         catch(Exception e){
             e.printStackTrace();
-            result.setState(500);
-            result.setMsg("failure");
-            return (JSONObject)JSON.toJSON(result);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return null;
         }
     }
     //only permit update firstname,lastname,password
     @RequestMapping(value="v1/user/self",method = RequestMethod.PUT)
-    public JSONObject updateSelf(@RequestBody User request){
+    public JSONObject updateSelf(@RequestBody UserRepository request,HttpServletResponse response){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user=userDao.findByEmail(auth.getName());
-        CommonResult result=new CommonResult();
+        UserRepository userRepository =userDao.findQuery(auth.getName());
             try{
-                return userService.updateSelf(request, user);
+                response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                return userService.updateSelf(request, userRepository,response);
             }catch (Exception e)
             {
                 e.printStackTrace();
-                result.setState(500);
-                result.setMsg("failure");
-                return (JSONObject)JSON.toJSON(result);
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return null;
             }
     }
 

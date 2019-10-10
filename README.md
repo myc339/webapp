@@ -41,7 +41,62 @@
 ### 1. When the server is in the initial state, the server needs to be restarted to obtain the newly added data. Therefore, we first run the project to inject a demo data (email: test@email.com, password: 1111Test!!) into the database. Then we can update and get the stored data in the database.
 
 ### 2. Test the functions include insert/update/get user infomation. With multiple cases for insert data to a user from wrong password and illegal email scope; test update user name and password function works well; test user only be allowed to update First Name, Last Name and Password.
+## recipe example data
+using data below to run recipe related API
+<pre><code>{
+  "cook_time_in_min": 15,
+  "prep_time_in_min": 15,
+  "title": "Creamy Cajun Chicken Pasta",
+  "cusine": "Italian",
+  "servings": 2,
+  "ingredients": [
+    "4 ounces linguine pasta",
+    "2 boneless, skinless chicken breast halves, sliced into thin strips",
+    "2 teaspoons Cajun seasoning",
+    "2 tablespoons butter"
+  ],
+  "steps": [
+    {
+      "position": 1,
+      "items": "some text here"
+    }
+  ],
+  "nutrition_information": {
+    "calories": 100,
+    "cholesterol_in_mg": 4,
+    "sodium_in_mg": 100,
+    "carbohydrates_in_grams": 53.7,
+    "protein_in_grams": 53.7
+  }
+}</pre></code>
 
+## recipe example data
+{
+  "cook_time_in_min": 15,
+  "prep_time_in_min": 15,
+  "title": "Creamy Cajun Chicken Pasta",
+  "cusine": "Italian",
+  "servings": 2,
+  "ingredients": [
+    "4 ounces linguine pasta",
+    "2 boneless, skinless chicken breast halves, sliced into thin strips",
+    "2 teaspoons Cajun seasoning",
+    "2 tablespoons butter"
+  ],
+  "steps": [
+    {
+      "position": 1,
+      "items": "some text here"
+    }
+  ],
+  "nutrition_information": {
+    "calories": 100,
+    "cholesterol_in_mg": 4,
+    "sodium_in_mg": 100,
+    "carbohydrates_in_grams": 53.7,
+    "protein_in_grams": 53.7
+  }
+}
 ## CI/CD
 
 

@@ -9,9 +9,9 @@
 <pre><code>export PATH=~/.local/bin:$PATH</code></pre>
 
 # Configuring the AWS CLI
-## Linux:
+## Linux
 1.Type this command
-<pre><code>aws configure --profile "your profile name"</code></pre>
+<code><code>aws configure --profile "your profile name"</code></code>
 2.When you type this command, the AWS CLI prompts you for four pieces of information (access key, secret access key, AWS Region, and output format). Like following:
 <pre><code>AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE</code></pre>
 <pre><code>AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY</code></pre>
@@ -39,4 +39,3 @@ Run command below in scripts directory:
 <pre><code>./csye6225-aws-networking-setup.sh</code></pre>
 <li>Delete VPC Resource</li>
 <pre><code>./csye6225-aws-networking-teardown.sh</code></pre>
-
