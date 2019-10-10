@@ -72,17 +72,22 @@ public class RecipeServiceImpl implements RecipeService {
         }
 
         RecipeRepository recipe = recipeDao.getOne(recipeId);
-        request.setId(recipeId);
-        request.setAuthor(authorId);
-        request.setUpdated_ts(new Date());
-        request.setCreated_ts(recipe.getCreated_ts());
-        request.setTotal_time_in_min(request.getCook_time_in_min()+request.getPrep_time_in_min());
+        recipe.setUpdated_ts(new Date());
+        recipe.setCook_time_in_min(request.getCook_time_in_min());
+        recipe.setPrep_time_in_min(request.getPrep_time_in_min());
+        recipe.setTotal_time_in_min(request.getCook_time_in_min()+request.getPrep_time_in_min());
+        recipe.setIngredients(request.getIngredients());
+        recipe.setCusine(request.getCusine());
+        recipe.setNutrition_information(request.getNutrition_information());
+        recipe.setServings(request.getServings());
+        recipe.setSteps(request.getSteps());
+        recipe.setTitle(request.getTitle());
         for(OrderedListRepository o : request.getSteps()){
-            o.setRecipe(request);
+            o.setRecipe(recipe);
         }
-        recipeDao.save(request);
-        return (JSONObject)JSON.toJSON(request);
 
+        recipeDao.save(recipe);
+        return (JSONObject)JSON.toJSON(request);
     }
 
     @Override
@@ -185,7 +190,8 @@ public class RecipeServiceImpl implements RecipeService {
     public boolean exist(String recipeId, HttpServletResponse response){
         try {
             //ID不存在时，打印getOne获取的对象才会报错
-            System.out.print(recipeDao.getOne(recipeId));
+            //别删
+            System.out.println(recipeDao.getOne(recipeId));
             return true;
         }
         catch (Exception e){
