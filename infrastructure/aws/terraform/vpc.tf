@@ -9,11 +9,6 @@ resource "aws_vpc" "demo" {
   }
 }
 
-# variable "name" {
-  
-# }
-
-
 resource "aws_subnet" "demo" {
   count = 3
 
@@ -24,6 +19,11 @@ resource "aws_subnet" "demo" {
   tags = {
     Name = "${var.vpc_name}+${count.index}"
   }
+}
+
+module "name" {
+  source = "source"
+  
 }
 
 
@@ -51,3 +51,5 @@ provider "aws" {
   profile    = "${var.profile_name}"
   region = "${var.aws_region}"
 }
+
+enable_classiclink_dns_support = true
