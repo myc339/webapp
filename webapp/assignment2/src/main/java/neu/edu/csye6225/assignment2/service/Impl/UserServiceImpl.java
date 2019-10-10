@@ -35,7 +35,10 @@ public class UserServiceImpl  implements UserService {
     @Override
     public JSONObject save(UserRepository userRepository,HttpServletResponse response)
     {
+        System.out.print(userRepository.getEmail_address());
+        CommonResult result=new CommonResult();
         if(userDao.findQuery(userRepository.getEmail_address())!=null) {
+//            response.setStatus();
             try {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "email exists");
             } catch (IOException e) {
@@ -96,6 +99,7 @@ public class UserServiceImpl  implements UserService {
             return (JSONObject)JSON.toJSON(userRepository);
         }
         else{
+//            System.out.println("info invalid");
             try {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "you can't update field besides first_name,last_name and password");
             } catch (IOException e) {
