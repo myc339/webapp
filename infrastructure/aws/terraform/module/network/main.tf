@@ -27,31 +27,29 @@ resource "aws_subnet" "subnet" {
 
 resource "aws_internet_gateway" "gw" {
   vpc_id = "${aws_vpc.vpc.id}"
+
+  tags = {
+    Name = "${var.vpc_name}+internet_gateway"
+  }
 }
 
 resource "aws_route_table" "route_table" {
+  count = 3
   vpc_id = "${aws_vpc.vpc.id}"
 
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = "${aws_internet_gateway.gw.id}"
   }
+
+  tags = {
+    Name = "${var.vpc_name}+route_table"
+  }
 }
 
 resource "aws_route_table_association" "route_table_asso" {
   count = 3
 
-  subnet_id      = "${aws_subnet.subnet.*.id[count.index]}"
-  route_table_id = "${aws_route_table.route_table.id}"
+  subnet_id      = "${element(aws_subnet.subnet.*.id, count.index)}"
+  route_table_id = "${element(aws_route_table.route_table.*.id, count.index)}"
 }
-
-//lifecycle {
-//  create_before_destroy = true
-//}
-
-
-
-
-
-
-
