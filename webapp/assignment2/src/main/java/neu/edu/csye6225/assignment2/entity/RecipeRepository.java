@@ -17,6 +17,7 @@ public class RecipeRepository {
     private String id;//read-only
     @Temporal(TemporalType.TIMESTAMP)
     @ReadOnlyProperty
+    @Column(name = "created_ts")
     private Date created_ts;
     @Temporal(TemporalType.TIMESTAMP)
     @ReadOnlyProperty
@@ -53,6 +54,10 @@ public class RecipeRepository {
     @OneToOne(cascade=CascadeType.ALL)//Recipe 是关系的维护端，当删除 Recipe，会级联删除 nutrition_information
     @JoinColumn(name = "nutrition_information", referencedColumnName = "id")
     private NutritionInformationRepository nutrition_information;
+
+    @OneToOne(cascade=CascadeType.ALL)//Recipe 是关系的维护端，当删除 Recipe，会级联删除 image
+    @JoinColumn(name = "image", referencedColumnName = "id")
+    private ImageRepository image;
     public RecipeRepository(){}
     public RecipeRepository(Integer cook_time_in_min,Integer prep_time_in_min,String title,String cusine,Integer servings,ArrayList<String> ingredients,
                             NutritionInformationRepository nutrition_information,List<OrderedListRepository> steps){
@@ -178,5 +183,13 @@ public class RecipeRepository {
 
     public void setNutrition_information(NutritionInformationRepository nutrition_information) {
         this.nutrition_information = nutrition_information;
+    }
+
+    public ImageRepository getImage() {
+        return image;
+    }
+
+    public void setImage(ImageRepository image) {
+        this.image = image;
     }
 }

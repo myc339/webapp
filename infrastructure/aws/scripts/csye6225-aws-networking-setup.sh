@@ -95,6 +95,7 @@ if [ -z "$routeTableId" ]
 then
     exit 0
 fi
+echo "1 $routeTableId"
 #name the route table
 aws ec2 create-tags --resources "$routeTableId" --tags Key=Name,Value="$routeTableName"
 echo "create routetable"
@@ -102,6 +103,7 @@ echo "create routetable"
 route_response=$(aws ec2 create-route --route-table-id "$routeTableId" --destination-cidr-block "$destinationCidrBlock" --gateway-id "$gatewayId")
 echo "attach gateway to route-table"
 #add route to subnet
+echo "2 $routeTableId"
 for i in $SubentIndex
 do
 associate_response=$(aws ec2 associate-route-table --subnet-id "${subnetId[$i]}" --route-table-id "$routeTableId")
