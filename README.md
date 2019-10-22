@@ -68,7 +68,7 @@ using data below to run recipe related API
     "carbohydrates_in_grams": 53.7,
     "protein_in_grams": 53.7
   }
-}</pre></code>
+}</code></pre>
 
 ## Run Project
 <pre><code>

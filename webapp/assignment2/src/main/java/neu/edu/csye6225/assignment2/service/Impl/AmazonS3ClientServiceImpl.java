@@ -7,9 +7,7 @@ import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.regions.Region;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.*;
 import com.amazonaws.services.xray.model.Http;
 import neu.edu.csye6225.assignment2.dao.ImageDao;
 import neu.edu.csye6225.assignment2.dao.RecipeDao;
@@ -33,6 +31,7 @@ import javax.swing.plaf.synth.SynthTextAreaUI;
 import java.awt.*;
 import java.io.*;
 import java.lang.reflect.Array;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -68,8 +67,10 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                 .withCredentials(awsCredentialsProvider)
                 .withRegion(awsRegion.getName()).build();
         this.awsS3Bucket=awsS3Bucket;
+        System.out.println("bucketName:"+this.awsS3Bucket);
+        System.out.println("region:"+awsRegion.getName());
     }
-    @Async
+//    @Async
     public JSONObject uploadFileToS3Bucket(String recipeId,String authorId,MultipartFile[] files, boolean enablePublicReadAccess, HttpServletResponse response)
     {
 
@@ -79,7 +80,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
         RecipeRepository recipeRepository = recipeDao.getOne(recipeId);
 
         try{
-//            this.amazonS3.createBucket(awsS3Bucket+".demo");
+//           this.amazonS3.createBucket(awsS3Bucket+".demo1");
             //creating the file in the server
             for ( MultipartFile File :files) {
                 //check image or not
@@ -97,19 +98,21 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                 fos.close();
                 fileName = new Date().getTime() + "_" + fileName.replace(" ", "_");
                 PutObjectRequest putObjectRequest = new PutObjectRequest(this.awsS3Bucket, fileName, file);
-                if (enablePublicReadAccess) {
-                    putObjectRequest.withCannedAcl((CannedAccessControlList.PublicRead));
-                }
+
                 ImageRepository image = new ImageRepository(recipeRepository);
                 this.amazonS3.putObject(putObjectRequest);
-//                image.getRecipe().setId(recipeRepository.getId());
+                GetObjectMetadataRequest getObjectMetadataRequest=new GetObjectMetadataRequest(this.awsS3Bucket,fileName);
+                ObjectMetadata metadata=this.amazonS3.getObjectMetadata(getObjectMetadataRequest);
+                System.out.println(metadata.getETag());
+                image.setMd5(metadata.getETag());
+                image.setSize(new DecimalFormat("0.0").format((metadata.getContentLength()*1.0)/1024)+" KB");
                 image.setId(UUID.randomUUID().toString());
                 image.setCreated_ts(new Date());
                 image.setUpdated_ts(new Date());
                 image.setBucketName(awsS3Bucket);
                 image.setFileName(fileName);
                 image.setRegion("http://s3.amazonaws.com");
-                image.setUrl(image.getRegion() + "/" + awsS3Bucket + "/" + fileName);
+                image.setUrl(this.amazonS3.getUrl(this.awsS3Bucket,fileName).toString());
 
                 file.delete();
                 images.add(image);
@@ -125,7 +128,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
         return  (JSONObject)JSON.toJSON(ImageData);
     }
 
-    @Async
+//    @Async
     public JSONObject deleteFileFromS3Bucket( String recipeId,String authorId, String imageId,HttpServletResponse response)
     {
         if(!validateAuthority(recipeId,authorId,response)) return null;
@@ -186,12 +189,16 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                     PutObjectRequest putObjectRequest = new PutObjectRequest(this.awsS3Bucket, fileName, file);
                     this.amazonS3.putObject(putObjectRequest);
 
+                    GetObjectMetadataRequest getObjectMetadataRequest=new GetObjectMetadataRequest(this.awsS3Bucket,fileName);
+                    ObjectMetadata metadata=this.amazonS3.getObjectMetadata(getObjectMetadataRequest);
+                    image.setMd5(metadata.getETag());
+                    image.setSize(new DecimalFormat("0.0").format((metadata.getContentLength()*1.0)/1024)+" KB");
+
                     image.setUpdated_ts(new Date());
                     image.setBucketName(awsS3Bucket);
                     image.setFileName(fileName);
                     image.setRegion("http://s3.amazonaws.com");
-                    image.setUrl(image.getRegion() + "/" + awsS3Bucket + "/" + fileName);
-
+                    image.setUrl(this.amazonS3.getUrl(this.awsS3Bucket,fileName).toString());
                     file.delete();
 
 

@@ -28,11 +28,33 @@ public class ImageRepository {
     private Date created_ts;
     @NotNull
     @JSONField(serialize = false)
+    private String size;
+    @NotNull
+    @JSONField(serialize = false)
+    private String md5;
+    @NotNull
+    @JSONField(serialize = false)
     private Date updated_ts;
     @ManyToOne(cascade={CascadeType.MERGE,CascadeType.REFRESH},optional=false)//可选属性optional=false,表示recipe不能为空。删除步骤，不影响食谱
     @JoinColumn(name="recipe_id")//设置在orderedList表中的关联字段(外键)
     @JSONField(serialize = false)
     private RecipeRepository recipe;//所属recipe
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    public String getMd5() {
+        return md5;
+    }
+
+    public void setMd5(String md5) {
+        this.md5 = md5;
+    }
 
     public ImageRepository(){ }
     public ImageRepository(RecipeRepository recipeRepository){

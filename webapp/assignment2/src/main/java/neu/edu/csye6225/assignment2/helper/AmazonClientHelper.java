@@ -32,6 +32,8 @@ public class AmazonClientHelper {
 
     @Bean(name="awsCredentialsProvider")
     public AWSCredentialsProvider getAWSCredentials() {
+        System.out.println(this.accessKey);
+        System.out.println(this.secretKey);
         BasicAWSCredentials awsCredentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
         return new AWSStaticCredentialsProvider(awsCredentials);
     }
