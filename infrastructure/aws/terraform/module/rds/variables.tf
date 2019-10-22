@@ -5,7 +5,12 @@ variable "password" {
 }
 
 variable "db_subnet_group_name" {
-  default 		= "vpc-0561adb2a0f6a0266"
+  default 		= "default"
   description 	= "Apparently the group name, according to the RDS launch wizard."
+}
+
+variable "allocated_storage" {
+  description = "The allocated storage in gigabytes"
+  type        = string
 }
 
