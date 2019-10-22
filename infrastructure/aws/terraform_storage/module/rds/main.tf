@@ -1,4 +1,7 @@
 # create RDS instance with Terraform
+provider "aws" {
+	region = "us-east-1"
+}
 
 resource "aws_db_instance" "mydb1" {
     allocated_storage       = var.allocated_storage
