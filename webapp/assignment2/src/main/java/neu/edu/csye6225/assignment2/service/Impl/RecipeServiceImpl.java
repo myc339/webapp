@@ -20,9 +20,6 @@ import java.util.*;
 public class RecipeServiceImpl implements RecipeService {
 
     @Autowired
-    private UserDao userDao;
-
-    @Autowired
     private RecipeDao recipeDao;
 
     @Autowired
@@ -46,7 +43,7 @@ public class RecipeServiceImpl implements RecipeService {
         for(OrderedListRepository o : recipeRepository.getSteps()){
             o.setRecipe(recipeRepository);
         }
-        System.out.println(recipeRepository.getIngredients().toString());
+//        System.out.println(recipeRepository.getIngredients().toString());
         recipeRepository.setIngredients1(recipeRepository.getIngredients().toString());
         recipeDao.save(recipeRepository);
        return (JSONObject) JSON.toJSON(recipeRepository);
@@ -87,7 +84,7 @@ public class RecipeServiceImpl implements RecipeService {
         }
 
         recipeDao.save(recipe);
-        return (JSONObject)JSON.toJSON(request);
+        return (JSONObject)JSON.toJSON(recipe);
     }
 
     @Override
@@ -203,5 +200,11 @@ public class RecipeServiceImpl implements RecipeService {
             }
             return false;
         }
+    }
+    @Override
+    public JSONObject getNewestRecipe(HttpServletResponse response)
+    {
+        RecipeRepository recipeRepository = recipeDao.findNewestRecipe();
+        return (JSONObject)JSON.toJSON(recipeRepository);
     }
 }
