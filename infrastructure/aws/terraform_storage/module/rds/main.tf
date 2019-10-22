@@ -2,8 +2,8 @@
 
 resource "aws_db_instance" "mydb1" {
     allocated_storage       = var.allocated_storage
-	engine 					= "mysql"
-	instance_class 			= "db.t2.medium"
+	engine 					= var.engine
+	instance_class 			= var.instance_class
 	multi_az				= false
 	identifier				= "csye6225-fall2019"
 	username				= "dbuser"
@@ -11,6 +11,7 @@ resource "aws_db_instance" "mydb1" {
 	db_subnet_group_name	= var.db_subnet_group_name
 	publicly_accessible		= true
 	name 					= "csye6225"
+	skip_final_snapshot     = true
 }
 
 
