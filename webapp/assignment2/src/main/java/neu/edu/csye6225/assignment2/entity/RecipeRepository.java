@@ -55,9 +55,9 @@ public class RecipeRepository {
     @JoinColumn(name = "nutrition_information", referencedColumnName = "id")
     private NutritionInformationRepository nutrition_information;
 
-    @OneToOne(cascade=CascadeType.ALL)//Recipe 是关系的维护端，当删除 Recipe，会级联删除 image
-    @JoinColumn(name = "image", referencedColumnName = "id")
-    private ImageRepository image;
+    @OneToMany(mappedBy = "recipe",cascade=CascadeType.ALL,fetch=FetchType.LAZY)//Recipe 是关系的维护端，当删除 Recipe，会级联删除 image
+//    @JoinColumn(name = "image", referencedColumnName = "id")
+    private List<ImageRepository> image;
     public RecipeRepository(){}
     public RecipeRepository(Integer cook_time_in_min,Integer prep_time_in_min,String title,String cusine,Integer servings,ArrayList<String> ingredients,
                             NutritionInformationRepository nutrition_information,List<OrderedListRepository> steps){
@@ -185,11 +185,11 @@ public class RecipeRepository {
         this.nutrition_information = nutrition_information;
     }
 
-    public ImageRepository getImage() {
+    public List<ImageRepository> getImage() {
         return image;
     }
 
-    public void setImage(ImageRepository image) {
+    public void setImage(List<ImageRepository> image) {
         this.image = image;
     }
 }
