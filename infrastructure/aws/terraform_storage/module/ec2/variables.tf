@@ -21,3 +21,9 @@ variable "volume_type" {
 	default = "gp2"
 }
 
+variable "vpc_security_group_ids" {
+    description = "Security group IDs to associate with"
+    type = string
+    default = "sg-b011c1e0"
+}
+
