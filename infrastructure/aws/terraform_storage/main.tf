@@ -179,6 +179,7 @@ resource "aws_instance" "ec2-instance" {
   disable_api_termination = false
   vpc_security_group_ids = ["${aws_security_group.app_sg.id}"]
   subnet_id = "${element(aws_subnet.subnet.*.id, 0)}"
+  key_name = "${var.key_pair_name}"
 
   depends_on = [aws_db_instance.mydb1]
 
@@ -203,6 +204,7 @@ resource "aws_vpc" "vpc" {
 resource "aws_subnet" "subnet" {
   count = 3
 
+  map_public_ip_on_launch = true
   availability_zone = "${data.aws_availability_zones.available.names[count.index]}"
   cidr_block        = "${element(split(",", "${var.all_subnet_cidr_block}"), count.index)}"
   vpc_id            = "${aws_vpc.vpc.id}"

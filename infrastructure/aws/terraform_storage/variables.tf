@@ -90,3 +90,8 @@ variable "domain_name" {
   description   = "The is your domain name"
   type          = string
 }
+
+variable "key_pair_name" {
+  description   = "The is your public key name in AWS"
+  type          = string
+}
