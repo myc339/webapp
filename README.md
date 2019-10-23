@@ -72,7 +72,7 @@ using data below to run recipe related API
 
 ## Run Project
 <pre><code>
-mvn spring-boot:run -Dspring-boot.run.arguments=--region=[region],--bucketName=[bucketName],--accessKey=[accessKey],--secretKey=[secretKey]</pre></code>
+mvn spring-boot:run -Dspring-boot.run.arguments=--region=[region],--bucketName=[bucketName],--accessKey=[accessKey],--secretKey=[secretKey],--dbURL=[database address],--dbName=[database name]</pre></code>
 ## CI/CD
 
 

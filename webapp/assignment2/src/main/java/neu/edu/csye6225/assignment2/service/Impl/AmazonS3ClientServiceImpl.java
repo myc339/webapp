@@ -7,30 +7,22 @@ import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.regions.Region;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.*;
-import com.amazonaws.services.xray.model.Http;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.GetObjectMetadataRequest;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import neu.edu.csye6225.assignment2.dao.ImageDao;
 import neu.edu.csye6225.assignment2.dao.RecipeDao;
 import neu.edu.csye6225.assignment2.entity.ImageRepository;
 import neu.edu.csye6225.assignment2.entity.RecipeRepository;
-import neu.edu.csye6225.assignment2.entity.UserRepository;
 import neu.edu.csye6225.assignment2.service.AmazonS3ClientService;
-import neu.edu.csye6225.assignment2.service.RecipeService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.plaf.synth.SynthTextAreaUI;
-import java.awt.*;
 import java.io.*;
-import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -86,7 +78,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                 //check image or not
                 InputStream myInputStream = new ByteArrayInputStream(File.getBytes());
                 if (!isImage(myInputStream)) {
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad Request");
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad Request, this is not image!");
                     return null;
                 }
             }
@@ -174,7 +166,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                     exist = true;
                     InputStream myInputStream = new ByteArrayInputStream(files.getBytes());
                     if (!isImage(myInputStream)) {
-                        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad Request");
+                        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad Request, this is not image!");
                         return null;
                     }
                     amazonS3.deleteObject(new DeleteObjectRequest(image.getBucketName(), image.getFileName()));
