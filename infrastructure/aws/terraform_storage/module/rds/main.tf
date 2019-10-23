@@ -12,10 +12,4 @@ resource "aws_db_instance" "mydb1" {
 	name 					= "csye6225"
 	skip_final_snapshot     = true
 	vpc_security_group_ids  =["${aws_security_group.rds_sg.id}"]
-
-	output "db_instance_id" {
-		value = "${aws_db_instance.mydb1.id}"
-	}
 }
-
-
