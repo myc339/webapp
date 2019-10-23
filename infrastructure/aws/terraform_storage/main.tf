@@ -18,7 +18,7 @@ resource "aws_dynamodb_table" "csye6225" {
 resource "aws_security_group" "app_sg" {
   name        = "app_sg"
   description = "Allow TLS inbound traffic"
-  vpc_id      = "vpc-0888f48abb0362064"
+  vpc_id      = "${aws_vpc.vpc.id}"
 
   ingress {
     # TLS (change to whatever ports you need)
@@ -72,7 +72,7 @@ resource "aws_security_group" "app_sg" {
 resource "aws_security_group" "rds_sg" {
   name = "rds_sg"
   description = "Allow TLS inbound traffic"
-  vpc_id      = "vpc-0888f48abb0362064"
+  vpc_id      = "${aws_vpc.vpc.id}"
 
   ingress {
     # TLS (change to whatever ports you need)
@@ -101,7 +101,7 @@ resource "aws_s3_bucket" "myBucket" {
   # NOTE: S3 bucket names must be unique across _all_ AWS accounts, so
   # this name must be changed before applying this example to avoid naming
   # conflicts.
-  bucket = "test.encrytion.lifcycle.wenkai.me"
+  bucket = "webapp.${var.domain_name}"
   acl    = "private"
 
   # delete the bucket even if it is not empty
@@ -138,11 +138,14 @@ resource "aws_s3_bucket" "myBucket" {
 # Create subnet group
 resource "aws_db_subnet_group" "dbsubnet" {
   name       = "dbsubnet"
-  subnet_ids = var.db_subnets
+  subnet_ids = aws_subnet.subnet.*.id
 
   tags = {
     Name = "My DB subnet group"
   }
+}
+output "subnet_ids" {
+  value = aws_subnet.subnet.*.id
 }
 
 # create RDS instance with Terraform
@@ -175,11 +178,65 @@ resource "aws_instance" "ec2-instance" {
 
   disable_api_termination = false
   vpc_security_group_ids = ["${aws_security_group.app_sg.id}"]
-  subnet_id = "${element(var.db_subnets, 0)}"
+  subnet_id = "${element(aws_subnet.subnet.*.id, 0)}"
 
   depends_on = [aws_db_instance.mydb1]
 
   tags = {
     Name = "csye6225-ec2-instance"
   }
+}
+
+# VPC
+# This data source is included for ease of sample architecture deployment
+# and can be swapped out as necessary.
+data "aws_availability_zones" "available" {}
+resource "aws_vpc" "vpc" {
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+  cidr_block = "${var.vpc_cidr_block}"
+  tags = {
+    Name = "${var.vpc_name}"
+  }
+}
+
+resource "aws_subnet" "subnet" {
+  count = 3
+
+  availability_zone = "${data.aws_availability_zones.available.names[count.index]}"
+  cidr_block        = "${element(split(",", "${var.all_subnet_cidr_block}"), count.index)}"
+  vpc_id            = "${aws_vpc.vpc.id}"
+
+  tags = {
+    Name = "${var.vpc_name}+${count.index}"
+  }
+}
+
+resource "aws_internet_gateway" "gw" {
+  vpc_id = "${aws_vpc.vpc.id}"
+
+  tags = {
+    Name = "${var.vpc_name}+internet_gateway"
+  }
+}
+
+resource "aws_route_table" "route_table" {
+  count = 3
+  vpc_id = "${aws_vpc.vpc.id}"
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = "${aws_internet_gateway.gw.id}"
+  }
+
+  tags = {
+    Name = "${var.vpc_name}+route_table"
+  }
+}
+
+resource "aws_route_table_association" "route_table_asso" {
+  count = 3
+
+  subnet_id      = "${element(aws_subnet.subnet.*.id, count.index)}"
+  route_table_id = "${element(aws_route_table.route_table.*.id, count.index)}"
 }

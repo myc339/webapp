@@ -46,11 +46,11 @@ variable "password" {
   default		= "csye6225!!!!"
 }
 
-variable "db_subnets" {
-  type          = list
-  default 		= ["subnet-013178f8e46e46dad","subnet-0dbb7d21b12c7e7c5"]
-  description 	= "Apparently the group name, according to the RDS launch wizard."
-}
+# variable "db_subnets" {
+#   type          = list
+#   default 		= ["subnet-013178f8e46e46dad","subnet-0dbb7d21b12c7e7c5"]
+#   description 	= "Apparently the group name, according to the RDS launch wizard."
+# }
 
 variable "allocated_storage" {
   description   = "The allocated storage in gigabytes"
@@ -68,4 +68,25 @@ variable "instance_class" {
   description   = "The instance type of the RDS instance"
   type          = string
   default       = "db.t2.medium"
+}
+
+variable "vpc_name" {
+  description   = "The is VPC name"
+  type          = string
+  default       = "exclusiveVPC"
+}
+variable "all_subnet_cidr_block" {
+  description   = "The is subnet address"
+  type          = string
+  default       = "10.0.1.0/24,10.0.2.0/24,10.0.3.0/24"
+}
+variable "vpc_cidr_block" {
+  description   = "The is vpc address"
+  type          = string
+  default       = "10.0.0.0/16"
+}
+
+variable "domain_name" {
+  description   = "The is your domain name"
+  type          = string
 }
