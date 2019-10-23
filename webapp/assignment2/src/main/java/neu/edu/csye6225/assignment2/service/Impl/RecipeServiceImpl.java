@@ -2,8 +2,8 @@ package neu.edu.csye6225.assignment2.service.Impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import neu.edu.csye6225.assignment2.dao.OrderedListDao;
 import neu.edu.csye6225.assignment2.dao.RecipeDao;
-import neu.edu.csye6225.assignment2.dao.UserDao;
 import neu.edu.csye6225.assignment2.entity.OrderedListRepository;
 import neu.edu.csye6225.assignment2.entity.RecipeRepository;
 import neu.edu.csye6225.assignment2.service.RecipeService;
@@ -13,7 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -21,6 +24,8 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Autowired
     private RecipeDao recipeDao;
+    @Autowired
+    private OrderedListDao orderedListDao;
 
     @Autowired
     public RecipeServiceImpl( ) {
@@ -69,6 +74,12 @@ public class RecipeServiceImpl implements RecipeService {
         }
 
         RecipeRepository recipe = recipeDao.getOne(recipeId);
+        //load existing nutrition id
+        request.getNutrition_information().setId(recipe.getNutrition_information().getId());
+        //删除步骤以便更新
+        for(OrderedListRepository o: recipe.getSteps()){
+            orderedListDao.delete(o);
+        }
         recipe.setUpdated_ts(new Date());
         recipe.setCook_time_in_min(request.getCook_time_in_min());
         recipe.setPrep_time_in_min(request.getPrep_time_in_min());
@@ -79,6 +90,7 @@ public class RecipeServiceImpl implements RecipeService {
         recipe.setServings(request.getServings());
         recipe.setSteps(request.getSteps());
         recipe.setTitle(request.getTitle());
+        //重新设置新建步骤对应的recipe
         for(OrderedListRepository o : request.getSteps()){
             o.setRecipe(recipe);
         }
