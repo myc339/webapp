@@ -1,8 +1,4 @@
-provider "aws" {
-  profile    = "dev"
-  region     = "us-east-1"
-}
-
+#Create Security Group
 resource "aws_security_group" "app_sg" {
   name        = "app_sg"
   description = "Allow TLS inbound traffic"

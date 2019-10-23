@@ -1,8 +1,3 @@
-provider "aws" {
-  profile    = "dev"
-  region     = "us-east-1"
-}
-
 # # Change the aws_instance we declared earlier to now include "depends_on"
 # resource "aws_instance" "example" {
 #   ami           = "ami-2757f631"
