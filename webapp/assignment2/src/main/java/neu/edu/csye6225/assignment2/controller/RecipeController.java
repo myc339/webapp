@@ -1,6 +1,7 @@
 package neu.edu.csye6225.assignment2.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.amazonaws.services.s3.AmazonS3Client;
 import neu.edu.csye6225.assignment2.dao.UserDao;
 import neu.edu.csye6225.assignment2.entity.RecipeRepository;
 import neu.edu.csye6225.assignment2.entity.UserRepository;
@@ -54,4 +55,11 @@ public class RecipeController {
         response.setStatus(HttpServletResponse.SC_OK);
         return recipeService.getRecipe(id, response);
     }
+    @RequestMapping(value = "v1/recipes",method= RequestMethod.GET)
+    public JSONObject findRecipeById(HttpServletRequest request, HttpServletResponse response) {
+        response.setStatus(HttpServletResponse.SC_OK);
+        return recipeService.getNewestRecipe(response);
+    }
+
+
 }

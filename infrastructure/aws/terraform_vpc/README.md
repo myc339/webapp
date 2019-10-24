@@ -38,7 +38,13 @@
 <pre><code>terraform plan</code></pre>
 4.Apply Changes
 <pre><code>terraform apply</code></pre>
-5.Enter the require information like following
+Or you can use '-var' paramerter to enter variables like:
+<pre><code>terraform apply -var 'aws_region=us-east-1'</code></pre>
+<pre><code>terraform apply -var 'vpc_cidr_block=10.0.0.0/16'</code></pre>
+<pre><code>terraform apply -var 'all_subnet_cidr_block=10.0.1.0/24,10.0.2.0/24,10.0.3.0/24'</code></pre>
+<pre><code>terraform apply -var 'profile_name=dev'</code></pre>
+<pre><code>terraform apply -var 'vpc_name=vpc'</code></pre>
+5.(If you don't use '-var' to enter variables)Enter the require information like following
 (In all_subnet_cidr_block field, different block should be split by ',')
 <pre><code>var.all_subnet_cidr_block
   Enter a value: 10.0.1.0/24,10.0.2.0/24,10.0.3.0/24
@@ -53,4 +59,6 @@ var.vpc_cidr_block
   Enter a value: 10.0.0.0/16
 
 var.vpc_name
-  Enter a value: qq</code></pre>
+  Enter a value: vpc</code></pre>
+6.Destroy VPC(Need to enter those information)
+<pre><code>terraform destroy</code></pre>
