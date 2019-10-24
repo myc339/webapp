@@ -20,7 +20,6 @@ variable "read_capacity" {
 variable "ami" {
 	description = "The ID of the AMI used to launch the instance"
 	type = string
-	default = "ami-03fdefabf1314d15b"
 }
 
 variable "instance_type" {
