@@ -5,9 +5,9 @@ jobs:
       - image: circleci/openjdk:8-jdk
     steps:
       - checkout
-      -run:
-         name: "demo zip"
-         command: |
-           sudo apt-get update
-           sudo apt install zip
-           ls -la
+      - run:
+          name: "demo zip"
+          command: |
+            sudo apt-get update
+            sudo apt install zip
+            ls -la
