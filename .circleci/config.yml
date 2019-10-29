@@ -17,3 +17,7 @@ jobs:
           command: |
             aws --version
             echo $AWS_ACCESS_KEY_ID
+      - run:
+          name: "upload zip file to s3"
+          command: |
+            aws s3 cp ~/webapp.zip s3://codedeploy.myc339.me/
