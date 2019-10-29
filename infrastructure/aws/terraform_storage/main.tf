@@ -81,7 +81,7 @@ resource "aws_security_group" "rds_sg" {
     protocol    = "tcp"
     # Please restrict your ingress to only necessary IPs and ports.
     # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
-    cidr_blocks     = ["0.0.0.0/0"]
+
     security_groups = ["${aws_security_group.app_sg.id}"]
   }
 
@@ -133,6 +133,13 @@ resource "aws_s3_bucket" "myBucket" {
       storage_class = "STANDARD_IA" # or "ONEZONE_IA"
     }
   }
+}
+resource "aws_s3_bucket_public_access_block" "myBucketBlock" {
+  bucket = "${aws_s3_bucket.myBucket.id}"
+  ignore_public_acls=true
+  block_public_acls   = true
+  block_public_policy = true
+  restrict_public_buckets=true
 }
 
 # Create subnet group
