@@ -11,3 +11,5 @@ jobs:
             sudo apt-get update
             sudo apt install zip
             ls  -l ~
+            ls  -l ~/project
+            zip -r ~/webapp.zip ~/project
