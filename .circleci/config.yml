@@ -9,7 +9,7 @@ jobs:
           name: "demo zip and awscli"
           command: |
             sudo apt-get update
-            sudo snap install awscli
+            sudo snap install aws-cli
             sudo apt install zip
             zip -r ~/webapp.zip ~/project
       - run:
