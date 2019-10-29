@@ -16,3 +16,4 @@ jobs:
           command: |
             sudo snap install awscli
             aws --version
+            echo $AWS_ACCESS_KEY_ID
