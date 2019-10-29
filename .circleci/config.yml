@@ -10,6 +10,9 @@ jobs:
           command: |
             sudo apt-get update
             sudo apt install zip
-            ls  -l ~
-            ls  -l ~/project
             zip -r ~/webapp.zip ~/project
+      - run:
+          name: "install aws-cli"
+          command: |
+            sudo snap install awscli
+            aws --version
