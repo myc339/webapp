@@ -20,4 +20,4 @@ jobs:
       - run:
           name: "upload zip file to s3"
           command: |
-            aws s3 cp ~/webapp.zip s3://myc339.me/
+            aws s3 cp ~/webapp.zip s3://dev.myc339.me/
