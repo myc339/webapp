@@ -3,7 +3,6 @@ jobs:
   build:
     docker:
       - image: circleci/openjdk:8-jdk
-      - working_directory: ~
     steps:
       - checkout
       - run:
@@ -11,4 +10,4 @@ jobs:
           command: |
             sudo apt-get update
             sudo apt install zip
-            ls -la
+            ls  -l ~
