@@ -6,14 +6,14 @@ jobs:
     steps:
       - checkout
       - run:
-          name: "demo zip"
+          name: "demo zip and awscli"
           command: |
             sudo apt-get update
+            sudo snap install awscli
             sudo apt install zip
             zip -r ~/webapp.zip ~/project
       - run:
           name: "install aws-cli"
           command: |
-            sudo snap install awscli
             aws --version
             echo $AWS_ACCESS_KEY_ID
