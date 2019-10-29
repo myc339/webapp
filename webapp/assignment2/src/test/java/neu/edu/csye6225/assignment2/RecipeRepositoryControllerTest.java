@@ -10,7 +10,6 @@ import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
@@ -28,6 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@ExtendWith(SpringExtension.class)
+//@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK,classes =Assignment2Application.class )
 @AutoConfigureMockMvc
 @FixMethodOrder(MethodSorters.JVM)
@@ -65,8 +65,9 @@ public class RecipeRepositoryControllerTest {
     public static void init()
     {
         password="1111Test!!";
-        email1=UUID.randomUUID().toString()+"@email.com";
-        email2=UUID.randomUUID().toString()+"@email.com";
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        email1=timestamp.getTime()+"e1"+UUID.randomUUID().toString()+"@email.com";
+        email2=timestamp.getTime()+"e2"+UUID.randomUUID().toString()+"@email.com";
         token1 = "Basic " + new String(Base64.encodeBase64((email1+":"+password).getBytes()));
         token2 ="Basic " + new String(Base64.encodeBase64((email2+":"+password).getBytes()));
         u1 =new UserRepository(email1,password,"test","admin");
