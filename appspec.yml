@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 
 files:
-  - source: /ccwebapp
+  - source: source
     destination: /var/webapps
 
 hooks:
