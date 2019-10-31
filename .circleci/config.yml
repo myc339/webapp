@@ -12,7 +12,7 @@ jobs:
             sudo snap install aws-cli --classic
             sudo apt install zip
             cd ~/project
-            zip -r ~/webapp4.zip *
+            zip -r ~/webapp.zip *
       - run:
           name: "install aws-cli"
           command: |
@@ -21,4 +21,5 @@ jobs:
       - run:
           name: "update zip file on s3"
           command: |
-            aws s3 cp ~/webapp4.zip s3://codedeploy.myc339.me/
+            aws s3 rm s3://codedeploy.myc339.me/webapp.zip
+            aws s3 cp ~/webapp.zip s3://codedeploy.myc339.me/
