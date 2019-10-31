@@ -4,9 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import neu.edu.csye6225.assignment2.entity.UserRepository;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.*;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
@@ -23,6 +20,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.UUID;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,7 +44,8 @@ public class UserRepositoryControllerTest {
     public static void init()
     {
         password="1111Test!!";
-        email=UUID.randomUUID().toString()+"@email.com";
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        email=timestamp.getTime()+UUID.randomUUID().toString()+"@email.com";
         basicDigestHeaderValue = "Basic " + new String(Base64.encodeBase64((email+":"+password).getBytes()));
         u =new UserRepository(email,password,"test","admin");
     }
