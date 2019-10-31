@@ -2,11 +2,11 @@ version: 0.0
 os: linux
 
 files:
-  - source: home/circleci/project
+  - source: source
     destination: /var/webapps
 
 hooks:
   AfterInstall:
-    - location: ./setup.sh
+    - location: scripts/setup.sh
       timeout: 180
       runas: centos
