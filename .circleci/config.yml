@@ -35,8 +35,9 @@ jobs:
           name: "run integration test"
           command: |
             cd ~/project/webapp/assignment2
-            mvn -Dtest=UserRepositoryControllerTest,RecipeRepositoryControllerTest test
-            sudo mysql -h 127.0.0.1 -uroot -p123456 -e "use database spring2;select * from user;"
+            mvn -Dtest=UserRepositoryControllerTest test
+            mvn -Dtest=RecipeRepositoryControllerTest test
+#            sudo mysql -h 127.0.0.1 -uroot -p123456 -e "use database spring2;select * from user;"
 #      - run:
 #          name: "zip"
 #          command:
