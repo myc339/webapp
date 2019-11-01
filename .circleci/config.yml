@@ -12,23 +12,30 @@ jobs:
     steps:
       - checkout
       - run:
-          name: "install mysql,aws-cli,zip"
+          name: "install mysql,aws-cli,zip,mvn"
           command: |
             sudo apt-get install -y zip
             pip3 install --upgrade --user awscli
             sudo apt-get install -y mariadb-client
+            sudo apt install maven
       - run:
-          name: "check zip,mysql,awscli"
+          name: "check zip,mysql,awscli,mvn"
           command: |
             zip
             aws --version
             mysql --version
+            mvn --version
       - run:
           name: "database test"
           command: sudo mysql -h 127.0.0.1 -uroot -p123456 -e "create database spring2;"
       - run:
           name: "select db"
           command: sudo mysql -h 127.0.0.1 -uroot -p123456 -e "show databases;"
+      - run:
+          name: "run integration test"
+          command: |
+            cd ~/project/webapp/assignment2
+            mvn -Dtest=UserRepositoryControllerTest test
 #      - run:
 #          name: "install  zip and awscli,mysql"
 #          command:
