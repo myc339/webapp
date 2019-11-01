@@ -2,11 +2,11 @@ version: 2
 jobs:
   build:
     docker:
-      - image: python:3.7
+      - image: circleci/python:3.7
         environment:
           MYSQL_HOST: localhost
           MYSQL_DB: spring2
-      - image: mariadb:10.3
+      - image: circleci/mariadb:10.3
         environment:
           MYSQL_USER: root
           MYSQL_ROOT_PASSWORD: 123456
