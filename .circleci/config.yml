@@ -15,9 +15,9 @@ jobs:
       - run:
           name: "install mysql,aws-cli,zip"
           command: |
-            apt-get install -y zip
+            sudo apt-get install -y zip
             pip3 install --upgrade --user awscli
-            apt install -y mariadb-client
+            sudo apt install -y mariadb-client
       - run:
           name: "database test"
           command: mysql -h localhost -uroot -p123456 -e "create database spring2;"
