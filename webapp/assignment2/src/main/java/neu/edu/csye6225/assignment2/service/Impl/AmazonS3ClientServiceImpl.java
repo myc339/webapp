@@ -135,7 +135,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                     exist = true;
                     amazonS3.deleteObject(new DeleteObjectRequest(image.getBucketName(), image.getFileName()));
                     imageDao.DeleteImage(image.getId());
-                    response.sendError(HttpServletResponse.SC_NO_CONTENT);
+
                     return null;
 
                 }
@@ -195,6 +195,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
 
 
                     imageDao.save(image);
+
                     return (JSONObject)JSON.toJSON(image);
 
                 }

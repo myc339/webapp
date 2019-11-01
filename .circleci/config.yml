@@ -32,19 +32,27 @@ jobs:
           name: "select db"
           command: sudo mysql -h 127.0.0.1 -uroot -p123456 -e "show databases;"
       - run:
-          name: "run integration test"
+          name: "run user integration  test "
           command: |
             cd ~/project/webapp/assignment2
             mvn -Dtest=UserRepositoryControllerTest test
+      - run:
+          name: "run recipe integration  test"
+          command: |
+            cd ~/project/webapp/assignment2
             mvn -Dtest=RecipeRepositoryControllerTest test
-#            sudo mysql -h 127.0.0.1 -uroot -p123456 -e "use database spring2;select * from user;"
-#      - run:
-#          name: "zip"
-#          command:
-#            cd ~/project
-#            zip -r ~/webapp.zip *
-#      - run:
-#          name: "update zip file on s3"
-#          command: |
-#            aws s3 rm s3://codedeploy.myc339.me/webapp.zip
-#            aws s3 cp ~/webapp.zip s3://codedeploy.myc339.me/
+      - run:
+          name: "run S3 integration  test"
+          command: |
+            cd ~/project/webapp/assignment2
+            mvn -Dtest=FileHandlerControllerTest test
+      - run:
+          name: "zip"
+          command:
+            cd ~/project
+            zip -r ~/webapp.zip *
+      - run:
+          name: "update zip file on s3"
+          command: |
+            aws s3 rm s3://codedeploy.myc339.me/webapp.zip
+            aws s3 cp ~/webapp.zip s3://codedeploy.myc339.me/

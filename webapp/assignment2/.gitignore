@@ -34,7 +34,7 @@ build/
 *.idea
 .mvn/*
 # JPEG
-*.jpg
+#*.jpg
 *.jpeg
 *.jpe
 *.jif
@@ -81,7 +81,7 @@ build/
 *.svgz
 
 # Portable Document Format
-*.pdf
+#*.pdf
 
 # X BitMap
 *.xbm
