@@ -19,6 +19,12 @@ jobs:
             pip3 install --upgrade --user awscli
             sudo apt install -y mariadb-client
       - run:
+          name: "check zip,mysql,awscli"
+          command: |
+            zip
+            aws --version
+            mysql --version
+      - run:
           name: "database test"
           command: sudo mysql -h localhost -uroot -p123456 -e "create database spring2;"
       - run:
