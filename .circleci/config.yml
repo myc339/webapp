@@ -20,10 +20,10 @@ jobs:
             sudo apt install -y mariadb-client
       - run:
           name: "database test"
-          command: mysql -h localhost -uroot -p123456 -e "create database spring2;"
+          command: sudo mysql -h localhost -uroot -p123456 -e "create database spring2;"
       - run:
           name: "select db"
-          command: mysql -h localhost -uroot -p123456 -e "show databases;"
+          command: sudo mysql -h localhost -uroot -p123456 -e "show databases;"
 #      - run:
 #          name: "install  zip and awscli,mysql"
 #          command:
