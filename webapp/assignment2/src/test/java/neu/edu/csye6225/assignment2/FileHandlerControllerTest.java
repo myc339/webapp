@@ -114,6 +114,7 @@ public class FileHandlerControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn();
+        System.out.println(JSON.parseObject(mvcResult.getResponse().getContentAsString()));
        Object obj= JSON.parseObject(mvcResult.getResponse().getContentAsString()).get("image");
        System.out.println("obj="+obj);
 //       System.out.println(String.valueOf(obj));
