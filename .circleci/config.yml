@@ -48,7 +48,7 @@ jobs:
             mvn -Dtest=FileHandlerControllerTest test
       - run:
           name: "zip"
-          command:
+          command: |
             cd ~/project
             zip -r ~/webapp.zip *
       - run:
