@@ -2,24 +2,35 @@ version: 2
 jobs:
   build:
     machine:
-      image: ubuntu-1604:201903-01
+      - image: ubuntu-1604:201903-01
+        environment:
+          MYSQL_HOST: localhost
+          MYSQL_DB: spring2
+          MYSQL_USER: root
+          MYSQL_PASSWORD: 123456
+      - image: mysql:5.7
+        environment:
+          MYSQL_USER: root
+          MYSQL_PASSWORD: 123456
     steps:
       - checkout
+      - run: sudo apt install -y mysql -client
       - run:
-          name: "demo zip and awscli"
+          name: "database test"
+          command: mysql -h localhost -u root -p 123456 -e "create database spring2;"
+      - run:
+          name: "install  zip and awscli,mysql"
           command: |
             sudo apt-get update
-            sudo snap install aws-cli --classic
-            sudo apt install zip
-            cd ~/project
-            zip -r ~/webapp.zip *
+#            sudo apt install zip
+#            cd ~/project
+#            zip -r ~/webapp.zip *
       - run:
           name: "install aws-cli"
-          command: |
-            aws --version
-            echo $AWS_ACCESS_KEY_ID
-      - run:
-          name: "update zip file on s3"
-          command: |
-            aws s3 rm s3://codedeploy.myc339.me/webapp.zip
-            aws s3 cp ~/webapp.zip s3://codedeploy.myc339.me/
+          command:
+            sudo snap install aws-cli --classic
+#      - run:
+#          name: "update zip file on s3"
+#          command: |
+#            aws s3 rm s3://codedeploy.myc339.me/webapp.zip
+#            aws s3 cp ~/webapp.zip s3://codedeploy.myc339.me/
