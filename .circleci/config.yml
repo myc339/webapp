@@ -3,11 +3,10 @@ jobs:
   build:
     docker:
       - image: circleci/python:3.7
-        environment:
-          MYSQL_HOST: localhost
-          MYSQL_DB: spring2
       - image: circleci/mariadb:10.3
         environment:
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_DB: spring2
           MYSQL_USER: root
           MYSQL_ROOT_PASSWORD: 123456
     steps:
@@ -17,7 +16,7 @@ jobs:
           command: |
             sudo apt-get install -y zip
             pip3 install --upgrade --user awscli
-            sudo apt install -y mariadb-client
+            sudo apt-get install -y mariadb-client
       - run:
           name: "check zip,mysql,awscli"
           command: |
@@ -26,10 +25,10 @@ jobs:
             mysql --version
       - run:
           name: "database test"
-          command: sudo mysql -h localhost -uroot -p123456 -e "create database spring2;"
+          command: sudo mysql -h 127.0.0.1 -uroot -p123456 -e "create database spring2;"
       - run:
           name: "select db"
-          command: sudo mysql -h localhost -uroot -p123456 -e "show databases;"
+          command: sudo mysql -h 127.0.0.1 -uroot -p123456 -e "show databases;"
 #      - run:
 #          name: "install  zip and awscli,mysql"
 #          command:
