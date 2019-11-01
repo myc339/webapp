@@ -2,10 +2,15 @@ package neu.edu.csye6225.assignment2.service.Impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.timgroup.statsd.NonBlockingStatsDClient;
+import com.timgroup.statsd.StatsDClient;
 import neu.edu.csye6225.assignment2.common.CommonResult;
+import neu.edu.csye6225.assignment2.controller.UserController;
 import neu.edu.csye6225.assignment2.dao.UserDao;
 import neu.edu.csye6225.assignment2.entity.UserRepository;
 import neu.edu.csye6225.assignment2.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,15 +33,22 @@ public class UserServiceImpl  implements UserService {
     @Resource
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
+    private static StatsDClient statsd;
+    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
     @Autowired
-    public UserServiceImpl(InMemoryUserDetailsManager inMemoryUserDetailsManager) {
+    public UserServiceImpl(InMemoryUserDetailsManager inMemoryUserDetailsManager,StatsDClient statsDClient) {
         this.inMemoryUserDetailsManager = inMemoryUserDetailsManager;
+        this.statsd=statsDClient;
     }
     @Override
     public JSONObject save(UserRepository userRepository,HttpServletResponse response)
     {
+        long startTime=System.currentTimeMillis();
+        statsd.incrementCounter("totalRequest.count"+ new String[]{"path:/v1/user"});
+        statsd.recordExecutionTime("latency"+new String[]{"path:/v1/user"}, System.currentTimeMillis() - startTime);
         if(userDao.findQuery(userRepository.getEmail_address())!=null) {
             try {
+                log.error("email exists");
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "email exists");
             } catch (IOException e) {
                 e.printStackTrace();
