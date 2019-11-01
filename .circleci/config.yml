@@ -35,12 +35,10 @@ jobs:
           name: "run integration test"
           command: |
             cd ~/project/webapp/assignment2
-            mvn -Dtest=UserRepositoryControllerTest test
+            mvn -Dtest=UserRepositoryControllerTest,RecipeRepositoryControllerTest test
 #      - run:
-#          name: "install  zip and awscli,mysql"
+#          name: "zip"
 #          command:
-#            sudo apt-get update
-#            sudo apt install zip
 #            cd ~/project
 #            zip -r ~/webapp.zip *
 #      - run:
