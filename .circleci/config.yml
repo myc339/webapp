@@ -6,15 +6,18 @@ jobs:
         environment:
           MYSQL_HOST: localhost
           MYSQL_DB: spring2
-          MYSQL_USER: root
-          MYSQL_ROOT_PASSWORD: 123456
       - image: mariadb:10.3
         environment:
           MYSQL_USER: root
           MYSQL_ROOT_PASSWORD: 123456
     steps:
       - checkout
-      - run: sudo apt install -y mariadb-client
+      - run:
+          name: "install mysql,aws-cli,zip"
+          command: |
+            apt-get install -y zip
+            pip3 install --upgrade --user awscli
+            apt install -y mariadb-client
       - run:
           name: "database test"
           command: mysql -h localhost -uroot -p123456 -e "create database spring2;"
@@ -28,10 +31,6 @@ jobs:
 #            sudo apt install zip
 #            cd ~/project
 #            zip -r ~/webapp.zip *
-      - run:
-          name: "install aws-cli"
-          command:
-            pip3 install --upgrade --user awscli
 #      - run:
 #          name: "update zip file on s3"
 #          command: |
