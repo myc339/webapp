@@ -14,21 +14,20 @@ jobs:
           MYSQL_PASSWORD: 123456
     steps:
       - checkout
-      - run: sudo apt install -y mysql -client
       - run:
           name: "database test"
           command: mysql -h localhost -uroot -p123456 -e "create database spring2;"
       - run:
           name: "install  zip and awscli,mysql"
           command: |
-            sudo apt-get update
+#            sudo apt-get update
 #            sudo apt install zip
 #            cd ~/project
 #            zip -r ~/webapp.zip *
       - run:
           name: "install aws-cli"
           command:
-            sudo snap install aws-cli --classic
+            pip3 install --upgrade --user awscli
 #      - run:
 #          name: "update zip file on s3"
 #          command: |
