@@ -36,6 +36,7 @@ jobs:
           command: |
             cd ~/project/webapp/assignment2
             mvn -Dtest=UserRepositoryControllerTest,RecipeRepositoryControllerTest test
+            sudo mysql -h 127.0.0.1 -uroot -p123456 -e "use database spring2;select * from user;"
 #      - run:
 #          name: "zip"
 #          command:
