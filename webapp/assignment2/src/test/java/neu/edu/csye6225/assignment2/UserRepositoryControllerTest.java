@@ -56,7 +56,7 @@ public class UserRepositoryControllerTest {
 
         password="1111Test!!";
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        email=timestamp.getTime()+UUID.randomUUID().toString()+"@email.com";
+        email=timestamp.getTime()+"@email.com";
         basicDigestHeaderValue = "Basic " + new String(Base64.encodeBase64((email+":"+password).getBytes()));
         u =new UserRepository(email,password,"test","admin");
     }
