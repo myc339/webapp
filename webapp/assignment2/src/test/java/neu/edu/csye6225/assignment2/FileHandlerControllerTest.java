@@ -57,7 +57,7 @@ public class FileHandlerControllerTest {
     {
         password ="1111Test!!";
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        email1 = timestamp.getTime()+"@email.com";
+        email1 = timestamp.getTime()+"@email3.com";
         token1 = "Basic " + new String(Base64.encodeBase64((email1+":"+password).getBytes()));
         u1 = new UserRepository(email1,password,"test","admin");
         nutritionInformationRepository=
