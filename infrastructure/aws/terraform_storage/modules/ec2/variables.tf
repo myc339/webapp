@@ -1,7 +1,6 @@
 variable "ami" {
 	description = "The ID of the AMI used to launch the instance"
 	type = string
-	default = "ami-0c97e61314cff2233"
 }
 
 variable "instance_type" {
@@ -21,9 +20,22 @@ variable "volume_type" {
 	default = "gp2"
 }
 
-variable "vpc_security_group_ids" {
-    description = "Security group IDs to associate with"
+variable "vpc_security_group_id" {
+    description = "Security group ID to associate with"
     type = string
-    default = "sg-b011c1e0"
 }
 
+variable "subnet_ids" {
+    description = "Subnet IDs to associate with"
+    type = list
+}
+
+variable "key_pair_name" {
+  description   = "The is your public key name in AWS"
+  type          = string
+}
+
+variable "depends_on_rds" {
+  type			= any
+  default		= null
+}

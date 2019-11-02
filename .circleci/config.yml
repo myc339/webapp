@@ -1,8 +1,23 @@
 version: 2
 jobs:
   build:
-    docker:
-      - image: circleci/openjdk:8-jdk
+    machine:
+      image: ubuntu-1604:201903-01
     steps:
       - checkout
-      
+      - run:
+          name: "demo zip and awscli"
+          command: |
+            sudo apt-get update
+            sudo snap install aws-cli --classic
+            sudo apt install zip
+            zip -r ~/webapp.zip ~/project
+      - run:
+          name: "install aws-cli"
+          command: |
+            aws --version
+            echo $AWS_ACCESS_KEY_ID
+      - run:
+          name: "upload zip file to s3"
+          command: |
+            aws s3 cp ~/webapp.zip s3://codedeploy.myc339.me/

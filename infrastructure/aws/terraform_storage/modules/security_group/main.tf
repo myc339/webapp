@@ -2,7 +2,7 @@
 resource "aws_security_group" "app_sg" {
   name        = "app_sg"
   description = "Allow TLS inbound traffic"
-  vpc_id      = "vpc-0888f48abb0362064"
+  vpc_id      = "${var.vpc_id}"
 
   ingress {
     # TLS (change to whatever ports you need)
@@ -56,7 +56,7 @@ resource "aws_security_group" "app_sg" {
 resource "aws_security_group" "rds_sg" {
   name = "rds_sg"
   description = "Allow TLS inbound traffic"
-  vpc_id      = "vpc-0888f48abb0362064"
+  vpc_id      = "${var.vpc_id}"
 
   ingress {
     # TLS (change to whatever ports you need)
@@ -65,7 +65,7 @@ resource "aws_security_group" "rds_sg" {
     protocol    = "tcp"
     # Please restrict your ingress to only necessary IPs and ports.
     # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
-    cidr_blocks     = ["0.0.0.0/0"]
+
     security_groups = ["${aws_security_group.app_sg.id}"]
   }
 
