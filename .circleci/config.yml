@@ -68,5 +68,5 @@ jobs:
             zip -r ~/$FILE_NAME *
       - run:
           name: "update zip file on s3"
-          command: aws s3 cp ~/webapp.zip s3://codedeploy.myc339.me/
+          command: aws s3 cp ~/$FILE_NAME s3://codedeploy.myc339.me/
     ##
