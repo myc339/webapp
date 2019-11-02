@@ -55,8 +55,12 @@ jobs:
           command: |
             cd ~/project/webapp/assignment2
             mvn -Dtest=FileHandlerControllerTest test
-      - run: echo $CIRCLE_BUILD_NUM
-      - run: echo $FILE_NAME
+      - run:
+          name: "set env vars"
+          command: |
+            echo "export FILE_NAME=webapp_${CIRCLE_BUILD_NUM}.zip" >> $BASH_ENV
+            source $BASH_ENV
+            echo $FILE_NAME
       - run:
           name: "zip"
           command: |
