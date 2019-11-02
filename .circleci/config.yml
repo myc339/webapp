@@ -56,6 +56,7 @@ jobs:
             cd ~/project/webapp/assignment2
             mvn -Dtest=FileHandlerControllerTest test
       - run: echo $CIRCLE_BUILD_NUM
+      - run: echo $FILE_NAME
       - run:
           name: "zip"
           command: |
