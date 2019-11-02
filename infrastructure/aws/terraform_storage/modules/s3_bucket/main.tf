@@ -19,7 +19,7 @@ resource "aws_s3_bucket" "myBucket" {
   # NOTE: S3 bucket names must be unique across _all_ AWS accounts, so
   # this name must be changed before applying this example to avoid naming
   # conflicts.
-  bucket = "test.encrytion.lifcycle.wenkai.me"
+  bucket = "webapp.${var.domain_name}"
   acl    = "private"
 
   # delete the bucket even if it is not empty
@@ -53,3 +53,10 @@ resource "aws_s3_bucket" "myBucket" {
   }
 }
 
+resource "aws_s3_bucket_public_access_block" "myBucketBlock" {
+  bucket = "${aws_s3_bucket.myBucket.id}"
+  ignore_public_acls=true
+  block_public_acls   = true
+  block_public_policy = true
+  restrict_public_buckets=true
+}
