@@ -9,6 +9,7 @@ jobs:
           MYSQL_DB: spring2
           MYSQL_USER: root
           MYSQL_ROOT_PASSWORD: 123456
+          FILE_NAME: $CIRCLE_BUILD_NUM+webapp.zip
     steps:
       - checkout
       - run:
@@ -54,6 +55,7 @@ jobs:
           command: |
             cd ~/project/webapp/assignment2
             mvn -Dtest=FileHandlerControllerTest test
+      - run: echo $CIRCLE_BUILD_NUM
       - run:
           name: "zip"
           command: |
@@ -64,3 +66,4 @@ jobs:
           command: |
             aws s3 rm s3://codedeploy.myc339.me/webapp.zip
             aws s3 cp ~/webapp.zip s3://codedeploy.myc339.me/
+    ##
