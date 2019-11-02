@@ -95,7 +95,6 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                 this.amazonS3.putObject(putObjectRequest);
                 GetObjectMetadataRequest getObjectMetadataRequest=new GetObjectMetadataRequest(this.awsS3Bucket,fileName);
                 ObjectMetadata metadata=this.amazonS3.getObjectMetadata(getObjectMetadataRequest);
-                System.out.println(metadata.getETag());
                 image.setMd5(metadata.getETag());
                 image.setSize(new DecimalFormat("0.0").format((metadata.getContentLength()*1.0)/1024)+" KB");
                 image.setId(UUID.randomUUID().toString());

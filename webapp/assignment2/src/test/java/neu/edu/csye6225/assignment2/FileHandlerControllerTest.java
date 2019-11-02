@@ -109,14 +109,12 @@ public class FileHandlerControllerTest {
     }
     @Test
     public void Extract_Recipe_images() throws Exception {
-        System.out.println("recipe_id="+recipe_id);
+
         MvcResult mvcResult=this.mvc.perform(get("/v1/recipe/{id}",recipe_id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn();
-        System.out.println(JSON.parseObject(mvcResult.getResponse().getContentAsString()));
        Object obj= JSON.parseObject(mvcResult.getResponse().getContentAsString()).get("image");
-       System.out.println("obj="+obj);
 //       System.out.println(String.valueOf(obj));
        for (Object o:JSON.parseArray(String.valueOf(obj)))
        {
