@@ -40,6 +40,7 @@ module "ec2" {
   subnet_ids = "${module.vpc.subnet_ids}"
   key_pair_name = "${var.key_pair_name}"
   ami = "${var.ami}"
+  CodeDeployEC2ServiceRole = "${module.role.CodeDeployEC2ServiceRole}"
 }
 
 # Create policies

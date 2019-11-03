@@ -39,3 +39,7 @@ variable "depends_on_rds" {
   type			= any
   default		= null
 }
+
+variable "CodeDeployEC2ServiceRole" {
+  type = string
+}

@@ -20,4 +20,16 @@ resource "aws_instance" "ec2-instance" {
   tags = {
     Name = "csye6225-ec2-instance"
   }
+
+  associate_public_ip_address = true
+  iam_instance_profile = "${aws_iam_instance_profile.profile.id}"
+
+  user_data = <<EOF
+  EOF
+}
+
+# profile depends on CodeDeployEC2ServiceRole
+resource "aws_iam_instance_profile" "profile" {
+  name = "profile"
+  role = "${var.CodeDeployEC2ServiceRole}"
 }
