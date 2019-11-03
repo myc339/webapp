@@ -41,3 +41,32 @@ module "ec2" {
   key_pair_name = "${var.key_pair_name}"
   ami = "${var.ami}"
 }
+
+# Create policies
+module "policy" {
+  source = "./modules/policy"
+  region = "${var.region}"
+  # account_id = "${var.account_id}"
+}
+
+# Create roles
+module "role" {
+  source = "./modules/role"
+}
+
+# Attach policy to role
+module "role_policy_attachment" {
+  source = "./modules/role_policy_attachment"
+  CodeDeployEC2ServiceRole = "${module.role.CodeDeployEC2ServiceRole}"
+  CodeDeployServiceRole = "${module.role.CodeDeployServiceRole}"
+  CodeDeploy-EC2-S3 = "${module.policy.CodeDeploy-EC2-S3}"
+}
+
+# Attach policy to user
+module "user_policy_attachment" {
+  source = "./modules/user_policy_attachment"
+  CircleCI-Upload-To-S3 = "${module.policy.CircleCI-Upload-To-S3}"
+  # CircleCI-Code-Deploy = "${module.policy.CircleCI-Code-Deploy}"
+  circleci-ec2-ami = "${module.policy.circleci-ec2-ami}"
+
+}

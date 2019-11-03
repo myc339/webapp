@@ -19,7 +19,7 @@ resource "aws_s3_bucket" "myBucket" {
   # NOTE: S3 bucket names must be unique across _all_ AWS accounts, so
   # this name must be changed before applying this example to avoid naming
   # conflicts.
-  bucket = "webapp.${var.domain_name}"
+  bucket = "codedeploy.${var.domain_name}"
   acl    = "private"
 
   # delete the bucket even if it is not empty
@@ -49,6 +49,10 @@ resource "aws_s3_bucket" "myBucket" {
     transition {
       days          = 30
       storage_class = "STANDARD_IA" # or "ONEZONE_IA"
+    }
+
+    expiration {
+      days = 60
     }
   }
 }
