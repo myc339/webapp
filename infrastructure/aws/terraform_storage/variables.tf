@@ -22,7 +22,27 @@ variable "domain_name" {
   type          = string
 }
 
-# variable "account_id" {
-#     description = "aws account ID"
-#     type = string
-# }
+variable "account_id" {
+    description = "aws account ID"
+    type = string
+}
+
+variable "accessKey" {
+  type = string
+}
+
+variable "secretKey" {
+  type = string
+}
+
+variable "dbName" {
+  type = string
+}
+
+variable "dbUsername" {
+  type = string
+}
+
+variable "dbPassword" {
+  type = string
+}

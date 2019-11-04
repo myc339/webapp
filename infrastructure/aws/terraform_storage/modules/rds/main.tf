@@ -9,17 +9,17 @@ resource "aws_db_subnet_group" "dbsubnet" {
 }
 
 # create RDS instance with Terraform
-resource "aws_db_instance" "mydb1" {
+resource "aws_db_instance" "mydb" {
     allocated_storage       = "${var.allocated_storage}"
 	engine 					= "${var.engine}"
 	instance_class 			= "${var.instance_class}"
 	multi_az				= false
 	identifier				= "csye6225-fall2019"
-	username				= "dbuser"
+	username				= "${var.username}"
 	password				= "${var.password}"
 	db_subnet_group_name	= "${aws_db_subnet_group.dbsubnet.name}"
 	publicly_accessible		= true
-	name 					= "csye6225"
+	name 					= "${var.name}"
 	skip_final_snapshot     = true
 	vpc_security_group_ids  =["${var.rds_sg_id}"]
 }

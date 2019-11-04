@@ -10,6 +10,6 @@ output "circleci-ec2-ami" {
   value = "${aws_iam_policy.circleci-ec2-ami.arn}"
 }
 
-# output "CircleCI-Code-Deploy" {
-#   value = "${aws_iam_policy.CircleCI-Code-Deploy.arn}"
-# }
+output "CircleCI-Code-Deploy" {
+  value = "${aws_iam_policy.CircleCI-Code-Deploy.arn}"
+}

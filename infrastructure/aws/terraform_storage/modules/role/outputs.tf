@@ -5,3 +5,7 @@ output "CodeDeployEC2ServiceRole" {
 output "CodeDeployServiceRole" {
   value = "${aws_iam_role.CodeDeployServiceRole.name}"
 }
+
+output "CodeDeployServiceRoleArn" {
+  value = "${aws_iam_role.CodeDeployServiceRole.arn}"
+}

@@ -43,3 +43,35 @@ variable "depends_on_rds" {
 variable "CodeDeployEC2ServiceRole" {
   type = string
 }
+
+variable "region" {
+  type = string
+}
+
+variable "bucketName" {
+  type = string
+}
+
+variable "accessKey" {
+  type = string
+}
+
+variable "secretKey" {
+  type = string
+}
+
+variable "dbUrl" {
+  type = string
+}
+
+variable "dbName" {
+  type = string
+}
+
+variable "dbUsername" {
+  type = string
+}
+
+variable "dbPassword" {
+  type = string
+}

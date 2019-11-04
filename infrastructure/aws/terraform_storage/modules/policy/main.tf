@@ -5,16 +5,17 @@ resource "aws_iam_policy" "CodeDeploy-EC2-S3" {
 
   policy = <<EOF
 {
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": [
-        "ec2:Describe*"
-      ],
-      "Effect": "Allow",
-      "Resource": "*"
-    }
-  ]
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "s3:Get*",
+                "s3:List*"
+            ],
+            "Effect": "Allow",
+            "Resource": "*"
+        }
+    ]
 }
 EOF
 }
@@ -93,47 +94,47 @@ resource "aws_iam_policy" "circleci-ec2-ami" {
 EOF
 }
 
-# resource "aws_iam_policy" "CircleCI-Code-Deploy" {
-#   name        = "CircleCI-Code-Deploy"
-#   path        = "/"
-#   description = "CircleCI-Code-Deploy policy allows CircleCI to call CodeDeploy APIs to initiate application deployment on EC2 instances."
+resource "aws_iam_policy" "CircleCI-Code-Deploy" {
+  name        = "CircleCI-Code-Deploy"
+  path        = "/"
+  description = "CircleCI-Code-Deploy policy allows CircleCI to call CodeDeploy APIs to initiate application deployment on EC2 instances."
 
-#   policy = <<EOF
-# {
-#   "Version": "2012-10-17",
-#   "Statement": [
-#     {
-#       "Effect": "Allow",
-#       "Action": [
-#         "codedeploy:RegisterApplicationRevision",
-#         "codedeploy:GetApplicationRevision"
-#       ],
-#       "Resource": [
-#         "arn:aws:codedeploy:${var.region}:${var.account_id}:application:CODE_DEPLOY_APPLICATION_NAME"
-#       ]
-#     },
-#     {
-#       "Effect": "Allow",
-#       "Action": [
-#         "codedeploy:CreateDeployment",
-#         "codedeploy:GetDeployment"
-#       ],
-#       "Resource": [
-#         "*"
-#       ]
-#     },
-#     {
-#       "Effect": "Allow",
-#       "Action": [
-#         "codedeploy:GetDeploymentConfig"
-#       ],
-#       "Resource": [
-#         "arn:aws:codedeploy:${var.region}:${var.account_id} :deploymentconfig:CodeDeployDefault.OneAtATime",
-#         "arn:aws:codedeploy:${var.region}:${var.account_id} :deploymentconfig:CodeDeployDefault.HalfAtATime",
-#         "arn:aws:codedeploy:${var.region}:${var.account_id} :deploymentconfig:CodeDeployDefault.AllAtOnce"
-#       ]
-#     }
-#   ]
-# }
-# EOF
-# }
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "codedeploy:RegisterApplicationRevision",
+        "codedeploy:GetApplicationRevision"
+      ],
+      "Resource": [
+        "arn:aws:codedeploy:${var.region}:${var.account_id}:application:${var.code_dp_name}"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "codedeploy:CreateDeployment",
+        "codedeploy:GetDeployment"
+      ],
+      "Resource": [
+        "*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "codedeploy:GetDeploymentConfig"
+      ],
+      "Resource": [
+        "arn:aws:codedeploy:${var.region}:${var.account_id}:deploymentconfig:CodeDeployDefault.OneAtATime",
+        "arn:aws:codedeploy:${var.region}:${var.account_id}:deploymentconfig:CodeDeployDefault.HalfAtATime",
+        "arn:aws:codedeploy:${var.region}:${var.account_id}:deploymentconfig:CodeDeployDefault.AllAtOnce"
+      ]
+    }
+  ]
+}
+EOF
+}
