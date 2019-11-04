@@ -3,249 +3,97 @@ provider "aws" {
   region     = "${var.aws_region}"
 }
 
-resource "aws_dynamodb_table" "csye6225" {
-  name = "csye6225"
-  hash_key = "id"
-  write_capacity = "${var.write_capacity}"
-  read_capacity = "${var.read_capacity}"
-  attribute {
-  	name = "id"
-  	type = "S"
-  }
+# Create VPC
+module "vpc" {
+  source = "./modules/vpc"
 }
 
-#Create Security Group
-resource "aws_security_group" "app_sg" {
-  name        = "app_sg"
-  description = "Allow TLS inbound traffic"
-  vpc_id      = "${aws_vpc.vpc.id}"
-
-  ingress {
-    # TLS (change to whatever ports you need)
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    # Please restrict your ingress to only necessary IPs and ports.
-    # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
-    cidr_blocks     = ["0.0.0.0/0"]
-  }
-  ingress {
-    # TLS (change to whatever ports you need)
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    # Please restrict your ingress to only necessary IPs and ports.
-    # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
-    cidr_blocks     = ["0.0.0.0/0"]
-  }
-  ingress {
-    # TLS (change to whatever ports you need)
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    # Please restrict your ingress to only necessary IPs and ports.
-    # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
-    cidr_blocks     = ["0.0.0.0/0"]
-  }
-  ingress {
-    # TLS (change to whatever ports you need)
-    from_port   = 8080
-    to_port     = 8080
-    protocol    = "tcp"
-    # Please restrict your ingress to only necessary IPs and ports.
-    # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
-    cidr_blocks     = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port       = 0
-    to_port         = 0
-    protocol        = "-1"
-    cidr_blocks     = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "app_sg"
-  }
+# Create DynamoDB
+module "dynamodb" {
+  source = "./modules/dynamodb"
 }
 
-resource "aws_security_group" "rds_sg" {
-  name = "rds_sg"
-  description = "Allow TLS inbound traffic"
-  vpc_id      = "${aws_vpc.vpc.id}"
-
-  ingress {
-    # TLS (change to whatever ports you need)
-    from_port   = 3306
-    to_port     = 3306
-    protocol    = "tcp"
-    # Please restrict your ingress to only necessary IPs and ports.
-    # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
-
-    security_groups = ["${aws_security_group.app_sg.id}"]
-  }
-
-  tags = {
-    Name = "rds_sg"
-  }
+# Create Security Group
+module "security_group" {
+  source = "./modules/security_group"
+  vpc_id      = "${module.vpc.vpc_id}"
 }
 
-# Enable Default Server Side Encryption
-resource "aws_kms_key" "mykey" {
-  description             = "This key is used to encrypt bucket objects"
-  deletion_window_in_days = 10
+# Create S3 bucket
+module "s3_bucket" {
+  source = "./modules/s3_bucket"
+  domain_name = "${var.domain_name}"
 }
 
-# New resource for the S3 bucket our application will use.
-resource "aws_s3_bucket" "myBucket" {
-  # NOTE: S3 bucket names must be unique across _all_ AWS accounts, so
-  # this name must be changed before applying this example to avoid naming
-  # conflicts.
-  bucket = "webapp.${var.domain_name}"
-  acl    = "private"
-
-  # delete the bucket even if it is not empty
-  force_destroy = true
-
-  # Enable Default Server Side Encryption
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        kms_master_key_id = "${aws_kms_key.mykey.arn}"
-        sse_algorithm     = "aws:kms"
-      }
-    }
-  }
-  # Using object lifecycle
-  lifecycle_rule {
-    id      = "log"
-    enabled = true
-
-    prefix = "log/"
-
-    tags = {
-      "rule"      = "log"
-      "autoclean" = "true"
-    }
-
-    transition {
-      days          = 30
-      storage_class = "STANDARD_IA" # or "ONEZONE_IA"
-    }
-  }
-}
-resource "aws_s3_bucket_public_access_block" "myBucketBlock" {
-  bucket = "${aws_s3_bucket.myBucket.id}"
-  ignore_public_acls=true
-  block_public_acls   = true
-  block_public_policy = true
-  restrict_public_buckets=true
-}
-
-# Create subnet group
-resource "aws_db_subnet_group" "dbsubnet" {
-  name       = "dbsubnet"
-  subnet_ids = aws_subnet.subnet.*.id
-
-  tags = {
-    Name = "My DB subnet group"
-  }
-}
-output "subnet_ids" {
-  value = aws_subnet.subnet.*.id
-}
-
-# create RDS instance with Terraform
-resource "aws_db_instance" "mydb1" {
-    allocated_storage       = "${var.allocated_storage}"
-	engine 					= "${var.engine}"
-	instance_class 			= "${var.instance_class}"
-	multi_az				= false
-	identifier				= "csye6225-fall2019"
-	username				= "dbuser"
-	password				= "${var.password}"
-	db_subnet_group_name	= "${aws_db_subnet_group.dbsubnet.name}"
-	publicly_accessible		= true
-	name 					= "csye6225"
-	skip_final_snapshot     = true
-	vpc_security_group_ids  =["${aws_security_group.rds_sg.id}"]
+# Create RDS
+module "rds" {
+  source = "./modules/rds"
+  subnet_ids = "${module.vpc.subnet_ids}"
+  rds_sg_id = "${module.security_group.rds_sg_id}"
+  name = "${var.dbName}"
+  username = "${var.dbUsername}"
+  password = "${var.dbPassword}"
 }
 
 # Create EC2
-resource "aws_instance" "ec2-instance" {
+module "ec2" {
+  source = "./modules/ec2"
+  depends_on_rds = [module.rds.rds]
+  vpc_security_group_id = "${module.security_group.app_sg_id}"
+  subnet_ids = "${module.vpc.subnet_ids}"
+  key_pair_name = "${var.key_pair_name}"
   ami = "${var.ami}"
-  instance_type = "${var.instance_type}"
-
-  ebs_block_device {
-    device_name = "/dev/sda1"
-  	volume_size	= "${var.volume_size}"
-  	volume_type = "${var.volume_type}"
-  	delete_on_termination = true
-  }
-
-  disable_api_termination = false
-  vpc_security_group_ids = ["${aws_security_group.app_sg.id}"]
-  subnet_id = "${element(aws_subnet.subnet.*.id, 0)}"
-  key_name = "${var.key_pair_name}"
-
-  depends_on = [aws_db_instance.mydb1]
-
-  tags = {
-    Name = "csye6225-ec2-instance"
-  }
+  CodeDeployEC2ServiceRole = "${module.role.CodeDeployEC2ServiceRole}"
+  # application params
+  region = "${var.aws_region}"
+  accessKey = "${var.accessKey}"
+  secretKey = "${var.secretKey}"
+  dbUrl = "${module.rds.dbUrl}"
+  dbPassword = "${var.dbPassword}"
+  bucketName = "${module.s3_bucket.bucketName}"
+  dbName = "${var.dbName}"
+  dbUsername = "${var.dbUsername}"
 }
 
-# VPC
-# This data source is included for ease of sample architecture deployment
-# and can be swapped out as necessary.
-data "aws_availability_zones" "available" {}
-resource "aws_vpc" "vpc" {
-  enable_dns_support   = true
-  enable_dns_hostnames = true
-  cidr_block = "${var.vpc_cidr_block}"
-  tags = {
-    Name = "${var.vpc_name}"
-  }
+# Create policies
+module "policy" {
+  source = "./modules/policy"
+  region = "${var.aws_region}"
+  account_id = "${var.account_id}"
+  code_dp_name = "${module.codedeploy_app.name}"
 }
 
-resource "aws_subnet" "subnet" {
-  count = 3
-
-  map_public_ip_on_launch = true
-  availability_zone = "${data.aws_availability_zones.available.names[count.index]}"
-  cidr_block        = "${element(split(",", "${var.all_subnet_cidr_block}"), count.index)}"
-  vpc_id            = "${aws_vpc.vpc.id}"
-
-  tags = {
-    Name = "${var.vpc_name}+${count.index}"
-  }
+# Create roles
+module "role" {
+  source = "./modules/role"
 }
 
-resource "aws_internet_gateway" "gw" {
-  vpc_id = "${aws_vpc.vpc.id}"
-
-  tags = {
-    Name = "${var.vpc_name}+internet_gateway"
-  }
+# Attach policy to role
+module "role_policy_attachment" {
+  source = "./modules/role_policy_attachment"
+  CodeDeployEC2ServiceRole = "${module.role.CodeDeployEC2ServiceRole}"
+  CodeDeployServiceRole = "${module.role.CodeDeployServiceRole}"
+  CodeDeploy-EC2-S3 = "${module.policy.CodeDeploy-EC2-S3}"
 }
 
-resource "aws_route_table" "route_table" {
-  count = 3
-  vpc_id = "${aws_vpc.vpc.id}"
+# Attach policy to user
+module "user_policy_attachment" {
+  source = "./modules/user_policy_attachment"
+  CircleCI-Upload-To-S3 = "${module.policy.CircleCI-Upload-To-S3}"
+  CircleCI-Code-Deploy = "${module.policy.CircleCI-Code-Deploy}"
+  circleci-ec2-ami = "${module.policy.circleci-ec2-ami}"
 
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = "${aws_internet_gateway.gw.id}"
-  }
-
-  tags = {
-    Name = "${var.vpc_name}+route_table"
-  }
 }
 
-resource "aws_route_table_association" "route_table_asso" {
-  count = 3
+# Create codedeploy application
+module "codedeploy_app" {
+  source = "./modules/codedeploy_app"
+  
+}
 
-  subnet_id      = "${element(aws_subnet.subnet.*.id, count.index)}"
-  route_table_id = "${element(aws_route_table.route_table.*.id, count.index)}"
+# Create codedeploy development group
+module "codedeploy_development_group" {
+  source = "./modules/codedeploy_deployment_group"
+  appName = "${module.codedeploy_app.name}"
+  CodeDeployServiceRoleArn = "${module.role.CodeDeployServiceRoleArn}"
 }
