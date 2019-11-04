@@ -56,6 +56,20 @@ jobs:
           command: |
             cd ~/project/webapp/assignment2
             mvn -Dtest=FileHandlerControllerTest test
+    ### terraform apply
+      - run:
+          name: "terraform install"
+          command: |
+            wget https://releases.hashicorp.com/terraform/0.12.10/terraform_0.12.10_linux_amd64.zip
+            unzip terraform_0.12.10_linux_amd64.zip
+            sudo mv terraform /usr/local/bin/
+      - run:
+          name: "terraform apply"
+          command: |
+            cd ~/project/infrastructure/aws
+#        
+#            terraform init
+#            terraform apply
     ### upload file to s3
       - run:
           name: "set env vars"
