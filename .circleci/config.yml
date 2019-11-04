@@ -40,6 +40,7 @@ jobs:
             echo "bucketName=${bucketName}">>application-test.properties
             echo "accessKey=${AWS_ACCESS_KEY_ID}">>application-test.properties
             echo "secretKey=${AWS_SECRET_ACCESS_KEY}">>application-test.properties
+    ## run integration test
       - run:
           name: "run user integration  test "
           command: |
@@ -55,6 +56,7 @@ jobs:
           command: |
             cd ~/project/webapp/assignment2
             mvn -Dtest=FileHandlerControllerTest test
+    ### upload file to s3
       - run:
           name: "set env vars"
           command: |
@@ -69,4 +71,7 @@ jobs:
       - run:
           name: "update zip file on s3"
           command: aws s3 cp ~/$FILE_NAME s3://codedeploy.myc339.me/
-    ##
+    #### send codedeploy request
+
+
+    ### run cloudwatch ?

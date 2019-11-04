@@ -41,6 +41,7 @@ class Images{
         this.image = image;
     }
 }
+
 @Component
 public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
     private String awsS3Bucket;
