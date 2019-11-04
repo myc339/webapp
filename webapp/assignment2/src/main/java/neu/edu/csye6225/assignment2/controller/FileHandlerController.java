@@ -16,6 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.timgroup.statsd.StatsDClient;
+import com.timgroup.statsd.NonBlockingStatsDClient;
+
 @RestController
 
 public class FileHandlerController {
@@ -23,12 +26,14 @@ public class FileHandlerController {
     private AmazonS3ClientService amazonS3ClientService;
     @Autowired
     private UserDao userDao;
+    private static final StatsDClient statsd = new NonBlockingStatsDClient("my.prefix", "statsd-host", 8125);
     @Async
     @RequestMapping(value="/v1/recipe/{id}/image",method=RequestMethod.POST)
     public JSONObject attachRecipeImage(@PathVariable String id, @RequestPart(value = "image") MultipartFile[] file, HttpServletResponse response)
     {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
+        statsd.incrementCounter("image.attach");
         return this.amazonS3ClientService.uploadFileToS3Bucket(id,userRepository.getId(),file, true,response);
     }
     @Async
@@ -37,7 +42,8 @@ public class FileHandlerController {
     {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
-       return  this.amazonS3ClientService.getRecipeImage(id,imageId,response);
+        statsd.incrementCounter("image.get");
+        return  this.amazonS3ClientService.getRecipeImage(id,imageId,response);
     }
     @Async
     @RequestMapping(value="v1/recipe/{id}/image/{imageId}",method = RequestMethod.DELETE)
@@ -45,6 +51,7 @@ public class FileHandlerController {
     {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
+        statsd.incrementCounter("image.delete");
         return  this.amazonS3ClientService.deleteFileFromS3Bucket(id,userRepository.getId(),imageId,response);
     }
     @Async
@@ -53,6 +60,7 @@ public class FileHandlerController {
     {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
+        statsd.incrementCounter("image.update");
         return  this.amazonS3ClientService.updateRecipeImage(id,userRepository.getId(),imageId,file,response);
     }
 }
