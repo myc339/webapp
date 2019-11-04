@@ -31,36 +31,36 @@ public class FileHandlerController {
     @RequestMapping(value="/v1/recipe/{id}/image",method=RequestMethod.POST)
     public JSONObject attachRecipeImage(@PathVariable String id, @RequestPart(value = "image") MultipartFile[] file, HttpServletResponse response)
     {
+        statsd.incrementCounter("endpoint.http.image.attach");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
-        statsd.incrementCounter("image.attach");
         return this.amazonS3ClientService.uploadFileToS3Bucket(id,userRepository.getId(),file, true,response);
     }
     @Async
     @RequestMapping(value="v1/recipe/{id}/image/{imageId}",method = RequestMethod.GET)
     public JSONObject getRecipeImage(@PathVariable String id,@PathVariable String imageId,HttpServletResponse response)
     {
+        statsd.incrementCounter("endpoint.http.image.get");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
-        statsd.incrementCounter("image.get");
         return  this.amazonS3ClientService.getRecipeImage(id,imageId,response);
     }
     @Async
     @RequestMapping(value="v1/recipe/{id}/image/{imageId}",method = RequestMethod.DELETE)
     public JSONObject deleteRecipeImage(@PathVariable String id,@PathVariable String imageId,HttpServletResponse response)
     {
+        statsd.incrementCounter("endpoint.http.image.delete");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
-        statsd.incrementCounter("image.delete");
         return  this.amazonS3ClientService.deleteFileFromS3Bucket(id,userRepository.getId(),imageId,response);
     }
     @Async
     @RequestMapping(value="v1/recipe/{id}/image/{imageId}",method = RequestMethod.PUT)
     public JSONObject updateRecipeImage(@PathVariable String id,@PathVariable String imageId,@RequestPart(value = "image") MultipartFile file,HttpServletResponse response)
     {
+        statsd.incrementCounter("endpoint.http.image.update");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
-        statsd.incrementCounter("image.update");
         return  this.amazonS3ClientService.updateRecipeImage(id,userRepository.getId(),imageId,file,response);
     }
 }

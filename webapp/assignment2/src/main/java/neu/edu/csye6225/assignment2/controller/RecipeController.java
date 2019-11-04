@@ -33,41 +33,41 @@ public class RecipeController {
     @ResponseBody
     public JSONObject saveRecipe( @RequestBody RecipeRepository requestBody, HttpServletResponse response)
     {
+        statsd.incrementCounter("endpoint.http.recipe.save");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
         response.setStatus(HttpServletResponse.SC_CREATED);
-        statsd.incrementCounter("recipe.save");
         return recipeService.save(requestBody,userRepository.getId(),response);
     }
 
     @RequestMapping(value="v1/recipe/{id}",method = RequestMethod.PUT)
     public JSONObject updateRecipe(@RequestBody RecipeRepository requestBody, HttpServletRequest request, HttpServletResponse response, @PathVariable String id){
+        statsd.incrementCounter("endpoint.http.recipe.put");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
         response.setStatus(HttpServletResponse.SC_OK);
-        statsd.incrementCounter("recipe.update");
         return recipeService.updateRecipe(requestBody, userRepository.getId(), id,response);
     }
 
     @RequestMapping(value="v1/recipe/{id}",method = RequestMethod.DELETE)
     public JSONObject deleteRecipe(@PathVariable String id,HttpServletResponse response){
+        statsd.incrementCounter("endpoint.http.recipe.delete");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
         response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-        statsd.incrementCounter("recipe.delete");
         return recipeService.deleteRecipe(id, userRepository.getId(),response);
     }
 
     @RequestMapping(value = "v1/recipe/{id}",method= RequestMethod.GET)
     public JSONObject findRecipeById(HttpServletRequest request, HttpServletResponse response, @PathVariable String id) {
+        statsd.incrementCounter("endpoint.http.recipe.get");
         response.setStatus(HttpServletResponse.SC_OK);
-        statsd.incrementCounter("recipe.find");
         return recipeService.getRecipe(id, response);
     }
     @RequestMapping(value = "v1/recipes",method= RequestMethod.GET)
     public JSONObject findRecipeById(HttpServletRequest request, HttpServletResponse response) {
+        statsd.incrementCounter("endpoint.http.recipe.get");
         response.setStatus(HttpServletResponse.SC_OK);
-        statsd.incrementCounter("recipe.find");
         return recipeService.getNewestRecipe(response);
     }
 

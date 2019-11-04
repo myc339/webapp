@@ -31,12 +31,12 @@ public class UserController {
     @RequestMapping(value = "v1/user/self",method= RequestMethod.GET)
     public JSONObject findByAccountAndPassword(HttpServletRequest request, HttpServletResponse response)
     {
+        statsd.incrementCounter("endpoint.http.user.get");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
         if(userRepository !=null)
         {
             response.setStatus(HttpServletResponse.SC_OK);
-            statsd.incrementCounter("user.find");
             return (JSONObject)JSON.toJSON(userRepository);
         }
 
@@ -48,9 +48,9 @@ public class UserController {
     @ResponseBody
     public JSONObject saveUser(@RequestBody UserRepository request,HttpServletResponse response)
     {
+        statsd.incrementCounter("endpoint.http.user.post");
         try{
             response.setStatus(HttpServletResponse.SC_CREATED);
-            statsd.incrementCounter("user.save");
             return  userService.save(request,response);
         }
         catch(Exception e){
@@ -62,11 +62,11 @@ public class UserController {
     //only permit update firstname,lastname,password
     @RequestMapping(value="v1/user/self",method = RequestMethod.PUT)
     public JSONObject updateSelf(@RequestBody UserRepository request,HttpServletResponse response){
+        statsd.incrementCounter("endpoint.http.user.put");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
             try{
                 response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-                statsd.incrementCounter("user.update");
                 return userService.updateSelf(request, userRepository,response);
             }catch (Exception e)
             {
