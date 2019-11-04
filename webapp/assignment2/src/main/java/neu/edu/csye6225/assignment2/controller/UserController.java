@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.timgroup.statsd.StatsDClient;
+import com.timgroup.statsd.NonBlockingStatsDClient;
+
 @RestController
 public class UserController {
 
@@ -23,6 +26,8 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    private static final StatsDClient statsd = new NonBlockingStatsDClient("my.prefix", "statsd-host", 8125);
+
     @RequestMapping(value = "v1/user/self",method= RequestMethod.GET)
     public JSONObject findByAccountAndPassword(HttpServletRequest request, HttpServletResponse response)
     {
@@ -31,6 +36,7 @@ public class UserController {
         if(userRepository !=null)
         {
             response.setStatus(HttpServletResponse.SC_OK);
+            statsd.incrementCounter("user.find");
             return (JSONObject)JSON.toJSON(userRepository);
         }
 
@@ -44,7 +50,8 @@ public class UserController {
     {
         try{
             response.setStatus(HttpServletResponse.SC_CREATED);
-           return  userService.save(request,response);
+            statsd.incrementCounter("user.save");
+            return  userService.save(request,response);
         }
         catch(Exception e){
             e.printStackTrace();
@@ -59,6 +66,7 @@ public class UserController {
         UserRepository userRepository =userDao.findQuery(auth.getName());
             try{
                 response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                statsd.incrementCounter("user.update");
                 return userService.updateSelf(request, userRepository,response);
             }catch (Exception e)
             {
