@@ -46,7 +46,6 @@ public class UserServiceImpl  implements UserService {
         long startTime=System.currentTimeMillis();
         statsd.incrementCounter("totalRequest.count"+ new String[]{"path:/v1/user"});
         statsd.recordExecutionTime("latency"+new String[]{"path:/v1/user"}, System.currentTimeMillis() - startTime);
-
         if(userDao.findQuery(userRepository.getEmail_address())!=null) {
             try {
                 log.error("email exists");
