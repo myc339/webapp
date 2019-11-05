@@ -2,7 +2,9 @@ version: 0.0
 os: linux
 
 files:
-  - source: source
+  - source: webapp
+    destination: /var/webapps
+  - source: scirpts
     destination: /var/webapps
 ##read user data and run project
 hooks:
