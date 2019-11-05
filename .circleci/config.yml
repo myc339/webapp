@@ -89,7 +89,7 @@ jobs:
       - run: aws configure
       - run:
           name: "update zip file on s3"
-          command: aws s3 cp ~/$FILE_NAME s3://${BUCKET_NAME}/
+          command: aws s3 cp ~/$FILE_NAME s3://${BUCKET_NAME} --sse aws:kms
     #### send codedeploy request
       - run:
           name: "create code deployment"
