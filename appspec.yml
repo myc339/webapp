@@ -5,7 +5,7 @@ files:
   - source: webapp
     destination: /var/webapps
   - source: scripts
-    destination: /var/tmp
+    destination: /var/webapps
 ##read user data and run project
 hooks:
   AfterInstall:
