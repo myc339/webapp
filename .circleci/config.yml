@@ -92,4 +92,4 @@ jobs:
     #### send codedeploy request
       - run:
           name: "create code deployment"
-          command: aws deploy create-deployment --regionn us-east-1 --application-name csye6225-webapp --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name csye6225-webapp-deployment --s3-location bucket=${BUCKET_NAME},bundleType=zip,key=$FILE_NAME
+          command: aws deploy create-deployment --region us-east-1 --application-name csye6225-webapp --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name csye6225-webapp-deployment --s3-location bucket=${BUCKET_NAME},bundleType=zip,key=$FILE_NAME
