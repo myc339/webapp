@@ -52,11 +52,11 @@ variable "bucketName" {
   type = string
 }
 
-variable "accessKey" {
+variable "aws_access_key" {
   type = string
 }
 
-variable "secretKey" {
+variable "aws_secret_key" {
   type = string
 }
 

@@ -47,13 +47,16 @@ module "ec2" {
   CodeDeployEC2ServiceRole = "${module.role.CodeDeployEC2ServiceRole}"
   # application params
   region = "${var.aws_region}"
-  accessKey = "${var.accessKey}"
-  secretKey = "${var.secretKey}"
+//  accessKey = "${var.aws_access_key}"
+//  secretKey = "${var.aws_secret_key}"
   dbUrl = "${module.rds.dbUrl}"
   dbPassword = "${var.dbPassword}"
-  bucketName = "${module.s3_bucket.bucketName}"
+//  bucketName = "${module.s3_bucket.bucketName}"
+  bucketName="${var.domain_name}"
   dbName = "${var.dbName}"
   dbUsername = "${var.dbUsername}"
+  aws_secret_key="${var.aws_secret_key}"
+  aws_access_key="${var.aws_access_key}"
 }
 
 # Create policies
