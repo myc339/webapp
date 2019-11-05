@@ -86,6 +86,7 @@ jobs:
           command: |
             cd ~/project
             zip -r ~/$FILE_NAME *
+      - run: aws configure
       - run:
           name: "update zip file on s3"
           command: aws s3 cp ~/$FILE_NAME s3://${BUCKET_NAME}/
