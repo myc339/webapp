@@ -11,16 +11,24 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.sql.DataSource;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.UUID;
@@ -31,10 +39,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK,classes =Assignment2Application.class )
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 @FixMethodOrder(MethodSorters.JVM)
 public class UserRepositoryControllerTest {
     @Autowired
     private MockMvc mvc;
+
     private static String email;
     private static UserRepository u;
     private static String password;
@@ -43,9 +53,10 @@ public class UserRepositoryControllerTest {
     @BeforeClass
     public static void init()
     {
+
         password="1111Test!!";
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        email=timestamp.getTime()+UUID.randomUUID().toString()+"@email.com";
+        email=timestamp.getTime()+"@email.com";
         basicDigestHeaderValue = "Basic " + new String(Base64.encodeBase64((email+":"+password).getBytes()));
         u =new UserRepository(email,password,"test","admin");
     }

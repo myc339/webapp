@@ -2,11 +2,11 @@ version: 0.0
 os: linux
 
 files:
-  - source: /webapps
+  - source: webapp
     destination: /var/webapps
-
+##read user data and run project
 hooks:
   AfterInstall:
-    - location: ./setup.sh
+    - location: ./scripts/setup.sh
       timeout: 180
       runas: centos

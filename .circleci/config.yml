@@ -1,23 +1,91 @@
 version: 2
 jobs:
   build:
-    machine:
-      image: ubuntu-1604:201903-01
+    docker:
+      - image: circleci/python:3.7
+      - image: circleci/mariadb:10.3
+        environment:
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_DB: spring2
+          MYSQL_USER: root
+          MYSQL_ROOT_PASSWORD: 123456
+          FILE_NAME: webapp_${CIRCLE_BUILD_NUM}.zip
     steps:
       - checkout
       - run:
-          name: "demo zip and awscli"
+          name: "install mysql,aws-cli,zip,mvn"
           command: |
-            sudo apt-get update
-            sudo snap install aws-cli --classic
-            sudo apt install zip
-            zip -r ~/webapp.zip ~/project
+            sudo apt-get install -y zip
+            pip3 install --upgrade --user awscli
+            sudo apt-get install -y mariadb-client
+            sudo apt install maven
       - run:
-          name: "install aws-cli"
+          name: "check zip,mysql,awscli,mvn"
           command: |
+            zip
             aws --version
-            echo $AWS_ACCESS_KEY_ID
+            mysql --version
+            mvn --version
       - run:
-          name: "upload zip file to s3"
+          name: "database test"
+          command: sudo mysql -h 127.0.0.1 -uroot -p123456 -e "create database spring2;"
+      - run:
+          name: "select db"
+          command: sudo mysql -h 127.0.0.1 -uroot -p123456 -e "show databases;"
+      - run:
+          name: "add parameters into application-test.properties"
           command: |
-            aws s3 cp ~/webapp.zip s3://codedeploy.myc339.me/
+            cd ~/project/webapp/assignment2/src/test/resources
+            echo "region=${region}">>application-test.properties
+            echo "bucketName=${bucketName}">>application-test.properties
+            echo "accessKey=${AWS_ACCESS_KEY_ID}">>application-test.properties
+            echo "secretKey=${AWS_SECRET_ACCESS_KEY}">>application-test.properties
+    ## run integration test
+      - run:
+          name: "run user integration  test "
+          command: |
+            cd ~/project/webapp/assignment2
+            mvn -Dtest=UserRepositoryControllerTest test
+      - run:
+          name: "run recipe integration  test"
+          command: |
+            cd ~/project/webapp/assignment2
+            mvn -Dtest=RecipeRepositoryControllerTest test
+      - run:
+          name: "run S3 integration  test"
+          command: |
+            cd ~/project/webapp/assignment2
+            mvn -Dtest=FileHandlerControllerTest test
+    ### terraform apply
+      - run:
+          name: "terraform install"
+          command: |
+            wget https://releases.hashicorp.com/terraform/0.12.10/terraform_0.12.10_linux_amd64.zip
+            unzip terraform_0.12.10_linux_amd64.zip
+            sudo mv terraform /usr/local/bin/
+      - run:
+          name: "terraform apply"
+          command: |
+            cd ~/project/infrastructure/aws
+#        
+#            terraform init
+#            terraform apply
+    ### upload file to s3
+      - run:
+          name: "set env vars"
+          command: |
+            echo "export FILE_NAME=webapp_${CIRCLE_BUILD_NUM}.zip" >> $BASH_ENV
+            source $BASH_ENV
+            echo $FILE_NAME
+      - run:
+          name: "zip"
+          command: |
+            cd ~/project
+            zip -r ~/$FILE_NAME *
+      - run:
+          name: "update zip file on s3"
+          command: aws s3 cp ~/$FILE_NAME s3://codedeploy.myc339.me/
+    #### send codedeploy request
+
+
+    ### run cloudwatch ?
