@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.timgroup.statsd.StatsDClient;
+import com.timgroup.statsd.NonBlockingStatsDClient;
+
 @RestController
 public class UserController {
 
@@ -27,9 +30,13 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    private static final StatsDClient statsd = new NonBlockingStatsDClient("my.prefix", "localhost", 8125);
+
     @RequestMapping(value = "v1/user/self",method= RequestMethod.GET)
     public JSONObject findByAccountAndPassword(HttpServletRequest request, HttpServletResponse response)
     {
+        statsd.incrementCounter("endpoint.http.user.get");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
         if(userRepository !=null)
@@ -46,9 +53,10 @@ public class UserController {
     @ResponseBody
     public JSONObject saveUser(@RequestBody UserRepository request,HttpServletResponse response)
     {
+        statsd.incrementCounter("endpoint.http.user.post");
         try{
             response.setStatus(HttpServletResponse.SC_CREATED);
-           return  userService.save(request,response);
+            return  userService.save(request,response);
         }
         catch(Exception e){
             e.printStackTrace();
@@ -59,6 +67,7 @@ public class UserController {
     //only permit update firstname,lastname,password
     @RequestMapping(value="v1/user/self",method = RequestMethod.PUT)
     public JSONObject updateSelf(@RequestBody UserRepository request,HttpServletResponse response){
+        statsd.incrementCounter("endpoint.http.user.put");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
             try{
