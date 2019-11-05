@@ -15,5 +15,5 @@ hooks:
       runas: centos
   ApplicationStart:
     - location: scripts/start_spring.sh
-      timeout: 180
+      timeout: 3000
       runas: centos
