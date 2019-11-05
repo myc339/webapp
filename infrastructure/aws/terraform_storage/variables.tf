@@ -1,9 +1,15 @@
-variable "profile_name" {
-    description = "The AWS profile name"
+variable "aws_access_key" {
+  description = "The AWS access key"
 	type = string
 }
+
+variable "aws_secret_key" {
+  description = "The AWS secret key"
+	type = string
+}
+
 variable "aws_region" {
-    description = "The region of the resource"
+  description = "The region of the resource"
 	type = string
 }
 
@@ -28,10 +34,12 @@ variable "account_id" {
 }
 
 variable "accessKey" {
+  description = "The Circlci user access key"
   type = string
 }
 
 variable "secretKey" {
+  description = "The Circlci user secret key"
   type = string
 }
 
