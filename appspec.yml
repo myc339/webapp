@@ -4,7 +4,7 @@ os: linux
 files:
   - source: webapp
     destination: /var/webapps
-  - source: scirpts
+  - source: scripts
     destination: /var/webapps
 ##read user data and run project
 hooks:
