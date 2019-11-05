@@ -8,10 +8,10 @@ hooks:
     - location: scripts/setup_spring.sh
       timeout: 180
       runas: centos
-    - location: scripts/setup_cwagent.sh
+  ApplicationStart:
+    - location: scripts/start_spring.sh
       timeout: 180
       runas: centos
-#  ApplicationStart:
-#    - location: scripts/start_spring.sh
-#      timeout: 180
-#      runas: centos
+    - location: scripts/setup_cwagent.sh
+        timeout: 180
+        runas: centos
