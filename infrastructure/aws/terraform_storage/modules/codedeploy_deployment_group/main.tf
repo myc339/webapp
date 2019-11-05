@@ -19,7 +19,7 @@ resource "aws_codedeploy_deployment_group" "csye6225-webapp-deployment" {
     }
   }
   # 5、Deployment settings - CodeDeployDefault.AllAtOnce
-  deployment_config_name = "CodeDeployDefault.OneAtATime"
+  deployment_config_name = "CodeDeployDefault.AllAtOnce"
   # 6、Load Balancer - disabled
   load_balancer_info{
   }
