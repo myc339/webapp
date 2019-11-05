@@ -4,10 +4,16 @@ files:
   - source: webapp
     destination: /var/webapps
   - source: scripts
-    destination: /var/webapps
+    destination: /var/webapps/Scripts
 hooks:
   AfterInstall:
-    - location: scripts/setup_spring.sh
+    - location: Scripts/setup_spring.sh
       timeout: 180
       runas: centos
-  
+    - location: Scripts/setup_cwagent.sh
+      timeout: 180
+      runas: centos
+  ApplicationStart:
+    - location: Scripts/start_spring.sh
+      timeout: 180
+      runas: centos
