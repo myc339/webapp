@@ -1,2 +1,2 @@
 cd /var/webapps/assignment2
-mvn spring-boot:run
+sudo mvn spring-boot:run
