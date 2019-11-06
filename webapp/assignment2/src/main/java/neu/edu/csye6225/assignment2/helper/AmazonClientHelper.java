@@ -33,7 +33,7 @@ public class AmazonClientHelper {
 
 //        System.out.println("credentialsProvider:"+credentialsProvider.getCredentials().getAWSAccessKeyId());
 
-
+        System.out.println("accessKey:"+accessKey);
         if(accessKey!=null||!accessKey.equals(""))
         {
             System.out.println("load credentials from properties");
