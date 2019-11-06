@@ -30,13 +30,11 @@ public class AmazonClientHelper {
     @Bean(name="awsCredentialsProvider")
     public AWSCredentialsProvider getAWSCredentials() {
         InstanceProfileCredentialsProvider credentialsProvider=new InstanceProfileCredentialsProvider(true);
-        System.out.println("credentialsProvider:"+credentialsProvider.getCredentials().getAWSAccessKeyId());
-        System.out.println("credentialsProvider:"+credentialsProvider.getCredentials().getAWSAccessKeyId());
-        System.out.println("credentialsProvider:"+credentialsProvider.getCredentials().getAWSAccessKeyId());
-        System.out.println("credentialsProvider:"+credentialsProvider.getCredentials().getAWSAccessKeyId());
+
+//        System.out.println("credentialsProvider:"+credentialsProvider.getCredentials().getAWSAccessKeyId());
 
 
-        if(credentialsProvider.getCredentials().getAWSAccessKeyId()==null)
+        if(accessKey!=null||accessKey.equals(""))
         {
             BasicAWSCredentials awsCredentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
             return new AWSStaticCredentialsProvider(awsCredentials);
