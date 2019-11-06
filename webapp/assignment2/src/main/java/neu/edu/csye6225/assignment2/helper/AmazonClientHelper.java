@@ -29,10 +29,18 @@ public class AmazonClientHelper {
 
     @Bean(name="awsCredentialsProvider")
     public AWSCredentialsProvider getAWSCredentials() {
-
-//        BasicAWSCredentials awsCredentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
-        return InstanceProfileCredentialsProvider.getInstance();
-//        return new AWSIn(awsCredentials);
+        InstanceProfileCredentialsProvider credentialsProvider=new InstanceProfileCredentialsProvider(true);
+        if(credentialsProvider.getCredentials().getAWSAccessKeyId()==null)
+        {
+            BasicAWSCredentials awsCredentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
+            return new AWSStaticCredentialsProvider(awsCredentials);
+        }
+        else{
+            BasicAWSCredentials awsCredentials = new BasicAWSCredentials(credentialsProvider.getCredentials().getAWSAccessKeyId(),
+                    credentialsProvider.getCredentials().getAWSSecretKey());
+            return new AWSStaticCredentialsProvider(awsCredentials);
+        }
+       
     }
     @Bean(name = "awsS3Bucket")
     public String getAWSS3Bucket() {
