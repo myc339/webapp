@@ -1,9 +1,6 @@
 package neu.edu.csye6225.assignment2.helper;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.*;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
@@ -32,10 +29,10 @@ public class AmazonClientHelper {
 
     @Bean(name="awsCredentialsProvider")
     public AWSCredentialsProvider getAWSCredentials() {
-        System.out.println(this.accessKey);
-        System.out.println(this.secretKey);
-        BasicAWSCredentials awsCredentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
-        return new AWSStaticCredentialsProvider(awsCredentials);
+
+//        BasicAWSCredentials awsCredentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
+        return InstanceProfileCredentialsProvider.getInstance();
+//        return new AWSIn(awsCredentials);
     }
     @Bean(name = "awsS3Bucket")
     public String getAWSS3Bucket() {
