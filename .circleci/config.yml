@@ -67,6 +67,7 @@ jobs:
       - run:
           name: "run recipe integration  test"
           command: |
+            sleep 5
             cd ~/project/webapp/assignment2
             mvn -Dtest=RecipeRepositoryControllerTest test
       - run:

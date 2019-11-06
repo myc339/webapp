@@ -54,11 +54,9 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
     @Autowired
     private ImageDao imageDao;
     @Autowired
-    public AmazonS3ClientServiceImpl(Region awsRegion, AWSCredentialsProvider awsCredentialsProvider,String awsS3Bucket)
+    public AmazonS3ClientServiceImpl(Region awsRegion, AmazonS3 amazonS3,String awsS3Bucket)
     {
-        this.amazonS3= AmazonS3ClientBuilder.standard()
-                .withCredentials(awsCredentialsProvider)
-                .withRegion(awsRegion.getName()).build();
+        this.amazonS3=amazonS3;
         this.awsS3Bucket=awsS3Bucket;
         System.out.println("bucketName:"+this.awsS3Bucket);
         System.out.println("region:"+awsRegion.getName());
