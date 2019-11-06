@@ -2,8 +2,6 @@ package neu.edu.csye6225.assignment2.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.timgroup.statsd.NonBlockingStatsDClient;
-import com.timgroup.statsd.StatsDClient;
 import neu.edu.csye6225.assignment2.common.CommonResult;
 import neu.edu.csye6225.assignment2.dao.UserDao;
 import neu.edu.csye6225.assignment2.entity.UserRepository;
@@ -85,7 +83,6 @@ public class UserController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
         statsd.recordExecutionTime("endpoint.http.user.put.queryTime", getDuration(startTime));
-
             try{
                 response.setStatus(HttpServletResponse.SC_NO_CONTENT);
                 JSONObject tmp = userService.updateSelf(request, userRepository,response);
