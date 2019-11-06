@@ -82,7 +82,7 @@ public class UserServiceImpl  implements UserService {
         userRepository.setPassword(bCryptPasswordEncoder.encode(userRepository.getPassword()));
         userDao.save(userRepository);
         inMemoryUserDetailsManager.createUser(User.withUsername(userRepository.getEmail_address()).password(userRepository.getPassword()).roles("USER").build());
-        statsd.recordExecutionTime("latency", System.currentTimeMillis() - startTime);
+        statsd.recordExecutionTime("POST_USER_TIME", System.currentTimeMillis() - startTime);
         return (JSONObject)JSON.toJSON(userRepository);
     }
 

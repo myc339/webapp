@@ -27,6 +27,7 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
     @RequestMapping(value = "v1/user/self",method= RequestMethod.GET)
     public JSONObject findByAccountAndPassword(HttpServletRequest request, HttpServletResponse response)
     {

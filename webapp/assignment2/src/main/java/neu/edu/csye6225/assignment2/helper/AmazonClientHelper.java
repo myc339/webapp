@@ -34,7 +34,7 @@ public class AmazonClientHelper {
 //        System.out.println("credentialsProvider:"+credentialsProvider.getCredentials().getAWSAccessKeyId());
 
         System.out.println("accessKey:"+accessKey);
-        if(accessKey!=null||!accessKey.equals(""))
+        if(!accessKey.isEmpty())
         {
             System.out.println("load credentials from properties");
             BasicAWSCredentials awsCredentials = new BasicAWSCredentials(this.accessKey, this.secretKey);

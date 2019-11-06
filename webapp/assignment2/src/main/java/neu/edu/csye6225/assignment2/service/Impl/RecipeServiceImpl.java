@@ -2,6 +2,7 @@ package neu.edu.csye6225.assignment2.service.Impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.timgroup.statsd.StatsDClient;
 import neu.edu.csye6225.assignment2.dao.OrderedListDao;
 import neu.edu.csye6225.assignment2.dao.RecipeDao;
 import neu.edu.csye6225.assignment2.entity.OrderedListRepository;
@@ -26,15 +27,17 @@ public class RecipeServiceImpl implements RecipeService {
     private RecipeDao recipeDao;
     @Autowired
     private OrderedListDao orderedListDao;
-
+    private static StatsDClient statsd;
     @Autowired
-    public RecipeServiceImpl( ) {
-
+    public RecipeServiceImpl(StatsDClient statsDClient ) {
+        this.statsd=statsDClient;
     }
 
     @Override
     public JSONObject save(RecipeRepository recipeRepository,String authorId, HttpServletResponse response)
     {
+        long startTime=System.currentTimeMillis();
+        statsd.incrementCounter("totalRequest.countPOST_RECIPE");
         if(!checkRequestBody(recipeRepository, response)){
             return null;
         }
@@ -51,6 +54,7 @@ public class RecipeServiceImpl implements RecipeService {
 //        System.out.println(recipeRepository.getIngredients().toString());
         recipeRepository.setIngredients1(recipeRepository.getIngredients().toString());
         recipeDao.save(recipeRepository);
+        statsd.recordExecutionTime("POST_RECIPE_TIME", System.currentTimeMillis() - startTime);
        return (JSONObject) JSON.toJSON(recipeRepository);
     }
 
