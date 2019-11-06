@@ -13,9 +13,10 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>assignment2</name>
     <description>Demo project for Spring Boot</description>
-
+    <packaging>war</packaging>
     <properties>
         <java.version>1.8</java.version>
+<!--        <start-class>com.mkyong.SpringBootWebApplication</start-class>-->
     </properties>
 
     <dependencies>
@@ -109,6 +110,11 @@
             <groupId>com.ryantenney.metrics</groupId>
             <artifactId>metrics-spring</artifactId>
             <version>3.1.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
