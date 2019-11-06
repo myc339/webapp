@@ -28,7 +28,7 @@ public class AmazonClientHelper {
     private String bucketName;
 
     @Bean(name="awsCredentialsProvider")
-    public AWSCredentialsProvider getAWSCredentials() {
+    public AmazonS3 getAWSCredentials() {
         InstanceProfileCredentialsProvider credentialsProvider=new InstanceProfileCredentialsProvider(true);
 
 //        System.out.println("credentialsProvider:"+credentialsProvider.getCredentials().getAWSAccessKeyId());
@@ -38,13 +38,14 @@ public class AmazonClientHelper {
         {
             System.out.println("load credentials from properties");
             BasicAWSCredentials awsCredentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
-            return new AWSStaticCredentialsProvider(awsCredentials);
+            return AmazonS3ClientBuilder.standard()
+                    .withCredentials( new AWSStaticCredentialsProvider(awsCredentials))
+                    .withRegion(getAWSRegion().getName()).build();
+
         }
         else{
             System.out.println("load credentials from ec2 instance profile?");
-            BasicAWSCredentials awsCredentials = new BasicAWSCredentials(credentialsProvider.getCredentials().getAWSAccessKeyId(),
-                    credentialsProvider.getCredentials().getAWSSecretKey());
-            return new AWSStaticCredentialsProvider(awsCredentials);
+            return AmazonS3ClientBuilder.defaultClient();
         }
 
     }
