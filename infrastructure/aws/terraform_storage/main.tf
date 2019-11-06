@@ -78,7 +78,6 @@ module "role_policy_attachment" {
   CodeDeployEC2ServiceRole = "${module.role.CodeDeployEC2ServiceRole}"
   CodeDeployServiceRole = "${module.role.CodeDeployServiceRole}"
   CodeDeploy-EC2-S3 = "${module.policy.CodeDeploy-EC2-S3}"
-  CloudWatchAgentServerRole= "${module.role.CloudWatchAgentServerRole}"
 }
 
 # Attach policy to user
