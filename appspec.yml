@@ -6,7 +6,7 @@ files:
 hooks:
   AfterInstall:
     - location: scripts/setup_spring.sh
-      timeout: 180
+      timeout: 300
       runas: centos
     - location: scripts/setup_cwagent.sh
       timeout: 180
