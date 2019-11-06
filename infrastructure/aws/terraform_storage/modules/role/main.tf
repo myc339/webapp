@@ -37,6 +37,7 @@ resource "aws_iam_role" "CodeDeployServiceRole" {
 }
 EOF
 }
+
 resource "aws_iam_role" "CloudWatchAgentServerRole"{
   name = "CloudWatchAgentServerRole"
   assume_role_policy = <<EOF

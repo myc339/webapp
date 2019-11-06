@@ -43,7 +43,6 @@ variable "depends_on_rds" {
 variable "CodeDeployEC2ServiceRole" {
   type = string
 }
-
 variable "region" {
   type = string
 }

@@ -23,7 +23,6 @@ resource "aws_instance" "ec2-instance" {
 
   associate_public_ip_address = true
   iam_instance_profile = "${aws_iam_instance_profile.profile.id}"
-
   user_data = <<EOF
 Content-Type: multipart/mixed; boundary="//"
 MIME-Version: 1.0
