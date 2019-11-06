@@ -59,19 +59,20 @@ public class RecipeRepositoryControllerTest {
 
     private static String email1,email2;
     private static UserRepository u1,u2;
-    private static String password;
+    private static String password1,password2;
     private static String token1 ;
     private static String token2 ;
     private ObjectMapper objectMapper=new ObjectMapper();
     @BeforeClass
     public static void init()
     {
-        password="1111Test!!";
+        password1="222TESTRECIPE!";
+        password2="111RECIPETEST!"
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         email1="TESTRECIPE@email1.com";
         email2="RECIPE@email2.com";
-        token1="Basic " + new String(Base64.encodeBase64((email1+":"+password).getBytes()));
-        token2="Basic " + new String(Base64.encodeBase64((email2+":"+password).getBytes()));
+        token1="Basic " + new String(Base64.encodeBase64((email1+":"+password1).getBytes()));
+        token2="Basic " + new String(Base64.encodeBase64((email2+":"+password2).getBytes()));
         System.out.println("token1:"+token1);
         System.out.println("token2:"+token2);
         u1 =new UserRepository(email1,password,"test","admin");
