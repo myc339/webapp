@@ -36,10 +36,12 @@ public class AmazonClientHelper {
 
         if(accessKey!=null||!accessKey.equals(""))
         {
+            System.out.println("load credentials from properties");
             BasicAWSCredentials awsCredentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
             return new AWSStaticCredentialsProvider(awsCredentials);
         }
         else{
+            System.out.println("load credentials from ec2 instance profile?");
             BasicAWSCredentials awsCredentials = new BasicAWSCredentials(credentialsProvider.getCredentials().getAWSAccessKeyId(),
                     credentialsProvider.getCredentials().getAWSSecretKey());
             return new AWSStaticCredentialsProvider(awsCredentials);
