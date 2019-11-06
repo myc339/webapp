@@ -52,32 +52,46 @@ public class RecipeController {
     @RequestMapping(value="v1/recipe/{id}",method = RequestMethod.PUT)
     public JSONObject updateRecipe(@RequestBody RecipeRepository requestBody, HttpServletRequest request, HttpServletResponse response, @PathVariable String id){
         statsd.incrementCounter("endpoint.http.recipe.put");
+        long startTime = System.currentTimeMillis();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
+        statsd.recordExecutionTime("endpoint.http.recipe.put.queryTime", getDuration(startTime));
         response.setStatus(HttpServletResponse.SC_OK);
-        return recipeService.updateRecipe(requestBody, userRepository.getId(), id,response);
+        JSONObject tmp = recipeService.updateRecipe(requestBody, userRepository.getId(), id,response);
+        statsd.recordExecutionTime("endpoint.http.recipe.put.executeTime", getDuration(startTime));
+        return tmp;
     }
 
     @RequestMapping(value="v1/recipe/{id}",method = RequestMethod.DELETE)
     public JSONObject deleteRecipe(@PathVariable String id,HttpServletResponse response){
         statsd.incrementCounter("endpoint.http.recipe.delete");
+        long startTime = System.currentTimeMillis();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
+        statsd.recordExecutionTime("endpoint.http.recipe.delete.queryTime", getDuration(startTime));
         response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-        return recipeService.deleteRecipe(id, userRepository.getId(),response);
+        JSONObject tmp = recipeService.deleteRecipe(id, userRepository.getId(),response);
+        statsd.recordExecutionTime("endpoint.http.recipe.delete.executeTime", getDuration(startTime));
+        return tmp;
     }
 
     @RequestMapping(value = "v1/recipe/{id}",method= RequestMethod.GET)
     public JSONObject findRecipeById(HttpServletRequest request, HttpServletResponse response, @PathVariable String id) {
         statsd.incrementCounter("endpoint.http.recipe.get");
+        long startTime = System.currentTimeMillis();
         response.setStatus(HttpServletResponse.SC_OK);
-        return recipeService.getRecipe(id, response);
+        JSONObject tmp = recipeService.getRecipe(id, response);
+        statsd.recordExecutionTime("endpoint.http.recipe.get.executeTime", getDuration(startTime));
+        return tmp;
     }
     @RequestMapping(value = "v1/recipes",method= RequestMethod.GET)
     public JSONObject findRecipeById(HttpServletRequest request, HttpServletResponse response) {
         statsd.incrementCounter("endpoint.http.recipe.get");
+        long startTime = System.currentTimeMillis();
         response.setStatus(HttpServletResponse.SC_OK);
-        return recipeService.getNewestRecipe(response);
+        JSONObject tmp = recipeService.getNewestRecipe(response);
+        statsd.recordExecutionTime("endpoint.http.recipe.get.executeTime", getDuration(startTime));
+        return tmp;
     }
 
 
