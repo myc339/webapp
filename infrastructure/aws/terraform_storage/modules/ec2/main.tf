@@ -23,7 +23,6 @@ resource "aws_instance" "ec2-instance" {
 
   associate_public_ip_address = true
   iam_instance_profile = "${aws_iam_instance_profile.profile.id}"
-
   user_data = <<EOF
 Content-Type: multipart/mixed; boundary="//"
 MIME-Version: 1.0
@@ -49,8 +48,8 @@ Content-Disposition: attachment; filename="userdata.txt"
 /bin/echo "" > /var/tmp/user_data.txt
 /bin/echo "region=${var.region}" >> /var/tmp/user_data.txt
 /bin/echo "bucketName=${var.bucketName}" >>/var/tmp/user_data.txt
-/bin/echo "accessKey=${var.accessKey}" >> /var/tmp/user_data.txt
-/bin/echo "secretKey=${var.secretKey}" >>/var/tmp/user_data.txt
+/bin/echo "accessKey=${var.aws_access_key}" >> /var/tmp/user_data.txt
+/bin/echo "secretKey=${var.aws_secret_key}" >>/var/tmp/user_data.txt
 /bin/echo "dbUrl=${var.dbUrl}" >> /var/tmp/user_data.txt
 /bin/echo "dbName=${var.dbName}" >>/var/tmp/user_data.txt
 /bin/echo "spring.datasource.username=${var.dbUsername}" >> /var/tmp/user_data.txt

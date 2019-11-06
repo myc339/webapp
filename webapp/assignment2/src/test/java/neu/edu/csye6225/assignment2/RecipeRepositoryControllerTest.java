@@ -68,10 +68,12 @@ public class RecipeRepositoryControllerTest {
     {
         password="1111Test!!";
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        email1=timestamp.getTime()+"@email1.com";
-        email2=timestamp.getTime()+"@email2.com";
-        token1 = "Basic " + new String(Base64.encodeBase64((email1+":"+password).getBytes()));
-        token2 ="Basic " + new String(Base64.encodeBase64((email2+":"+password).getBytes()));
+        email1="TESTRECIPE@email1.com";
+        email2="RECIPE@email2.com";
+        token1="Basic " + new String(Base64.encodeBase64((email1+":"+password).getBytes()));
+        token2="Basic " + new String(Base64.encodeBase64((email2+":"+password).getBytes()));
+        System.out.println("token1:"+token1);
+        System.out.println("token2:"+token2);
         u1 =new UserRepository(email1,password,"test","admin");
         u2 =new UserRepository(email2,password,"test","admin");
     }

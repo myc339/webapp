@@ -13,13 +13,13 @@ resource "aws_codedeploy_deployment_group" "csye6225-webapp-deployment" {
   # 4、Environment Configuration - Amazon EC2 Instances. Provide the tag group key and values.
   ec2_tag_set {
     ec2_tag_filter {
-      key   = "name"
+      key   = "Name"
       type  = "KEY_AND_VALUE"
       value = "csye6225-ec2-instance"
     }
   }
   # 5、Deployment settings - CodeDeployDefault.AllAtOnce
-  deployment_config_name = "CodeDeployDefault.OneAtATime"
+  deployment_config_name = "CodeDeployDefault.AllAtOnce"
   # 6、Load Balancer - disabled
   load_balancer_info{
   }

@@ -1,12 +1,13 @@
 version: 0.0
 os: linux
-
 files:
   - source: webapp
     destination: /var/webapps
-##read user data and run project
 hooks:
   AfterInstall:
-    - location: ./scripts/setup.sh
+    - location: scripts/setup_spring.sh
       timeout: 180
       runas: centos
+#    - location: scripts/setup_cwagent.sh
+#      timeout: 180
+#      runas: centos

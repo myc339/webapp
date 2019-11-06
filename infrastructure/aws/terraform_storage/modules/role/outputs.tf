@@ -9,3 +9,6 @@ output "CodeDeployServiceRole" {
 output "CodeDeployServiceRoleArn" {
   value = "${aws_iam_role.CodeDeployServiceRole.arn}"
 }
+output "CloudWatchAgentServerRole" {
+  value = "${aws_iam_role.CloudWatchAgentServerRole.name}"
+}
