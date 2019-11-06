@@ -75,8 +75,8 @@ public class RecipeRepositoryControllerTest {
         token2="Basic " + new String(Base64.encodeBase64((email2+":"+password2).getBytes()));
         System.out.println("token1:"+token1);
         System.out.println("token2:"+token2);
-        u1 =new UserRepository(email1,password,"test","admin");
-        u2 =new UserRepository(email2,password,"test","admin");
+        u1 =new UserRepository(email1,password1,"test","admin");
+        u2 =new UserRepository(email2,password2,"test","admin");
     }
     @Test
     public void AddUsers1() throws Exception {
