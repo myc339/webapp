@@ -44,8 +44,9 @@ public class UserServiceImpl  implements UserService {
     public JSONObject save(UserRepository userRepository,HttpServletResponse response)
     {
         long startTime=System.currentTimeMillis();
-        statsd.incrementCounter("totalRequest.count"+ new String[]{"path:/v1/user"});
-        statsd.recordExecutionTime("latency"+new String[]{"path:/v1/user"}, System.currentTimeMillis() - startTime);
+//        statsd.count("");
+        statsd.incrementCounter("totalRequest.countPOST_USER");
+
         if(userDao.findQuery(userRepository.getEmail_address())!=null) {
             try {
                 log.error("email exists");
@@ -81,7 +82,7 @@ public class UserServiceImpl  implements UserService {
         userRepository.setPassword(bCryptPasswordEncoder.encode(userRepository.getPassword()));
         userDao.save(userRepository);
         inMemoryUserDetailsManager.createUser(User.withUsername(userRepository.getEmail_address()).password(userRepository.getPassword()).roles("USER").build());
-
+        statsd.recordExecutionTime("latency", System.currentTimeMillis() - startTime);
         return (JSONObject)JSON.toJSON(userRepository);
     }
 
