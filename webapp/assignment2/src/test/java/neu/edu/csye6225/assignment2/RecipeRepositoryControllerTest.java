@@ -66,8 +66,8 @@ public class RecipeRepositoryControllerTest {
     @BeforeClass
     public static void init()
     {
-        password1="222TESTRECIPE!";
-        password2="111RECIPETEST!";
+        password1="222TestRECIPE!";
+        password2="111RECIPETest!";
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         email1="TESTRECIPE@email1.com";
         email2="RECIPE@email2.com";
