@@ -49,8 +49,9 @@ public class UserController {
         if(userRepository !=null)
         {
             response.setStatus(HttpServletResponse.SC_OK);
+            JSONObject tmp = (JSONObject)JSON.toJSON(userRepository);
             statsd.recordExecutionTime("endpoint.http.user.get.executeTime", getDuration(startTime));
-            return (JSONObject)JSON.toJSON(userRepository);
+            return tmp;
         }
         statsd.recordExecutionTime("endpoint.http.user.get.executeTime", getDuration(startTime));
         return null;
@@ -65,13 +66,14 @@ public class UserController {
         long startTime = System.currentTimeMillis();
         try{
             response.setStatus(HttpServletResponse.SC_CREATED);
-            statsd.recordExecutionTime("endpoint.http.user.put.executeTime", getDuration(startTime));
-            return  userService.save(request,response);
+            JSONObject tmp = userService.save(request,response);
+            statsd.recordExecutionTime("endpoint.http.user.post.executeTime", getDuration(startTime));
+            return tmp;
         }
         catch(Exception e){
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            statsd.recordExecutionTime("endpoint.http.user.put.executeTime", getDuration(startTime));
+            statsd.recordExecutionTime("endpoint.http.user.post.executeTime", getDuration(startTime));
             return null;
         }
     }
@@ -79,15 +81,16 @@ public class UserController {
     @RequestMapping(value="v1/user/self",method = RequestMethod.PUT)
     public JSONObject updateSelf(@RequestBody UserRepository request,HttpServletResponse response){
         statsd.incrementCounter("endpoint.http.user.put");
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         long startTime = System.currentTimeMillis();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
         statsd.recordExecutionTime("endpoint.http.user.put.queryTime", getDuration(startTime));
 
             try{
                 response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                JSONObject tmp = userService.updateSelf(request, userRepository,response);
                 statsd.recordExecutionTime("endpoint.http.user.put.executeTime", getDuration(startTime));
-                return userService.updateSelf(request, userRepository,response);
+                return tmp;
             }catch (Exception e)
             {
                 e.printStackTrace();

@@ -27,17 +27,26 @@ public class RecipeController {
     @Autowired
     private RecipeService recipeService;
 
+    public long getDuration(long startTime) {
+        long endTime = System.currentTimeMillis();
+        return endTime - startTime;
+    }
+
     private static final StatsDClient statsd = new NonBlockingStatsDClient("my.prefix", "localhost", 8125);
 
     @RequestMapping(value="v1/recipe",method = RequestMethod.POST,produces="application/json", consumes="application/json")
     @ResponseBody
     public JSONObject saveRecipe( @RequestBody RecipeRepository requestBody, HttpServletResponse response)
     {
-        statsd.incrementCounter("endpoint.http.recipe.save");
+        statsd.incrementCounter("endpoint.http.recipe.post");
+        long startTime = System.currentTimeMillis();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
+        statsd.recordExecutionTime("endpoint.http.recipe.post.queryTime", getDuration(startTime));
         response.setStatus(HttpServletResponse.SC_CREATED);
-        return recipeService.save(requestBody,userRepository.getId(),response);
+        JSONObject tmp = recipeService.save(requestBody,userRepository.getId(),response);
+        statsd.recordExecutionTime("endpoint.http.recipe.post.executeTime", getDuration(startTime));
+        return tmp;
     }
 
     @RequestMapping(value="v1/recipe/{id}",method = RequestMethod.PUT)
