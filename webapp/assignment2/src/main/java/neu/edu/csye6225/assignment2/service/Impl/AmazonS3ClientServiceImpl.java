@@ -16,6 +16,8 @@ import neu.edu.csye6225.assignment2.dao.RecipeDao;
 import neu.edu.csye6225.assignment2.entity.ImageRepository;
 import neu.edu.csye6225.assignment2.entity.RecipeRepository;
 import neu.edu.csye6225.assignment2.service.AmazonS3ClientService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -51,6 +53,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
     private RecipeDao recipeDao;
     @Autowired
     private RecipeServiceImpl recipeService;
+    private static final Logger log = LoggerFactory.getLogger(AmazonS3ClientServiceImpl.class);
     @Autowired
     private ImageDao imageDao;
     @Autowired
@@ -77,6 +80,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                 //check image or not
                 InputStream myInputStream = new ByteArrayInputStream(File.getBytes());
                 if (!isImage(myInputStream)) {
+                    log.error("Bad Request, this is not image!");
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad Request, this is not image!");
                     return null;
                 }
@@ -112,9 +116,10 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
 
         }catch(IOException| AmazonServiceException ex)
         {
-//          logger.error("error [" + ex.getMessage() + "] occurred while uploading [" + fileName + "] ");
+         log.error("error [" + ex.getMessage() + "] occurred while uploading ");
         }
         Images ImageData=new Images(images);
+        log.info("image uploaded");
         return  (JSONObject)JSON.toJSON(ImageData);
     }
 
@@ -133,13 +138,14 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                     exist = true;
                     amazonS3.deleteObject(new DeleteObjectRequest(image.getBucketName(), image.getFileName()));
                     imageDao.DeleteImage(image.getId());
-
+                    log.info("image deleted");
                     return null;
 
                 }
             }
             if(!exist)
             {
+                log.error("Not Found");
                 response.sendError(HttpServletResponse.SC_NOT_FOUND,"Not Found");
                 return null;
             }
@@ -247,6 +253,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
         Boolean ownRecipe = recipeService.ownRecipe(recipeId, authorId, response);
         if(!ownRecipe){
             try {
+                log.error("you can't update others recipes");
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "you can't update others recipes ");
             } catch (IOException e) {
                 e.printStackTrace();
