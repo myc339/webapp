@@ -48,9 +48,12 @@ public class AmazonClientHelper {
 //            GetInstanceProfileRequest request = new GetInstanceProfileRequest().withInstanceProfileName("profile");
 //            GetInstanceProfileResult response = client.getInstanceProfile(request);
 //            System.out.println(response.toString());
-
+            AWSCredentialsProviderChain providerChain = new AWSCredentialsProviderChain(
+                    InstanceProfileCredentialsProvider.getInstance(),
+                    new ProfileCredentialsProvider()
+            );
            return AmazonS3ClientBuilder.standard()
-                   .withCredentials(new InstanceProfileCredentialsProvider(false))
+                   .withCredentials(providerChain)
                    .build();
 //        }
 
