@@ -56,20 +56,7 @@ Content-Disposition: attachment; filename="userdata.txt"
 ####################################################
 # TOMCAT SHOULD BE INSTALLED WHEN BUILDING THE AMI #
 ####################################################
-sudo apt-get update
-sudo apt install default-jdk -y
-sudo groupadd tomcat
-sudo useradd -s /bin/false -g tomcat -d /opt/tomcat tomcat
-cd /tmp
-curl -O http://mirror.cc.columbia.edu/pub/software/apache/tomcat/tomcat-9/v9.0.27/bin/apache-tomcat-9.0.27.tar.gz
-sudo mkdir /opt/tomcat
-sudo tar xzvf apache-tomcat-9*tar.gz -C /opt/tomcat --strip-components=1
-sudo chmod 755 -R /opt/tomcat
-sudo chown -R tomcat:tomcat /opt/tomcat
-cd /opt/tomcat
-sudo chown -R tomcat:tomcat webapps/ work/ temp/ logs/
-sudo chmod 755 -R /opt/tomcat
-sudo touch /etc/systemd/system/tomcat.service
+
 cd /etc/systemd/system/
 echo '[Unit]' > tomcat.service
 echo 'Description=Apache Tomcat Web Application Container' >> tomcat.service
