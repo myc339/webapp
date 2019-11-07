@@ -1,2 +1,2 @@
 
-sudo systemctl start tomcat
+#sudo systemctl start tomcat
