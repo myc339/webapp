@@ -62,10 +62,12 @@ public class AmazonClientHelper {
             InstanceProfileCredentialsProvider credentialsProvider= new InstanceProfileCredentialsProvider(false);
             System.out.println("ec2 accessKeyID:"+credentialsProvider.getCredentials().getAWSAccessKeyId());
             System.out.println("ec2 secretKeyID:"+credentialsProvider.getCredentials().getAWSSecretKey());
+
+
 //            return AmazonS3ClientBuilder.standard()
 //                    .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
 //                    .withRegion(getAWSRegion().getName()).build();
-            return AmazonS3ClientBuilder.standard().withCredentials(new InstanceProfileCredentialsProvider(false)).build();
+            return AmazonS3ClientBuilder.standard().withCredentials(credentialsProvider).build();
 //            s3.setRegion(getAWSRegion());
 //            return s3;
 
