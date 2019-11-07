@@ -55,9 +55,12 @@ public class AmazonClientHelper {
 //            new ProfileCredentialsProvider()
 //            ,new SystemPropertiesCredentialsProvider(),
 //                    new EnvironmentVariableCredentialsProvider(),
-           return AmazonS3ClientBuilder.standard()
-                   .withCredentials( InstanceProfileCredentialsProvider.getInstance())
-                   .build();
+//           return AmazonS3ClientBuilder.standard()
+//                   .withCredentials( InstanceProfileCredentialsProvider.getInstance())
+//                   .build();
+            return AmazonS3ClientBuilder.standard()
+                    .withCredentials(new InstanceProfileCredentialsProvider(false))
+                    .build();
 //        }
 
         }
