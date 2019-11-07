@@ -46,10 +46,10 @@ public class AmazonClientHelper {
 
         } else {
             System.out.println("load credentials from ec2 instance profile?");
-            AmazonIdentityManagement client = AmazonIdentityManagementClientBuilder.standard().build();
-            GetInstanceProfileRequest request = new GetInstanceProfileRequest().withInstanceProfileName("profile");
-            GetInstanceProfileResult response = client.getInstanceProfile(request);
-            System.out.println(response.toString());
+//            AmazonIdentityManagement client = AmazonIdentityManagementClientBuilder.standard().build();
+//            GetInstanceProfileRequest request = new GetInstanceProfileRequest().withInstanceProfileName("profile");
+//            GetInstanceProfileResult response = client.getInstanceProfile(request);
+//            System.out.println(response.toString());
             return AmazonS3ClientBuilder.defaultClient();
 //            return AmazonS3ClientBuilder.standard().build();
 //        }
