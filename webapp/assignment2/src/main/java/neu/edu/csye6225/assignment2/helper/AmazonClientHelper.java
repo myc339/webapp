@@ -1,6 +1,7 @@
 package neu.edu.csye6225.assignment2.helper;
 
 import com.amazonaws.auth.*;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.identitymanagement.AmazonIdentityManagement;
