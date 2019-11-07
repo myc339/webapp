@@ -65,7 +65,7 @@ public class AmazonClientHelper {
         }
 
         }
-    }
+
     @Bean(name = "awsS3Bucket")
     public String getAWSS3Bucket() {
         return bucketName;
