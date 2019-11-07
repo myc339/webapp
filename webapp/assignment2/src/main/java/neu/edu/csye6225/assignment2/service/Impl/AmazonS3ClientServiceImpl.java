@@ -117,6 +117,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
         }catch(IOException| AmazonServiceException ex)
         {
          log.error("error [" + ex.getMessage() + "] occurred while uploading ");
+         return null;
         }
         Images ImageData=new Images(images);
         log.info("image uploaded");
