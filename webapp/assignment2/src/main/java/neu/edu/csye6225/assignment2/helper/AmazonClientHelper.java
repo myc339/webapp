@@ -18,11 +18,11 @@ import javax.annotation.PostConstruct;
 
 @Configuration
 public class AmazonClientHelper {
-    @Value("${accessKey}")
-    private String accessKey;
+    @Value("${accesskey}")
+    private String accesskey;
 
-    @Value("${secretKey}")
-    private String secretKey;
+    @Value("${accesskey}")
+    private String secretkey;
 
     @Value("${region}")
     private String region;
@@ -36,10 +36,10 @@ public class AmazonClientHelper {
 
 //        System.out.println("credentialsProvider:"+credentialsProvider.getCredentials().getAWSAccessKeyId());
 
-        System.out.println("accessKey:" + accessKey);
-        if (!accessKey.isEmpty()) {
+        System.out.println("accessKey:" + accesskey);
+        if (!accesskey.isEmpty()) {
             System.out.println("load credentials from properties");
-            BasicAWSCredentials awsCredentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
+            BasicAWSCredentials awsCredentials = new BasicAWSCredentials(this.accesskey, this.secretkey);
             return AmazonS3ClientBuilder.standard()
                     .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
                     .withRegion(getAWSRegion().getName()).build();
@@ -50,8 +50,8 @@ public class AmazonClientHelper {
 //            GetInstanceProfileRequest request = new GetInstanceProfileRequest().withInstanceProfileName("profile");
 //            GetInstanceProfileResult response = client.getInstanceProfile(request);
 //            System.out.println(response.toString());
-            return AmazonS3ClientBuilder.defaultClient();
-//            return AmazonS3ClientBuilder.standard().build();
+
+           return AmazonS3ClientBuilder.standard().build();
 //        }
 
         }
