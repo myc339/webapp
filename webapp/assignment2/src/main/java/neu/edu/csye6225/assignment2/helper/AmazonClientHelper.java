@@ -21,7 +21,7 @@ public class AmazonClientHelper {
     @Value("${accesskey}")
     private String accesskey;
 
-    @Value("${accesskey}")
+    @Value("${secretkey}")
     private String secretkey;
 
     @Value("${region}")

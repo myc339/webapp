@@ -42,19 +42,21 @@ jobs:
       - run:
           name: "run user integration  test "
           command: |
+
             cd ~/project/webapp/assignment2
             mvn -Dtest=UserRepositoryControllerTest test
       - run:
           name: "run recipe integration  test"
           command: |
+            sudo mysql -h 127.0.0.1 -uroot -p123456 -e "drop database spring2;create database spring2;"
             cd ~/project/webapp/assignment2
             mvn -Dtest=RecipeRepositoryControllerTest test
       - run:
           name: "run S3 integration  test"
           command: |
+            sudo mysql -h 127.0.0.1 -uroot -p123456 -e "drop database spring2;create database spring2;"
             cd ~/project/webapp/assignment2
             mvn -Dtest=FileHandlerControllerTest test
-
       - run:
           name: "build war "
           command: |
