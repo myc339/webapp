@@ -35,8 +35,8 @@ public class UserController {
         long endTime = System.currentTimeMillis();
         return endTime - startTime;
     }
-    @PostConstruct
-    public  void initialize(StatsDClient statsDClient){
+    @Autowired
+    public   UserController(StatsDClient statsDClient){
         this.statsd=statsDClient;
     }
 
@@ -48,7 +48,7 @@ public class UserController {
         long startTime = System.currentTimeMillis();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
-        statsd.recordExecutionTime("endpoint.http.user.get.queryTime", getDuration(startTime));
+//        statsd.recordExecutionTime("endpoint.http.user.get.queryTime", getDuration(startTime));
         if(userRepository !=null)
         {
             response.setStatus(HttpServletResponse.SC_OK);
@@ -87,7 +87,7 @@ public class UserController {
         long startTime = System.currentTimeMillis();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
-        statsd.recordExecutionTime("endpoint.http.user.put.queryTime", getDuration(startTime));
+//        statsd.recordExecutionTime("endpoint.http.user.put.queryTime", getDuration(startTime));
             try{
                 response.setStatus(HttpServletResponse.SC_NO_CONTENT);
                 JSONObject tmp = userService.updateSelf(request, userRepository,response);
