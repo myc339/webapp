@@ -58,11 +58,11 @@ public class AmazonClientHelper {
 //           return AmazonS3ClientBuilder.standard()
 //                   .withCredentials( InstanceProfileCredentialsProvider.getInstance())
 //                   .build();
-            return AmazonS3ClientBuilder.defaultClient();
-//            return AmazonS3ClientBuilder.standard()
-//                    .withCredentials(new InstanceProfileCredentialsProvider(false))
-//                    .build();
-//        }
+
+            return AmazonS3ClientBuilder.standard().withRegion(getAWSRegion().getName())
+                    .withCredentials(new InstanceProfileCredentialsProvider(false))
+                    .build();
+        }
 
         }
     }
