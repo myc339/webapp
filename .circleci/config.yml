@@ -76,7 +76,7 @@ jobs:
           name: "build war "
           command: |
             cd ~/project/webapp/assignment2
-            mvn clean package
+            mvn clean package -Dmaven.test.skip=true
 
     ### upload file to s3
       - run:
