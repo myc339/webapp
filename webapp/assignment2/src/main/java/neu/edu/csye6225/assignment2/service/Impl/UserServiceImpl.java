@@ -44,8 +44,9 @@ public class UserServiceImpl  implements UserService {
     public JSONObject save(UserRepository userRepository,HttpServletResponse response)
     {
         long startTime=System.currentTimeMillis();
-        statsd.incrementCounter("totalRequest.count"+ new String[]{"path:/v1/user"});
-        statsd.recordExecutionTime("latency"+new String[]{"path:/v1/user"}, System.currentTimeMillis() - startTime);
+//        statsd.count("");
+        statsd.incrementCounter("totalRequest.countPOST_USER");
+
         if(userDao.findQuery(userRepository.getEmail_address())!=null) {
             try {
                 log.error("email exists");
@@ -58,6 +59,7 @@ public class UserServiceImpl  implements UserService {
         if(!userRepository.getEmail_address().matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$"))
         {
             try {
+                log.error("email format invalid");
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "email format invalid");
             } catch (IOException e) {
                 e.printStackTrace();
@@ -68,6 +70,7 @@ public class UserServiceImpl  implements UserService {
         if(!userRepository.getPassword().matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[$@$!%*?&])[A-Za-z\\d$@$!%*?&]{8,16}"))
         {
             try {
+                log.error("password too weak!");
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "password too weak!");
             } catch (IOException e) {
                 e.printStackTrace();
@@ -81,7 +84,8 @@ public class UserServiceImpl  implements UserService {
         userRepository.setPassword(bCryptPasswordEncoder.encode(userRepository.getPassword()));
         userDao.save(userRepository);
         inMemoryUserDetailsManager.createUser(User.withUsername(userRepository.getEmail_address()).password(userRepository.getPassword()).roles("USER").build());
-
+        statsd.recordExecutionTime("POST_USER_TIME", System.currentTimeMillis() - startTime);
+        log.info("USER_CREATED");
         return (JSONObject)JSON.toJSON(userRepository);
     }
 
@@ -94,6 +98,7 @@ public class UserServiceImpl  implements UserService {
             if(!request.getPassword().matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[$@$!%*?&])[A-Za-z\\d$@$!%*?&]{8,16}"))
             {
                 try {
+                    log.error("password too weak!");
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "password too weak!");
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -105,10 +110,12 @@ public class UserServiceImpl  implements UserService {
             userRepository.setLast_name(request.getLast_name());
             inMemoryUserDetailsManager.updateUser(User.withUsername(userRepository.getEmail_address()).password(userRepository.getPassword()).roles("USER").build());
             userDao.save(userRepository);
+            log.info("user info updated");
             return (JSONObject)JSON.toJSON(userRepository);
         }
         else{
             try {
+                log.error("you can't update field besides first_name,last_name and password");
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "you can't update field besides first_name,last_name and password");
             } catch (IOException e) {
                 e.printStackTrace();

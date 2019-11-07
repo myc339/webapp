@@ -2,11 +2,14 @@ package neu.edu.csye6225.assignment2.service.Impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.timgroup.statsd.StatsDClient;
 import neu.edu.csye6225.assignment2.dao.OrderedListDao;
 import neu.edu.csye6225.assignment2.dao.RecipeDao;
 import neu.edu.csye6225.assignment2.entity.OrderedListRepository;
 import neu.edu.csye6225.assignment2.entity.RecipeRepository;
 import neu.edu.csye6225.assignment2.service.RecipeService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,15 +29,18 @@ public class RecipeServiceImpl implements RecipeService {
     private RecipeDao recipeDao;
     @Autowired
     private OrderedListDao orderedListDao;
-
+    private static final Logger log = LoggerFactory.getLogger(RecipeServiceImpl.class);
+    private static StatsDClient statsd;
     @Autowired
-    public RecipeServiceImpl( ) {
-
+    public RecipeServiceImpl(StatsDClient statsDClient ) {
+        this.statsd=statsDClient;
     }
 
     @Override
     public JSONObject save(RecipeRepository recipeRepository,String authorId, HttpServletResponse response)
     {
+        long startTime=System.currentTimeMillis();
+        statsd.incrementCounter("totalRequest.countPOST_RECIPE");
         if(!checkRequestBody(recipeRepository, response)){
             return null;
         }
@@ -51,6 +57,8 @@ public class RecipeServiceImpl implements RecipeService {
 //        System.out.println(recipeRepository.getIngredients().toString());
         recipeRepository.setIngredients1(recipeRepository.getIngredients().toString());
         recipeDao.save(recipeRepository);
+        statsd.recordExecutionTime("POST_RECIPE_TIME", System.currentTimeMillis() - startTime);
+        log.info("RECIPE_CREATED");
        return (JSONObject) JSON.toJSON(recipeRepository);
     }
 
@@ -62,6 +70,7 @@ public class RecipeServiceImpl implements RecipeService {
         Boolean ownRecipe = ownRecipe(recipeId, authorId, response);
         if(!ownRecipe){
             try {
+                log.error("you can't update others recipes");
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You can't update others recipes ");
             } catch (IOException e) {
                 e.printStackTrace();
@@ -96,6 +105,7 @@ public class RecipeServiceImpl implements RecipeService {
         }
 
         recipeDao.save(recipe);
+        log.info("recipe updated");
         return (JSONObject)JSON.toJSON(recipe);
     }
 
@@ -107,6 +117,7 @@ public class RecipeServiceImpl implements RecipeService {
         Boolean ownRecipe = ownRecipe(recipeId, authorId, response);
         if(!ownRecipe){
             try {
+                log.error("you can't delete others recipes ");
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "you can't delete others recipes ");
             } catch (IOException e) {
                 e.printStackTrace();
@@ -116,6 +127,7 @@ public class RecipeServiceImpl implements RecipeService {
 
         RecipeRepository recipeRepository = recipeDao.getOne(recipeId);
         recipeDao.delete(recipeRepository);
+        log.info("recipe deleted");
         return (JSONObject)JSON.toJSON(recipeRepository);
     }
 
@@ -134,6 +146,8 @@ public class RecipeServiceImpl implements RecipeService {
                 ||request.getUpdated_ts()!=null){
 
             try {
+                log.error("You can't update field including id,created_ts,updated_ts," +
+                        "author_id and total_time_in_min!");
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "You can't update field including id,created_ts,updated_ts," +
                         "author_id and total_time_in_min!");
             } catch (IOException e) {
@@ -145,6 +159,7 @@ public class RecipeServiceImpl implements RecipeService {
         for(OrderedListRepository o : request.getSteps()){
             if(o.getPosition() < 1){
                 try {
+                    log.error("Position filed of OrderList can't be smaller than 1!");
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Position filed of OrderList can't be smaller than 1!");
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -156,6 +171,7 @@ public class RecipeServiceImpl implements RecipeService {
         //check cook&pre time's Min & Max
         if(request.getCook_time_in_min()%5 != 0 || request.getPrep_time_in_min()%5 != 0 ||request.getCook_time_in_min() < 0 || request.getPrep_time_in_min() < 0){
             try {
+                log.error("Cook time & prepare time should be multiple of 5!");
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Cook time & prepare time should be multiple of 5!");
             } catch (IOException e) {
                 e.printStackTrace();
@@ -165,6 +181,7 @@ public class RecipeServiceImpl implements RecipeService {
         //check serving of recipe
         if(request.getServings() < 1 || request.getServings() >5){
             try {
+                log.error("Serving's minimum is 1, maximum is 5!");
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Serving's minimum is 1, maximum is 5!");
             } catch (IOException e) {
                 e.printStackTrace();
@@ -176,6 +193,7 @@ public class RecipeServiceImpl implements RecipeService {
         for(String s : request.getIngredients()){
             if(set.contains(s)){
                 try {
+                    log.error("Ingredients's item should be unique!");
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Ingredients's item should be unique!");
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -205,6 +223,7 @@ public class RecipeServiceImpl implements RecipeService {
         }
         catch (Exception e){
             try {
+                log.error("There is no such recipe with this ID!!!");
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no such recipe with this ID!!!");
                 return false;
             } catch (IOException ie) {

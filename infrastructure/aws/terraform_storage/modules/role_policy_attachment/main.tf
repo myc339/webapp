@@ -7,3 +7,11 @@ resource "aws_iam_role_policy_attachment" "CodeDeployServiceRole_attachment" {
   role       = "${var.CodeDeployServiceRole}"
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
 }
+resource "aws_iam_role_policy_attachment" "CloudWatchAgentServerRole_attachment" {
+  role = "${var.CodeDeployEC2ServiceRole}"
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+}
+resource "aws_iam_role_policy_attachment" "AmazonS3FullAccess_attachment" {
+  role = "${var.CodeDeployEC2ServiceRole}"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+}

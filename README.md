@@ -75,4 +75,8 @@ using data below to run recipe related API
 mvn spring-boot:run -Dspring-boot.run.arguments=--region=[region],--bucketName=[bucketName],--accessKey=[accessKey],--secretKey=[secretKey],--dbURL=[database address],--dbName=[database name]</pre></code>
 ## CI/CD
 
+check cloudwatch agent status,it should be running after code deployment succeed
+<pre><code>
+/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -m ec2 -a status</code></pre>
+
 
