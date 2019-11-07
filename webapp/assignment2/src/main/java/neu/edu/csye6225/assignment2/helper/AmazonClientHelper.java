@@ -45,7 +45,10 @@ public class AmazonClientHelper {
         }
         else{
             System.out.println("load credentials from ec2 instance profile?");
-            return AmazonS3ClientBuilder.defaultClient();
+//            return AmazonS3ClientBuilder.defaultClient();
+            return AmazonS3ClientBuilder.standard()
+                    .withCredentials(new InstanceProfileCredentialsProvider(false))
+                    .build();
         }
 
     }
