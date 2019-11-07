@@ -49,14 +49,14 @@ public class AmazonClientHelper {
 //            GetInstanceProfileRequest request = new GetInstanceProfileRequest().withInstanceProfileName("profile");
 //            GetInstanceProfileResult response = client.getInstanceProfile(request);
 //            System.out.println(response.toString());
-            AWSCredentialsProviderChain providerChain = new AWSCredentialsProviderChain(
-                    InstanceProfileCredentialsProvider.getInstance()
-            );
+//            AWSCredentialsProviderChain providerChain = new AWSCredentialsProviderChain(
+//                    InstanceProfileCredentialsProvider.getInstance()
+//            );
 //            new ProfileCredentialsProvider()
 //            ,new SystemPropertiesCredentialsProvider(),
 //                    new EnvironmentVariableCredentialsProvider(),
            return AmazonS3ClientBuilder.standard()
-                   .withCredentials(providerChain)
+                   .withCredentials( InstanceProfileCredentialsProvider.getInstance())
                    .build();
 //        }
 
