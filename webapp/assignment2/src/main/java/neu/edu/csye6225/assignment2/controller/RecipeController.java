@@ -26,13 +26,15 @@ public class RecipeController {
 
     @Autowired
     private RecipeService recipeService;
-
+    private static StatsDClient statsd;
     public long getDuration(long startTime) {
         long endTime = System.currentTimeMillis();
         return endTime - startTime;
     }
-
-    private static final StatsDClient statsd = new NonBlockingStatsDClient("my.prefix", "localhost", 8125);
+    @Autowired
+    public   RecipeController(StatsDClient statsDClient){
+        this.statsd=statsDClient;
+    }
 
     @RequestMapping(value="v1/recipe",method = RequestMethod.POST,produces="application/json", consumes="application/json")
     @ResponseBody

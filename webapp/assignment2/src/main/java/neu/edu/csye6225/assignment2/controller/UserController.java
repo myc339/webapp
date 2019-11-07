@@ -29,7 +29,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-    @Autowired
     private static StatsDClient statsd;
     public long getDuration(long startTime) {
         long endTime = System.currentTimeMillis();
