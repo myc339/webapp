@@ -32,8 +32,6 @@ public class AmazonClientHelper {
 
     @Bean(name="amazonS3")
     public AmazonS3 getAWSCredentials() {
-        InstanceProfileCredentialsProvider credentialsProvider = new InstanceProfileCredentialsProvider(true);
-
 //        System.out.println("credentialsProvider:"+credentialsProvider.getCredentials().getAWSAccessKeyId());
 
         System.out.println("accessKey:" + accesskey);
@@ -51,7 +49,9 @@ public class AmazonClientHelper {
 //            GetInstanceProfileResult response = client.getInstanceProfile(request);
 //            System.out.println(response.toString());
 
-           return AmazonS3ClientBuilder.standard().build();
+           return AmazonS3ClientBuilder.standard()
+                   .withCredentials(new InstanceProfileCredentialsProvider(false))
+                   .build();
 //        }
 
         }
