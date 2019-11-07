@@ -64,12 +64,15 @@ jobs:
       - run:
           name: "run recipe integration  test"
           command: |
-            sleep 5
+            sleep 15
+            sudo mysql -h 127.0.0.1 -uroot -p123456 -e "drop database spring2;create database spring2;"
             cd ~/project/webapp/assignment2
             mvn -Dtest=RecipeRepositoryControllerTest test
       - run:
           name: "run S3 integration  test"
           command: |
+            sleep 15
+            sudo mysql -h 127.0.0.1 -uroot -p123456 -e "drop database spring2;create database spring2;"
             cd ~/project/webapp/assignment2
             mvn -Dtest=FileHandlerControllerTest test
       - run:
