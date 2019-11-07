@@ -3,6 +3,10 @@ package neu.edu.csye6225.assignment2.helper;
 import com.amazonaws.auth.*;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
+import com.amazonaws.services.identitymanagement.AmazonIdentityManagement;
+import com.amazonaws.services.identitymanagement.AmazonIdentityManagementClientBuilder;
+import com.amazonaws.services.identitymanagement.model.GetInstanceProfileRequest;
+import com.amazonaws.services.identitymanagement.model.GetInstanceProfileResult;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
@@ -42,8 +46,12 @@ public class AmazonClientHelper {
 
         } else {
             System.out.println("load credentials from ec2 instance profile?");
-//            return AmazonS3ClientBuilder.defaultClient();
-            return AmazonS3ClientBuilder.standard().build();
+            AmazonIdentityManagement client = AmazonIdentityManagementClientBuilder.standard().build();
+            GetInstanceProfileRequest request = new GetInstanceProfileRequest().withInstanceProfileName("profile");
+            GetInstanceProfileResult response = client.getInstanceProfile(request);
+            System.out.println(response.toString());
+            return AmazonS3ClientBuilder.defaultClient();
+//            return AmazonS3ClientBuilder.standard().build();
 //        }
 
         }
