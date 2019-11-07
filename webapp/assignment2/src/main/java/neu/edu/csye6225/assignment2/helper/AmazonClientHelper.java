@@ -27,7 +27,7 @@ public class AmazonClientHelper {
     @Value("${bucketName}")
     private String bucketName;
 
-    @Bean(name="awsCredentialsProvider")
+    @Bean(name="amazonS3")
     public AmazonS3 getAWSCredentials() {
         InstanceProfileCredentialsProvider credentialsProvider=new InstanceProfileCredentialsProvider(true);
 
