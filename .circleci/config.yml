@@ -74,7 +74,9 @@ jobs:
             mvn -Dtest=FileHandlerControllerTest test
       - run:
           name: "build war "
-          command: mvn clean package
+          command: |
+            cd ~/project/webapp/assignment2
+            mvn clean package
 
     ### upload file to s3
       - run:
