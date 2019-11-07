@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -28,20 +29,22 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
+    @Autowired
+    private static StatsDClient statsd;
     public long getDuration(long startTime) {
         long endTime = System.currentTimeMillis();
         return endTime - startTime;
     }
-
-    private static final StatsDClient statsd = new NonBlockingStatsDClient("my.prefix", "localhost", 8125);
+    @PostConstruct
+    public  void initialize(StatsDClient statsDClient){
+        this.statsd=statsDClient;
+    }
 
     @RequestMapping(value = "v1/user/self",method= RequestMethod.GET)
     public JSONObject findByAccountAndPassword(HttpServletRequest request, HttpServletResponse response)
     {
 
         statsd.incrementCounter("endpoint.http.user.get");
-        statsd.count("endpoint.user.get",1);
         long startTime = System.currentTimeMillis();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
