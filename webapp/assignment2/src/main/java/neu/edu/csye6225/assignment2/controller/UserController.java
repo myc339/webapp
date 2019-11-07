@@ -39,7 +39,9 @@ public class UserController {
     @RequestMapping(value = "v1/user/self",method= RequestMethod.GET)
     public JSONObject findByAccountAndPassword(HttpServletRequest request, HttpServletResponse response)
     {
+
         statsd.incrementCounter("endpoint.http.user.get");
+        statsd.count("endpoint.user.get",1);
         long startTime = System.currentTimeMillis();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
