@@ -67,7 +67,7 @@ public class AmazonClientHelper {
 //            return AmazonS3ClientBuilder.standard()
 //                    .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
 //                    .withRegion(getAWSRegion().getName()).build();
-            return AmazonS3ClientBuilder.standard().withCredentials(credentialsProvider).build();
+            return AmazonS3ClientBuilder.standard().withCredentials(credentialsProvider).withRegion(getAWSRegion().getName()).build();
 //            s3.setRegion(getAWSRegion());
 //            return s3;
 
