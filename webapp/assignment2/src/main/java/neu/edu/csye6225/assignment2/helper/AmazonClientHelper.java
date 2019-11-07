@@ -1,8 +1,13 @@
 package neu.edu.csye6225.assignment2.helper;
 
 import com.amazonaws.auth.*;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
+import com.amazonaws.services.identitymanagement.AmazonIdentityManagement;
+import com.amazonaws.services.identitymanagement.AmazonIdentityManagementClientBuilder;
+import com.amazonaws.services.identitymanagement.model.GetInstanceProfileRequest;
+import com.amazonaws.services.identitymanagement.model.GetInstanceProfileResult;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
@@ -14,12 +19,11 @@ import javax.annotation.PostConstruct;
 
 @Configuration
 public class AmazonClientHelper {
-    private AmazonS3 s3client;
-    @Value("${accessKey}")
-    private String accessKey;
+    @Value("${accesskey}")
+    private String accesskey;
 
-    @Value("${secretKey}")
-    private String secretKey;
+    @Value("${secretkey}")
+    private String secretkey;
 
     @Value("${region}")
     private String region;
@@ -27,28 +31,41 @@ public class AmazonClientHelper {
     @Value("${bucketName}")
     private String bucketName;
 
-    @Bean(name="awsCredentialsProvider")
+    @Bean(name="amazonS3")
     public AmazonS3 getAWSCredentials() {
-        InstanceProfileCredentialsProvider credentialsProvider=new InstanceProfileCredentialsProvider(true);
-
 //        System.out.println("credentialsProvider:"+credentialsProvider.getCredentials().getAWSAccessKeyId());
 
-        System.out.println("accessKey:"+accessKey);
-        if(!accessKey.isEmpty())
-        {
+        System.out.println("accessKey:" + accesskey);
+        if (!accesskey.isEmpty()) {
             System.out.println("load credentials from properties");
-            BasicAWSCredentials awsCredentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
+            BasicAWSCredentials awsCredentials = new BasicAWSCredentials(this.accesskey, this.secretkey);
             return AmazonS3ClientBuilder.standard()
-                    .withCredentials( new AWSStaticCredentialsProvider(awsCredentials))
+                    .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
                     .withRegion(getAWSRegion().getName()).build();
 
-        }
-        else{
+        } else {
             System.out.println("load credentials from ec2 instance profile?");
-            return AmazonS3ClientBuilder.defaultClient();
+//            AmazonIdentityManagement client = AmazonIdentityManagementClientBuilder.standard().build();
+//            GetInstanceProfileRequest request = new GetInstanceProfileRequest().withInstanceProfileName("profile");
+//            GetInstanceProfileResult response = client.getInstanceProfile(request);
+//            System.out.println(response.toString());
+//            AWSCredentialsProviderChain providerChain = new AWSCredentialsProviderChain(
+//                    InstanceProfileCredentialsProvider.getInstance()
+//            );
+//            new ProfileCredentialsProvider()
+//            ,new SystemPropertiesCredentialsProvider(),
+//                    new EnvironmentVariableCredentialsProvider(),
+//           return AmazonS3ClientBuilder.standard()
+//                   .withCredentials( InstanceProfileCredentialsProvider.getInstance())
+//                   .build();
+
+            return AmazonS3ClientBuilder.standard().withRegion(getAWSRegion().getName())
+                    .withCredentials(new InstanceProfileCredentialsProvider(false))
+                    .build();
         }
 
-    }
+        }
+
     @Bean(name = "awsS3Bucket")
     public String getAWSS3Bucket() {
         return bucketName;
