@@ -93,7 +93,6 @@ chown tomcat:tomcat setenv.sh
 chmod +x setenv.sh
 sudo chmod 755 -R /opt/tomcat
 # Start Tomcat
-/bin/bash /opt/tomcat/bin/catalina.sh start
 --//
 EOF
 }
