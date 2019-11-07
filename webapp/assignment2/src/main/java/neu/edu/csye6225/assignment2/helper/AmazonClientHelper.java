@@ -49,9 +49,10 @@ public class AmazonClientHelper {
 //            GetInstanceProfileRequest request = new GetInstanceProfileRequest().withInstanceProfileName("profile");
 //            GetInstanceProfileResult response = client.getInstanceProfile(request);
 //            System.out.println(response.toString());
-//            AWSCredentialsProviderChain providerChain = new AWSCredentialsProviderChain(
-//                    InstanceProfileCredentialsProvider.getInstance()
-//            );
+            AWSCredentialsProviderChain providerChain = new AWSCredentialsProviderChain(
+                    InstanceProfileCredentialsProvider.getInstance(),
+                    new InstanceProfileCredentialsProvider(false)
+            );
 //            new ProfileCredentialsProvider()
 //            ,new SystemPropertiesCredentialsProvider(),
 //                    new EnvironmentVariableCredentialsProvider(),
@@ -60,6 +61,7 @@ public class AmazonClientHelper {
 //                   .build();
 //            new ProfileCredentialsProvider();
             InstanceProfileCredentialsProvider credentialsProvider= new InstanceProfileCredentialsProvider(false);
+
             System.out.println("ec2 accessKeyID:"+credentialsProvider.getCredentials().getAWSAccessKeyId());
             System.out.println("ec2 secretKeyID:"+credentialsProvider.getCredentials().getAWSSecretKey());
 
@@ -67,7 +69,7 @@ public class AmazonClientHelper {
 //            return AmazonS3ClientBuilder.standard()
 //                    .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
 //                    .withRegion(getAWSRegion().getName()).build();
-            return AmazonS3ClientBuilder.standard().withCredentials(credentialsProvider).withRegion(getAWSRegion().getName()).build();
+            return AmazonS3ClientBuilder.standard().withCredentials(providerChain).withRegion(getAWSRegion().getName()).build();
 //            s3.setRegion(getAWSRegion());
 //            return s3;
 
