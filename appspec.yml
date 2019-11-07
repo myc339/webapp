@@ -1,12 +1,13 @@
-# version: 0.0
-# os: linux
-
-# files:             
-#   - source: ./webapp/build/libs/ROOT.war
-#     destination: /opt/tomcat/webapps
-
-# hooks:
-#   AfterInstall:
-#    - location: ./afterInstall.sh
-#      timeout: 180
-#      runas: centos
+version: 0.0
+os: linux
+files:
+  - source: webapp
+    destination: /var/webapps
+hooks:
+  AfterInstall:
+    - location: scripts/setup_spring.sh
+      timeout: 180
+      runas: centos
+    - location: scripts/setup_cwagent.sh
+      timeout: 180
+      runas: centos

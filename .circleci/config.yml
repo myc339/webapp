@@ -2,7 +2,98 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/openjdk:8-jdk
+      - image: circleci/python:3.7
+      - image: circleci/mariadb:10.3
+        environment:
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_DB: spring2
+          MYSQL_USER: root
+          MYSQL_ROOT_PASSWORD: 123456
+          FILE_NAME: webapp_${CIRCLE_BUILD_NUM}.zip
     steps:
       - checkout
-      
+      - run:
+          name: "install mysql,aws-cli,zip,mvn"
+          command: |
+            sudo apt-get install -y zip
+            pip3 install --upgrade --user awscli
+            sudo apt-get install -y mariadb-client
+            sudo apt install maven
+      - run:
+          name: "check zip,mysql,awscli,mvn"
+          command: |
+            zip
+            aws --version
+            mysql --version
+            mvn --version
+      - run:
+          name: "database test"
+          command: sudo mysql -h 127.0.0.1 -uroot -p123456 -e "create database spring2;"
+      - run:
+          name: "add parameters into application-test.properties"
+          command: |
+            cd ~/project/webapp/assignment2/src/test/resources
+            echo "region=${region}">>application-test.properties
+            echo "bucketName=${aws_bucketName}">>application-test.properties
+            echo "accessKey=${aws_access_key}">>application-test.properties
+            echo "secretKey=${aws_secret_key}">>application-test.properties
+      ### terraform apply
+
+#      - run:
+#          name: "terraform install"
+#          command: |
+#            wget https://releases.hashicorp.com/terraform/0.12.10/terraform_0.12.10_linux_amd64.zip
+#            unzip terraform_0.12.10_linux_amd64.zip
+#            sudo mv terraform /usr/local/bin/
+#      - run:
+#          name: "terraform apply"
+#          command: |
+#            cd ~/project/infrastructure/aws/terraform_storage
+#            terraform init
+#            terraform validate
+#            terraform plan  -var "accessKey=${AWS_ACCESS_KEY_ID}" -var "account_id=${account_id}" -var "ami=${ami_id}" -var "aws_region=${region}" -var "dbName=${dbName}" -var "dbPassword=${dbPassword}" -var "dbUsername=${dbUsername}" -var "domain_name=${domain_name}" -var "key_pair_name=${key_pair_name}" -var "aws_access_key=${aws_access_key}" -var "aws_secret_key=${aws_secret_key}" -var "secretKey=${AWS_SECRET_ACCESS_KEY}"
+#            terraform destroy  -var "accessKey=${AWS_ACCESS_KEY_ID}" -var "account_id=${account_id}" -var "ami=${ami_id}" -var "aws_region=${region}" -var "dbName=${dbName}" -var "dbPassword=${dbPassword}" -var "dbUsername=${dbUsername}" -var "domain_name=${domain_name}" -var "key_pair_name=${key_pair_name}" -var "aws_access_key=${aws_access_key}" -var "aws_secret_key=${aws_secret_key}" -var "secretKey=${AWS_SECRET_ACCESS_KEY}" -auto-approve
+#            terraform apply -var "accessKey=${AWS_ACCESS_KEY_ID}" -var "account_id=${account_id}" -var "ami=${ami_id}" -var "aws_region=${region}" -var "dbName=${dbName}" -var "dbPassword=${dbPassword}" -var "dbUsername=${dbUsername}" -var "domain_name=${domain_name}" -var "key_pair_name=${key_pair_name}" -var "aws_access_key=${aws_access_key}" -var "aws_secret_key=${aws_secret_key}" -var "secretKey=${AWS_SECRET_ACCESS_KEY}" -auto-approve
+    ## run integration test
+      - run: echo "export BUCKET_NAME=codedeploy.${aws_bucketName}" >>$BASH_ENV
+      - run:
+          name: "run user integration  test "
+          command: |
+            cd ~/project/webapp/assignment2
+            mvn -Dtest=UserRepositoryControllerTest test
+      - run:
+          name: "run recipe integration  test"
+          command: |
+            sleep 5
+            cd ~/project/webapp/assignment2
+            mvn -Dtest=RecipeRepositoryControllerTest test
+      - run:
+          name: "run S3 integration  test"
+          command: |
+            cd ~/project/webapp/assignment2
+            mvn -Dtest=FileHandlerControllerTest test
+      - run:
+          name: "build war "
+          command: |
+            cd ~/project/webapp/assignment2
+            mvn clean package -Dmaven.test.skip=true
+
+    ### upload file to s3
+      - run:
+          name: "set env vars"
+          command: |
+            echo "export FILE_NAME=webapp_${CIRCLE_BUILD_NUM}.zip" >> $BASH_ENV
+            source $BASH_ENV
+            echo $FILE_NAME
+      - run:
+          name: "zip"
+          command: |
+            cd ~/project
+            zip -r ~/$FILE_NAME *
+      - run:
+          name: "update zip file on s3"
+          command: aws s3 cp ~/$FILE_NAME s3://${BUCKET_NAME} --sse aws:kms
+    #### send codedeploy request
+      - run:
+          name: "create code deployment"
+          command: aws deploy create-deployment  --region ${region} --application-name csye6225-webapp  --deployment-group-name csye6225-webapp-deployment --s3-location bucket=${BUCKET_NAME},bundleType=zip,key=$FILE_NAME

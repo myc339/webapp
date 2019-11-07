@@ -29,6 +29,7 @@ public class FileHandlerController {
     {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
+        response.setStatus(HttpServletResponse.SC_CREATED);
         return this.amazonS3ClientService.uploadFileToS3Bucket(id,userRepository.getId(),file, true,response);
     }
     @Async
@@ -45,6 +46,7 @@ public class FileHandlerController {
     {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
+        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         return  this.amazonS3ClientService.deleteFileFromS3Bucket(id,userRepository.getId(),imageId,response);
     }
     @Async

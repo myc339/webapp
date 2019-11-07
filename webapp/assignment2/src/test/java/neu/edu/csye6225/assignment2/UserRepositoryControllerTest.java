@@ -2,28 +2,25 @@ package neu.edu.csye6225.assignment2;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import neu.edu.csye6225.assignment2.entity.UserRepository;
-import org.apache.tomcat.util.codec.binary.Base64;
-import org.junit.*;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
+
+import org.apache.commons.codec.binary.Base64;
+import org.junit.After;
+import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.UUID;
+
+import java.sql.Timestamp;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,10 +28,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK,classes =Assignment2Application.class )
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 @FixMethodOrder(MethodSorters.JVM)
 public class UserRepositoryControllerTest {
     @Autowired
     private MockMvc mvc;
+
     private static String email;
     private static UserRepository u;
     private static String password;
@@ -43,8 +42,10 @@ public class UserRepositoryControllerTest {
     @BeforeClass
     public static void init()
     {
+
         password="1111Test!!";
-        email=UUID.randomUUID().toString()+"@email.com";
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        email=timestamp.getTime()/10+"@email.com";
         basicDigestHeaderValue = "Basic " + new String(Base64.encodeBase64((email+":"+password).getBytes()));
         u =new UserRepository(email,password,"test","admin");
     }
