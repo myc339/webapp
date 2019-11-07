@@ -63,7 +63,7 @@ echo 'Description=Apache Tomcat Web Application Container' >> tomcat.service
 echo 'After=syslog.target network.target' >> tomcat.service
 echo '[Service]' >> tomcat.service
 echo 'Type=forking' >> tomcat.service
-echo 'Environment=JAVA_HOME=/usr/bin/java' >> tomcat.service
+echo 'Environment=JAVA_HOME=/usr' >> tomcat.service
 echo 'Environment=CATALINA_PID=/opt/tomcat/temp/tomcat.pid' >> tomcat.service
 echo 'Environment=CATALINA_HOME=/opt/tomcat' >> tomcat.service
 echo 'Environment=CATALINA_BASE=/opt/tomcat' >> tomcat.service
