@@ -17,16 +17,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 //        (exclude =  SecurityAutoConfiguration.class)
 @EnableWebSecurity
 //        (exclude = {SecurityAutoConfiguration.class })
-public class Assignment2Application extends  SpringBootServletInitializer{
+public class Assignment2Application {
     public static void main(String[] args) {
         SpringApplication.run(Assignment2Application.class, args);
 
     }
 
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        return builder.sources(Assignment2Application.class);
-    }
+
 
 
 
