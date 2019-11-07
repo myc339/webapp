@@ -14,12 +14,11 @@ import javax.annotation.PostConstruct;
 
 @Configuration
 public class AmazonClientHelper {
-    private AmazonS3 s3client;
-//    @Value("${accessKey}")
-//    private String accessKey;
-//
-//    @Value("${secretKey}")
-//    private String secretKey;
+    @Value("${accessKey}")
+    private String accessKey;
+
+    @Value("${secretKey}")
+    private String secretKey;
 
     @Value("${region}")
     private String region;
@@ -29,26 +28,25 @@ public class AmazonClientHelper {
 
     @Bean(name="amazonS3")
     public AmazonS3 getAWSCredentials() {
-        InstanceProfileCredentialsProvider credentialsProvider=new InstanceProfileCredentialsProvider(true);
+        InstanceProfileCredentialsProvider credentialsProvider = new InstanceProfileCredentialsProvider(true);
 
 //        System.out.println("credentialsProvider:"+credentialsProvider.getCredentials().getAWSAccessKeyId());
 
-//        System.out.println("accessKey:"+accessKey);
-//        if(!accessKey.isEmpty())
-//        {
-//            System.out.println("load credentials from properties");
-//            BasicAWSCredentials awsCredentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
-//            return AmazonS3ClientBuilder.standard()
-//                    .withCredentials( new AWSStaticCredentialsProvider(awsCredentials))
-//                    .withRegion(getAWSRegion().getName()).build();
-//
-//        }
-//        else{
+        System.out.println("accessKey:" + accessKey);
+        if (!accessKey.isEmpty()) {
+            System.out.println("load credentials from properties");
+            BasicAWSCredentials awsCredentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
+            return AmazonS3ClientBuilder.standard()
+                    .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
+                    .withRegion(getAWSRegion().getName()).build();
+
+        } else {
             System.out.println("load credentials from ec2 instance profile?");
 //            return AmazonS3ClientBuilder.defaultClient();
             return AmazonS3ClientBuilder.standard().build();
 //        }
 
+        }
     }
     @Bean(name = "awsS3Bucket")
     public String getAWSS3Bucket() {
