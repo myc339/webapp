@@ -14,6 +14,7 @@ import com.amazonaws.services.identitymanagement.model.GetInstanceProfileResult;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.securitytoken.AWSSecurityTokenServiceClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -48,26 +49,14 @@ public class AmazonClientHelper {
 
         } else {
             System.out.println("load credentials from ec2 instance profile?");
-//            new ProfileCredentialsProvider()
-//            ,new SystemPropertiesCredentialsProvider(),
-//                    new EnvironmentVariableCredentialsProvider(),
-//           return AmazonS3ClientBuilder.standard()
-//                   .withCredentials( InstanceProfileCredentialsProvider.getInstance())
-//                   .build();
-//            new ProfileCredentialsProvider();
             InstanceProfileCredentialsProvider credentialsProvider= new InstanceProfileCredentialsProvider(false);
             System.out.println("ec2 accessKeyID:"+credentialsProvider.getCredentials().getAWSAccessKeyId());
             System.out.println("ec2 secretKeyID:"+credentialsProvider.getCredentials().getAWSSecretKey());
-            ClientConfiguration clientConfig = new ClientConfiguration();
-            clientConfig.setProtocol(Protocol.HTTP);
             return AmazonS3ClientBuilder.standard().withCredentials(credentialsProvider)
-                    .withRegion(getAWSRegion().getName()).withClientConfiguration(clientConfig).withPayloadSigningEnabled(true).build();
-//            s3.setRegion(getAWSRegion());
-//            return s3;
-
+                    .withRegion(getAWSRegion().getName()).build();
         }
 
-        }
+    }
 
     @Bean(name = "awsS3Bucket")
     public String getAWSS3Bucket() {
