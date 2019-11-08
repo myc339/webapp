@@ -31,10 +31,6 @@ public class RecipeServiceImpl implements RecipeService {
     private OrderedListDao orderedListDao;
     private static final Logger log = LoggerFactory.getLogger(RecipeServiceImpl.class);
     private static StatsDClient statsd;
-    @Autowired
-    public RecipeServiceImpl(StatsDClient statsDClient ) {
-        this.statsd=statsDClient;
-    }
 
     @Override
     public JSONObject save(RecipeRepository recipeRepository,String authorId, HttpServletResponse response)
