@@ -20,34 +20,22 @@ import com.timgroup.statsd.NonBlockingStatsDClient;
 public class UserController {
 
     @Autowired
-    private UserDao userDao;
-
-    @Autowired
     private UserService userService;
-    private static final StatsDClient statsd=new NonBlockingStatsDClient("ccwebapp.","locahost",8125);
-    public long getDuration(long startTime) {
-        long endTime = System.currentTimeMillis();
-        return endTime - startTime;
-    }
+
 
     @RequestMapping(value = "v1/user/self",method= RequestMethod.GET)
     public JSONObject findByAccountAndPassword(HttpServletRequest request, HttpServletResponse response)
     {
 
-        statsd.incrementCounter("endpoint.http.user.get");
-        long startTime = System.currentTimeMillis();
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserRepository userRepository =userDao.findQuery(auth.getName());
-//        statsd.recordExecutionTime("endpoint.http.user.get.queryTime", getDuration(startTime));
-        if(userRepository !=null)
-        {
+
+        try {
             response.setStatus(HttpServletResponse.SC_OK);
-            JSONObject tmp = (JSONObject)JSON.toJSON(userRepository);
-            statsd.recordExecutionTime("endpoint.http.user.get.executeTime", getDuration(startTime));
-            return tmp;
+            return userService.getSelf();
+        }catch(Exception e){
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return null;
         }
-        statsd.recordExecutionTime("endpoint.http.user.get.executeTime", getDuration(startTime));
-        return null;
 
     }
 
@@ -55,41 +43,29 @@ public class UserController {
     @ResponseBody
     public JSONObject saveUser(@RequestBody UserRepository request,HttpServletResponse response)
     {
-        statsd.incrementCounter("endpoint.http.user.post");
-        long startTime = System.currentTimeMillis();
         try{
             response.setStatus(HttpServletResponse.SC_CREATED);
-            JSONObject tmp = userService.save(request,response);
-            statsd.recordExecutionTime("endpoint.http.user.post.executeTime", getDuration(startTime));
-            return tmp;
+            return userService.save(request,response);
         }
         catch(Exception e){
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            statsd.recordExecutionTime("endpoint.http.user.post.executeTime", getDuration(startTime));
             return null;
         }
     }
     //only permit update firstname,lastname,password
     @RequestMapping(value="v1/user/self",method = RequestMethod.PUT)
     public JSONObject updateSelf(@RequestBody UserRepository request,HttpServletResponse response){
-        statsd.incrementCounter("endpoint.http.user.put");
-        long startTime = System.currentTimeMillis();
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserRepository userRepository =userDao.findQuery(auth.getName());
-//        statsd.recordExecutionTime("endpoint.http.user.put.queryTime", getDuration(startTime));
-            try{
-                response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-                JSONObject tmp = userService.updateSelf(request, userRepository,response);
-                statsd.recordExecutionTime("endpoint.http.user.put.executeTime", getDuration(startTime));
-                return tmp;
-            }catch (Exception e)
-            {
-                e.printStackTrace();
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                statsd.recordExecutionTime("endpoint.http.user.put.executeTime", getDuration(startTime));
-                return null;
-            }
+
+        try{
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            return userService.updateSelf(request,response);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return null;
+        }
     }
 
 }

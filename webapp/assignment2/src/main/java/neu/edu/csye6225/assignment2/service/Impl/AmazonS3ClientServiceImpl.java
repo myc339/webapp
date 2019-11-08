@@ -11,14 +11,19 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.GetObjectMetadataRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.timgroup.statsd.StatsDClient;
 import neu.edu.csye6225.assignment2.dao.ImageDao;
 import neu.edu.csye6225.assignment2.dao.RecipeDao;
+import neu.edu.csye6225.assignment2.dao.UserDao;
 import neu.edu.csye6225.assignment2.entity.ImageRepository;
 import neu.edu.csye6225.assignment2.entity.RecipeRepository;
+import neu.edu.csye6225.assignment2.entity.UserRepository;
 import neu.edu.csye6225.assignment2.service.AmazonS3ClientService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -58,17 +63,26 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
     @Autowired
     private ImageDao imageDao;
     @Autowired
-    public AmazonS3ClientServiceImpl(Region awsRegion, AmazonS3 amazonS3,String awsS3Bucket)
+    private UserDao userDao;
+    public static StatsDClient statsd;
+    @Autowired
+    public AmazonS3ClientServiceImpl(Region awsRegion, AmazonS3 amazonS3,String awsS3Bucket,StatsDClient statsDClient)
     {
         this.amazonS3=amazonS3;
         this.awsS3Bucket=awsS3Bucket;
+        this.statsd=statsDClient;
         System.out.println("bucketName:"+this.awsS3Bucket);
         System.out.println("region:"+awsRegion.getName());
     }
-//    @Async
-    public JSONObject uploadFileToS3Bucket(String recipeId,String authorId,MultipartFile[] files, boolean enablePublicReadAccess, HttpServletResponse response)
-    {
 
+//    @Async
+    public JSONObject uploadFileToS3Bucket(String recipeId,MultipartFile[] files, boolean enablePublicReadAccess, HttpServletResponse response)
+    {
+        long startTime=System.currentTimeMillis();
+        statsd.incrementCounter("count.post_image_times");
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserRepository userRepository =userDao.findQuery(auth.getName());
+        String authorId=userRepository.getId();
         ArrayList<ImageRepository> images=new ArrayList<>();
         //check authority
         if(!validateAuthority(recipeId,authorId,response)) return null;
@@ -83,6 +97,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                 if (!isImage(myInputStream)) {
                     log.error("Bad Request, this is not image!");
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad Request, this is not image!");
+                    statsd.recordExecutionTime("timer.post_image_success", System.currentTimeMillis() - startTime);
                     return null;
                 }
             }
@@ -119,16 +134,23 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
         {
          log.error("error [" + ex.getMessage() + "] occurred while uploading ");
          response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+         statsd.recordExecutionTime("timer.post_image_success", System.currentTimeMillis() - startTime);
          return null;
         }
         Images ImageData=new Images(images);
         log.info("image uploaded");
+        statsd.recordExecutionTime("timer.post_image_success", System.currentTimeMillis() - startTime);
         return  (JSONObject)JSON.toJSON(ImageData);
     }
 
 //    @Async
-    public JSONObject deleteFileFromS3Bucket( String recipeId,String authorId, String imageId,HttpServletResponse response)
+    public JSONObject deleteFileFromS3Bucket( String recipeId, String imageId,HttpServletResponse response)
     {
+        long startTime=System.currentTimeMillis();
+        statsd.incrementCounter("count.delete_image_times");
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserRepository userRepository =userDao.findQuery(auth.getName());
+        String authorId=userRepository.getId();
         if(!validateAuthority(recipeId,authorId,response)) return null;
         RecipeRepository recipeRepository = recipeDao.getOne(recipeId);
         Images images=new Images(recipeRepository.getImage());
@@ -142,8 +164,8 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                     amazonS3.deleteObject(new DeleteObjectRequest(image.getBucketName(), image.getFileName()));
                     imageDao.DeleteImage(image.getId());
                     log.info("image deleted");
+                    statsd.recordExecutionTime("timer.delete_image", System.currentTimeMillis() - startTime);
                     return null;
-
                 }
             }
             if(!exist)
@@ -160,8 +182,11 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
         return null;
     }
     @Override
-    public JSONObject updateRecipeImage(String recipeId,String authorId,String imageId,MultipartFile files,HttpServletResponse response)
+    public JSONObject updateRecipeImage(String recipeId,String imageId,MultipartFile files,HttpServletResponse response)
     {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserRepository userRepository =userDao.findQuery(auth.getName());
+        String authorId=userRepository.getId();
         if(!validateAuthority(recipeId,authorId,response)) return null;
         RecipeRepository recipeRepository = recipeDao.getOne(recipeId);
         Images images=new Images(recipeRepository.getImage());
