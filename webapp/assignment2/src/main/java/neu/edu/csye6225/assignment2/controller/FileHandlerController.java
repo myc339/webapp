@@ -32,7 +32,7 @@ public class FileHandlerController {
         return endTime - startTime;
     }
 
-    private  final StatsDClient statsd = amazonS3ClientService.getStatsd();
+    private  final StatsDClient statsd = new NonBlockingStatsDClient("","localhost",8125);
     @Async
     @RequestMapping(value="/v1/recipe/{id}/image",method=RequestMethod.POST)
     public JSONObject attachRecipeImage(@PathVariable String id, @RequestPart(value = "image") MultipartFile[] file, HttpServletResponse response)

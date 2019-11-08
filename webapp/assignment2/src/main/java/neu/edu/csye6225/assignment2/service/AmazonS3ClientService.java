@@ -11,5 +11,4 @@ public interface AmazonS3ClientService {
         JSONObject deleteFileFromS3Bucket(String recipeId,String authorId, String imageId,HttpServletResponse response);
         JSONObject updateRecipeImage(String recipeId,String authorId,String imageId,MultipartFile files,HttpServletResponse response);
         JSONObject getRecipeImage(String recipeId,String imageId,HttpServletResponse response);
-        StatsDClient getStatsd();
 }

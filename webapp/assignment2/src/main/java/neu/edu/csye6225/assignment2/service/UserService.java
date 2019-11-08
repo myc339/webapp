@@ -11,5 +11,4 @@ public interface UserService {
 //    JSONObject findByAccountAndPassword(UserRepository userRepository, HttpServletResponse response);
     JSONObject save(UserRepository userRepository,HttpServletResponse response);
     JSONObject updateSelf(UserRepository request, UserRepository userRepository,HttpServletResponse response);
-    StatsDClient getStatsd();
 }

@@ -36,11 +36,6 @@ public class RecipeServiceImpl implements RecipeService {
         this.statsd=statsDClient;
     }
     @Override
-    public StatsDClient getStatsd()
-    {
-        return statsd;
-    }
-    @Override
     public JSONObject save(RecipeRepository recipeRepository,String authorId, HttpServletResponse response)
     {
         long startTime=System.currentTimeMillis();

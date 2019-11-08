@@ -67,11 +67,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
         System.out.println("bucketName:"+this.awsS3Bucket);
         System.out.println("region:"+awsRegion.getName());
     }
-    @Override
-    public StatsDClient getStatsd()
-    {
-        return statsd;
-    }
+
 //    @Async
     public JSONObject uploadFileToS3Bucket(String recipeId,String authorId,MultipartFile[] files, boolean enablePublicReadAccess, HttpServletResponse response)
     {

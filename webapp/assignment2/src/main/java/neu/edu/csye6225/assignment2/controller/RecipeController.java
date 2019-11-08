@@ -31,7 +31,7 @@ public class RecipeController {
         long endTime = System.currentTimeMillis();
         return endTime - startTime;
     }
-    private final StatsDClient statsd=recipeService.getStatsd();
+    private  final StatsDClient statsd = new NonBlockingStatsDClient("","localhost",8125);
     @RequestMapping(value="v1/recipe",method = RequestMethod.POST,produces="application/json", consumes="application/json")
     @ResponseBody
     public JSONObject saveRecipe( @RequestBody RecipeRepository requestBody, HttpServletResponse response)

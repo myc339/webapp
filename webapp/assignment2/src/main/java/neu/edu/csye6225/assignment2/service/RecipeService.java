@@ -13,6 +13,5 @@ public interface RecipeService {
     JSONObject deleteRecipe(String id, String authorId,HttpServletResponse response);
     JSONObject getRecipe(String id, HttpServletResponse response);
     JSONObject getNewestRecipe(HttpServletResponse response);
-    StatsDClient getStatsd();
 //    JSONObject
 }
