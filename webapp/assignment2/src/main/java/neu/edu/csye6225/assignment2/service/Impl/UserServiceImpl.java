@@ -143,13 +143,13 @@ public class UserServiceImpl  implements UserService {
         UserRepository userRepository =userDao.findQuery(auth.getName());
         if(userRepository !=null)
         {
-            statsd.recordExecutionTime("timer.put_user_success", System.currentTimeMillis() - startTime);
+            statsd.recordExecutionTime("timer.get_user_success", System.currentTimeMillis() - startTime);
             log.info("get_user_success");
             return (JSONObject)JSON.toJSON(userRepository);
         }
         else
             log.error("not found  user");
-        statsd.recordExecutionTime("timer.put_user_fail", System.currentTimeMillis() - startTime);
+        statsd.recordExecutionTime("timer.get_user_fail", System.currentTimeMillis() - startTime);
         return null;
     }
 
