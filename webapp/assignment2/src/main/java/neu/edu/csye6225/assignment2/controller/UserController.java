@@ -2,19 +2,14 @@ package neu.edu.csye6225.assignment2.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import neu.edu.csye6225.assignment2.common.CommonResult;
 import neu.edu.csye6225.assignment2.dao.UserDao;
 import neu.edu.csye6225.assignment2.entity.UserRepository;
-import neu.edu.csye6225.assignment2.helper.MetricsConfig;
 import neu.edu.csye6225.assignment2.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,14 +24,10 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-    private static StatsDClient statsd;
+    private static StatsDClient statsd=new NonBlockingStatsDClient("ccwebapp.","locahost",8125);
     public long getDuration(long startTime) {
         long endTime = System.currentTimeMillis();
         return endTime - startTime;
-    }
-    @Autowired
-    public   UserController(StatsDClient statsDClient){
-        this.statsd=statsDClient;
     }
 
     @RequestMapping(value = "v1/user/self",method= RequestMethod.GET)
