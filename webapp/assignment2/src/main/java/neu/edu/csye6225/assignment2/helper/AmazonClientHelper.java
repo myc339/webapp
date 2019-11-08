@@ -8,8 +8,8 @@ import com.amazonaws.services.identitymanagement.AmazonIdentityManagement;
 import com.amazonaws.services.identitymanagement.AmazonIdentityManagementClientBuilder;
 import com.amazonaws.services.identitymanagement.model.GetInstanceProfileRequest;
 import com.amazonaws.services.identitymanagement.model.GetInstanceProfileResult;
+
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -45,14 +45,6 @@ public class AmazonClientHelper {
 
         } else {
             System.out.println("load credentials from ec2 instance profile?");
-//            AmazonIdentityManagement client = AmazonIdentityManagementClientBuilder.standard().build();
-//            GetInstanceProfileRequest request = new GetInstanceProfileRequest().withInstanceProfileName("profile");
-//            GetInstanceProfileResult response = client.getInstanceProfile(request);
-//            System.out.println(response.toString());
-            AWSCredentialsProviderChain providerChain = new AWSCredentialsProviderChain(
-
-                    new InstanceProfileCredentialsProvider(false)
-            );
 //            new ProfileCredentialsProvider()
 //            ,new SystemPropertiesCredentialsProvider(),
 //                    new EnvironmentVariableCredentialsProvider(),
@@ -61,15 +53,9 @@ public class AmazonClientHelper {
 //                   .build();
 //            new ProfileCredentialsProvider();
             InstanceProfileCredentialsProvider credentialsProvider= new InstanceProfileCredentialsProvider(false);
-
             System.out.println("ec2 accessKeyID:"+credentialsProvider.getCredentials().getAWSAccessKeyId());
             System.out.println("ec2 secretKeyID:"+credentialsProvider.getCredentials().getAWSSecretKey());
-
-
-//            return AmazonS3ClientBuilder.standard()
-//                    .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
-//                    .withRegion(getAWSRegion().getName()).build();
-            return AmazonS3ClientBuilder.standard().withCredentials(providerChain).withRegion(getAWSRegion().getName()).build();
+            return AmazonS3ClientBuilder.standard().withCredentials(credentialsProvider).build();
 //            s3.setRegion(getAWSRegion());
 //            return s3;
 
