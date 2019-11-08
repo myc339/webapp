@@ -1,5 +1,7 @@
 package neu.edu.csye6225.assignment2.helper;
 
+import com.amazonaws.ClientConfiguration;
+import com.amazonaws.Protocol;
 import com.amazonaws.auth.*;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Region;
@@ -10,6 +12,7 @@ import com.amazonaws.services.identitymanagement.model.GetInstanceProfileRequest
 import com.amazonaws.services.identitymanagement.model.GetInstanceProfileResult;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -55,7 +58,10 @@ public class AmazonClientHelper {
             InstanceProfileCredentialsProvider credentialsProvider= new InstanceProfileCredentialsProvider(false);
             System.out.println("ec2 accessKeyID:"+credentialsProvider.getCredentials().getAWSAccessKeyId());
             System.out.println("ec2 secretKeyID:"+credentialsProvider.getCredentials().getAWSSecretKey());
-            return AmazonS3ClientBuilder.standard().withCredentials(credentialsProvider).build();
+            ClientConfiguration clientConfig = new ClientConfiguration();
+            clientConfig.setProtocol(Protocol.HTTP);
+            return AmazonS3ClientBuilder.standard().withCredentials(credentialsProvider)
+                    .withRegion(getAWSRegion().getName()).withClientConfiguration(clientConfig).withPayloadSigningEnabled(true).build();
 //            s3.setRegion(getAWSRegion());
 //            return s3;
 
