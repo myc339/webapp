@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -44,7 +45,7 @@ class Images{
     }
 }
 
-@Component
+@Service
 public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
     private String awsS3Bucket;
     private AmazonS3 amazonS3;

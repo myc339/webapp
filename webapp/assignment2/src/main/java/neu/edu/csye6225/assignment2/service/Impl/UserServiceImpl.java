@@ -25,7 +25,6 @@ import java.util.Date;
 import java.util.UUID;
 
 @Service
-@Transactional
 public class UserServiceImpl  implements UserService {
 //    private final JSONObject jsonObject=new JSONObject(true);
     @Autowired
