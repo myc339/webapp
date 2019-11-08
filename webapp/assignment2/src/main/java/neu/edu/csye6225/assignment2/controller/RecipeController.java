@@ -42,7 +42,7 @@ public class RecipeController {
         long startTime = System.currentTimeMillis();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
-        statsd.recordExecutionTime("endpoint.http.recipe.post.queryTime", getDuration(startTime));
+//        statsd.recordExecutionTime("endpoint.http.recipe.post.queryTime", getDuration(startTime));
         response.setStatus(HttpServletResponse.SC_CREATED);
         JSONObject tmp = recipeService.save(requestBody,userRepository.getId(),response);
         statsd.recordExecutionTime("endpoint.http.recipe.post.executeTime", getDuration(startTime));
@@ -55,7 +55,7 @@ public class RecipeController {
         long startTime = System.currentTimeMillis();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
-        statsd.recordExecutionTime("endpoint.http.recipe.put.queryTime", getDuration(startTime));
+//        statsd.recordExecutionTime("endpoint.http.recipe.put.queryTime", getDuration(startTime));
         response.setStatus(HttpServletResponse.SC_OK);
         JSONObject tmp = recipeService.updateRecipe(requestBody, userRepository.getId(), id,response);
         statsd.recordExecutionTime("endpoint.http.recipe.put.executeTime", getDuration(startTime));
@@ -68,7 +68,7 @@ public class RecipeController {
         long startTime = System.currentTimeMillis();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
-        statsd.recordExecutionTime("endpoint.http.recipe.delete.queryTime", getDuration(startTime));
+//        statsd.recordExecutionTime("endpoint.http.recipe.delete.queryTime", getDuration(startTime));
         response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         JSONObject tmp = recipeService.deleteRecipe(id, userRepository.getId(),response);
         statsd.recordExecutionTime("endpoint.http.recipe.delete.executeTime", getDuration(startTime));
@@ -81,7 +81,7 @@ public class RecipeController {
         long startTime = System.currentTimeMillis();
         response.setStatus(HttpServletResponse.SC_OK);
         JSONObject tmp = recipeService.getRecipe(id, response);
-        statsd.recordExecutionTime("endpoint.http.recipe.get.executeTime", getDuration(startTime));
+        statsd.recordExecutionTime("endpoint.http.recipe.get_by_id.executeTime", getDuration(startTime));
         return tmp;
     }
     @RequestMapping(value = "v1/recipes",method= RequestMethod.GET)
@@ -90,7 +90,7 @@ public class RecipeController {
         long startTime = System.currentTimeMillis();
         response.setStatus(HttpServletResponse.SC_OK);
         JSONObject tmp = recipeService.getNewestRecipe(response);
-        statsd.recordExecutionTime("endpoint.http.recipe.get.executeTime", getDuration(startTime));
+        statsd.recordExecutionTime("endpoint.http.recipe.get_newest.executeTime", getDuration(startTime));
         return tmp;
     }
 

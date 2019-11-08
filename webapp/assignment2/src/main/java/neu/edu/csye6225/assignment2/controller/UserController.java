@@ -2,13 +2,9 @@ package neu.edu.csye6225.assignment2.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import neu.edu.csye6225.assignment2.common.CommonResult;
 import neu.edu.csye6225.assignment2.dao.UserDao;
 import neu.edu.csye6225.assignment2.entity.UserRepository;
-import neu.edu.csye6225.assignment2.helper.MetricsConfig;
 import neu.edu.csye6225.assignment2.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -43,7 +39,7 @@ public class UserController {
         long startTime = System.currentTimeMillis();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
-        statsd.recordExecutionTime("endpoint.http.user.get.queryTime", getDuration(startTime));
+//        statsd.recordExecutionTime("endpoint.http.user.get.queryTime", getDuration(startTime));
         if(userRepository !=null)
         {
             response.setStatus(HttpServletResponse.SC_OK);
@@ -82,7 +78,7 @@ public class UserController {
         long startTime = System.currentTimeMillis();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
-        statsd.recordExecutionTime("endpoint.http.user.put.queryTime", getDuration(startTime));
+//        statsd.recordExecutionTime("endpoint.http.user.put.queryTime", getDuration(startTime));
             try{
                 response.setStatus(HttpServletResponse.SC_NO_CONTENT);
                 JSONObject tmp = userService.updateSelf(request, userRepository,response);

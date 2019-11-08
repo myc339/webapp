@@ -41,11 +41,11 @@ public class FileHandlerController {
         long startTime = System.currentTimeMillis();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
-        statsd.recordExecutionTime("endpoint.http.filehandler.post.queryTime", getDuration(startTime));
+//        statsd.recordExecutionTime("endpoint.http.filehandler.post.queryTime", getDuration(startTime));
         response.setStatus(HttpServletResponse.SC_CREATED);
         long startTime2 = System.currentTimeMillis();
         JSONObject tmp = this.amazonS3ClientService.uploadFileToS3Bucket(id,userRepository.getId(),file, true,response);
-        statsd.recordExecutionTime("endpoint.http.filehandler.post.s3", getDuration(startTime2));
+//        statsd.recordExecutionTime("endpoint.http.filehandler.post.s3", getDuration(startTime2));
         statsd.recordExecutionTime("endpoint.http.filehandler.post.executeTime", getDuration(startTime));
         return tmp;
     }
@@ -57,10 +57,10 @@ public class FileHandlerController {
         long startTime = System.currentTimeMillis();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
-        statsd.recordExecutionTime("endpoint.http.filehandler.get.queryTime", getDuration(startTime));
+//        statsd.recordExecutionTime("endpoint.http.filehandler.get.queryTime", getDuration(startTime));
         long startTime2 = System.currentTimeMillis();
         JSONObject tmp = this.amazonS3ClientService.getRecipeImage(id,imageId,response);
-        statsd.recordExecutionTime("endpoint.http.filehandler.get.s3", getDuration(startTime2));
+//        statsd.recordExecutionTime("endpoint.http.filehandler.get.s3", getDuration(startTime2));
         statsd.recordExecutionTime("endpoint.http.filehandler.get.executeTime", getDuration(startTime));
         return tmp;
     }
@@ -72,11 +72,11 @@ public class FileHandlerController {
         long startTime = System.currentTimeMillis();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
-        statsd.recordExecutionTime("endpoint.http.filehandler.delete.queryTime", getDuration(startTime));
+//        statsd.recordExecutionTime("endpoint.http.filehandler.delete.queryTime", getDuration(startTime));
         response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         long startTime2 = System.currentTimeMillis();
         JSONObject tmp = this.amazonS3ClientService.deleteFileFromS3Bucket(id,userRepository.getId(),imageId,response);
-        statsd.recordExecutionTime("endpoint.http.filehandler.delete.s3", getDuration(startTime2));
+//        statsd.recordExecutionTime("endpoint.http.filehandler.delete.s3", getDuration(startTime2));
         statsd.recordExecutionTime("endpoint.http.filehandler.delete.executeTime", getDuration(startTime));
         return tmp;
     }
@@ -88,10 +88,10 @@ public class FileHandlerController {
         long startTime = System.currentTimeMillis();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
-        statsd.recordExecutionTime("endpoint.http.filehandler.put.queryTime", getDuration(startTime));
+//        statsd.recordExecutionTime("endpoint.http.filehandler.put.queryTime", getDuration(startTime));
         long startTime2 = System.currentTimeMillis();
         JSONObject tmp = this.amazonS3ClientService.updateRecipeImage(id,userRepository.getId(),imageId,file,response);
-        statsd.recordExecutionTime("endpoint.http.filehandler.put.s3", getDuration(startTime2));
+//        statsd.recordExecutionTime("endpoint.http.filehandler.put.s3", getDuration(startTime2));
         statsd.recordExecutionTime("endpoint.http.filehandler.put.executeTime", getDuration(startTime));
         return tmp;
     }

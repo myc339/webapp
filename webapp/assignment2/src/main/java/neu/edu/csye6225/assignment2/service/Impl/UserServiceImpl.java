@@ -33,19 +33,18 @@ public class UserServiceImpl  implements UserService {
     @Resource
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
-    private static StatsDClient statsd;
+
     private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
     @Autowired
-    public UserServiceImpl(InMemoryUserDetailsManager inMemoryUserDetailsManager,StatsDClient statsDClient) {
+    public UserServiceImpl(InMemoryUserDetailsManager inMemoryUserDetailsManager) {
         this.inMemoryUserDetailsManager = inMemoryUserDetailsManager;
-        this.statsd=statsDClient;
+
     }
     @Override
     public JSONObject save(UserRepository userRepository,HttpServletResponse response)
     {
         long startTime=System.currentTimeMillis();
 //        statsd.count("");
-        statsd.incrementCounter("totalRequest.countPOST_USER");
 
         if(userDao.findQuery(userRepository.getEmail_address())!=null) {
             try {
@@ -84,7 +83,6 @@ public class UserServiceImpl  implements UserService {
         userRepository.setPassword(bCryptPasswordEncoder.encode(userRepository.getPassword()));
         userDao.save(userRepository);
         inMemoryUserDetailsManager.createUser(User.withUsername(userRepository.getEmail_address()).password(userRepository.getPassword()).roles("USER").build());
-        statsd.recordExecutionTime("POST_USER_TIME", System.currentTimeMillis() - startTime);
         log.info("USER_CREATED");
         return (JSONObject)JSON.toJSON(userRepository);
     }
