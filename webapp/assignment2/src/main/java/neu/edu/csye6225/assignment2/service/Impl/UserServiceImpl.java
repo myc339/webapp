@@ -46,7 +46,7 @@ public class UserServiceImpl  implements UserService {
     public JSONObject save(UserRepository userRepository,HttpServletResponse response)
     {
         long startTime=System.currentTimeMillis();
-        statsd.incrementCounter("count.post_user");
+        statsd.incrementCounter("count.post_user_times");
         if(userDao.findQuery(userRepository.getEmail_address())!=null) {
             try {
                 log.error("email exists");
@@ -54,6 +54,7 @@ public class UserServiceImpl  implements UserService {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            statsd.recordExecutionTime("timer.post_user_fail", System.currentTimeMillis() - startTime);
             return null;
         }
         if(!userRepository.getEmail_address().matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$"))
@@ -64,6 +65,7 @@ public class UserServiceImpl  implements UserService {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            statsd.recordExecutionTime("timer.post_user_fail", System.currentTimeMillis() - startTime);
             return null;
         }
         // At least 8 length and no more than 16 length, include number,uppercase lowercase,and special character
@@ -75,8 +77,10 @@ public class UserServiceImpl  implements UserService {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            statsd.recordExecutionTime("timer.post_user_fail", System.currentTimeMillis() - startTime);
             return null;
         }
+
         Date date =new Date();
         userRepository.setAccount_created(date);
         userRepository.setAccount_updated(date);
@@ -84,7 +88,7 @@ public class UserServiceImpl  implements UserService {
         userRepository.setPassword(bCryptPasswordEncoder.encode(userRepository.getPassword()));
         userDao.save(userRepository);
         inMemoryUserDetailsManager.createUser(User.withUsername(userRepository.getEmail_address()).password(userRepository.getPassword()).roles("USER").build());
-        statsd.recordExecutionTime("timer.post_user", System.currentTimeMillis() - startTime);
+        statsd.recordExecutionTime("timer.post_user_success", System.currentTimeMillis() - startTime);
         log.info("USER_CREATED");
         return (JSONObject)JSON.toJSON(userRepository);
     }
@@ -92,7 +96,7 @@ public class UserServiceImpl  implements UserService {
     @Override
     public JSONObject updateSelf(UserRepository request,HttpServletResponse response) {
         long startTime=System.currentTimeMillis();
-        statsd.incrementCounter("count.put_user");
+        statsd.incrementCounter("count.put_user_times");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
         if(request.checkUpdateInfo())
@@ -107,7 +111,7 @@ public class UserServiceImpl  implements UserService {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                statsd.recordExecutionTime("timer.put_user", System.currentTimeMillis() - startTime);
+                statsd.recordExecutionTime("timer.put_user_fail", System.currentTimeMillis() - startTime);
                 return null;
             }
             userRepository.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
@@ -116,7 +120,7 @@ public class UserServiceImpl  implements UserService {
             inMemoryUserDetailsManager.updateUser(User.withUsername(userRepository.getEmail_address()).password(userRepository.getPassword()).roles("USER").build());
             userDao.save(userRepository);
             log.info("user info updated");
-            statsd.recordExecutionTime("timer.put_user", System.currentTimeMillis() - startTime);
+            statsd.recordExecutionTime("timer.put_user_success", System.currentTimeMillis() - startTime);
             return (JSONObject)JSON.toJSON(userRepository);
         }
         else{
@@ -126,7 +130,7 @@ public class UserServiceImpl  implements UserService {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            statsd.recordExecutionTime("timer.put_user", System.currentTimeMillis() - startTime);
+            statsd.recordExecutionTime("timer.put_user_fail", System.currentTimeMillis() - startTime);
             return null;
         }
 
@@ -134,18 +138,18 @@ public class UserServiceImpl  implements UserService {
     @Override
     public JSONObject getSelf(){
         long startTime=System.currentTimeMillis();
-        statsd.incrementCounter("count.get_user");
+        statsd.incrementCounter("count.get_user_times");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
         if(userRepository !=null)
         {
-            statsd.recordExecutionTime("timer.put_user", System.currentTimeMillis() - startTime);
+            statsd.recordExecutionTime("timer.put_user_success", System.currentTimeMillis() - startTime);
             log.info("get_user_success");
             return (JSONObject)JSON.toJSON(userRepository);
         }
         else
             log.error("not found  user");
-        statsd.recordExecutionTime("timer.put_user", System.currentTimeMillis() - startTime);
+        statsd.recordExecutionTime("timer.put_user_fail", System.currentTimeMillis() - startTime);
         return null;
     }
 

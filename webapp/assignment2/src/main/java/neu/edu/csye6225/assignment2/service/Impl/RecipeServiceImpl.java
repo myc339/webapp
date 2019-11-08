@@ -5,12 +5,16 @@ import com.alibaba.fastjson.JSONObject;
 import com.timgroup.statsd.StatsDClient;
 import neu.edu.csye6225.assignment2.dao.OrderedListDao;
 import neu.edu.csye6225.assignment2.dao.RecipeDao;
+import neu.edu.csye6225.assignment2.dao.UserDao;
 import neu.edu.csye6225.assignment2.entity.OrderedListRepository;
 import neu.edu.csye6225.assignment2.entity.RecipeRepository;
+import neu.edu.csye6225.assignment2.entity.UserRepository;
 import neu.edu.csye6225.assignment2.service.RecipeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +32,8 @@ public class RecipeServiceImpl implements RecipeService {
     @Autowired
     private RecipeDao recipeDao;
     @Autowired
+    private UserDao userDao;
+    @Autowired
     private OrderedListDao orderedListDao;
     private static final Logger log = LoggerFactory.getLogger(RecipeServiceImpl.class);
     public static StatsDClient statsd;
@@ -36,11 +42,15 @@ public class RecipeServiceImpl implements RecipeService {
         this.statsd=statsDClient;
     }
     @Override
-    public JSONObject save(RecipeRepository recipeRepository,String authorId, HttpServletResponse response)
+    public JSONObject save(RecipeRepository recipeRepository, HttpServletResponse response)
     {
         long startTime=System.currentTimeMillis();
-//        statsd.incrementCounter("totalRequest.countPOST_RECIPE");
+        statsd.incrementCounter("count.post_recipe_times");
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserRepository userRepository =userDao.findQuery(auth.getName());
+        String authorId=userRepository.getId();
         if(!checkRequestBody(recipeRepository, response)){
+            statsd.recordExecutionTime("timer.post_recipe_fail", System.currentTimeMillis() - startTime);
             return null;
         }
 
@@ -53,16 +63,21 @@ public class RecipeServiceImpl implements RecipeService {
         for(OrderedListRepository o : recipeRepository.getSteps()){
             o.setRecipe(recipeRepository);
         }
-//        System.out.println(recipeRepository.getIngredients().toString());
+
         recipeRepository.setIngredients1(recipeRepository.getIngredients().toString());
         recipeDao.save(recipeRepository);
-        statsd.recordExecutionTime("POST_RECIPE_TIME", System.currentTimeMillis() - startTime);
+        statsd.recordExecutionTime("time.post_recipe_success", System.currentTimeMillis() - startTime);
         log.info("RECIPE_CREATED");
-       return (JSONObject) JSON.toJSON(recipeRepository);
+        return (JSONObject) JSON.toJSON(recipeRepository);
     }
 
     @Override
-    public JSONObject updateRecipe(RecipeRepository request, String authorId, String recipeId,HttpServletResponse response) {
+    public JSONObject updateRecipe(RecipeRepository request, String recipeId,HttpServletResponse response) {
+        long startTime=System.currentTimeMillis();
+        statsd.incrementCounter("count.put_recipe_times");
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserRepository userRepository =userDao.findQuery(auth.getName());
+        String authorId=userRepository.getId();
         if (!exist(recipeId, response)) {
             return null;
         }
@@ -74,10 +89,12 @@ public class RecipeServiceImpl implements RecipeService {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            statsd.recordExecutionTime("time.put_recipe_fail", System.currentTimeMillis() - startTime);
             return null;
         }
 
         if(!checkRequestBody(request,response)){
+            statsd.recordExecutionTime("time.put_recipe_fail", System.currentTimeMillis() - startTime);
             return null;
         }
 
@@ -105,11 +122,17 @@ public class RecipeServiceImpl implements RecipeService {
 
         recipeDao.save(recipe);
         log.info("recipe updated");
+        statsd.recordExecutionTime("time.put_recipe_success", System.currentTimeMillis() - startTime);
         return (JSONObject)JSON.toJSON(recipe);
     }
 
     @Override
-    public JSONObject deleteRecipe(String recipeId, String authorId,HttpServletResponse response) {
+    public JSONObject deleteRecipe(String recipeId,HttpServletResponse response) {
+        long startTime=System.currentTimeMillis();
+        statsd.incrementCounter("count.delete_recipe_times");
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserRepository userRepository =userDao.findQuery(auth.getName());
+        String authorId=userRepository.getId();
         if (!exist(recipeId, response)) {
             return null;
         }
@@ -121,21 +144,27 @@ public class RecipeServiceImpl implements RecipeService {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            statsd.recordExecutionTime("time.delete_recipe_fail", System.currentTimeMillis() - startTime);
             return null;
         }
 
         RecipeRepository recipeRepository = recipeDao.getOne(recipeId);
         recipeDao.delete(recipeRepository);
         log.info("recipe deleted");
+        statsd.recordExecutionTime("time.delete_recipe_success", System.currentTimeMillis() - startTime);
         return (JSONObject)JSON.toJSON(recipeRepository);
     }
 
     @Override
     public JSONObject getRecipe(String id, HttpServletResponse response) {
+        long startTime=System.currentTimeMillis();
+        statsd.incrementCounter("count.get_recipe_times");
         if (!exist(id, response)) {
+            statsd.recordExecutionTime("time.get_recipe_fail", System.currentTimeMillis() - startTime);
             return null;
         }
         RecipeRepository recipeRepository = recipeDao.getOne(id);
+        statsd.recordExecutionTime("time.get_recipe_success", System.currentTimeMillis() - startTime);
         return (JSONObject)JSON.toJSON(recipeRepository);
     }
 
@@ -234,7 +263,10 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public JSONObject getNewestRecipe(HttpServletResponse response)
     {
+        long startTime=System.currentTimeMillis();
+        statsd.incrementCounter("count.get_newest_recipe_times");
         RecipeRepository recipeRepository = recipeDao.findNewestRecipe();
+        statsd.recordExecutionTime("time.get_newest_recipe_success", System.currentTimeMillis() - startTime);
         return (JSONObject)JSON.toJSON(recipeRepository);
     }
 }
