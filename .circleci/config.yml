@@ -68,7 +68,7 @@ jobs:
       - run:
           name: "set env vars"
           command: |
-            echo "export FILE_NAME=webapp_${CIRCLE_BUILD_NUM}.zip" >> $BASH_ENV
+            echo "export FILE_NAME=webapp_${CIRCLE_BRANCH}_${CIRCLE_BUILD_NUM}.zip" >> $BASH_ENV
             source $BASH_ENV
             echo $FILE_NAME
       - run:

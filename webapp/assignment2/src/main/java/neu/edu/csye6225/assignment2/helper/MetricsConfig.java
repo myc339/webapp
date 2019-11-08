@@ -25,14 +25,11 @@ public class MetricsConfig extends MetricsConfigurerAdapter {
     @Value("${management.metrics.export.statsd.port}")
     private int port;
 
-    @Bean
+    @Bean(name="statsDClient")
     public StatsDClient GetStatsDClient()
     {
         return new NonBlockingStatsDClient(prefix,host,port);
     }
 
-    public static long getDuration(long startTime) {
-        long endTime = System.currentTimeMillis();
-        return endTime - startTime;
-    }
+    
 }
