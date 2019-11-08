@@ -31,5 +31,4 @@ public class MetricsConfig extends MetricsConfigurerAdapter {
         return new NonBlockingStatsDClient(prefix,host,port);
     }
 
-
 }
