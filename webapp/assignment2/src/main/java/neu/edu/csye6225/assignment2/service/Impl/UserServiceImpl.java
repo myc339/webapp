@@ -41,6 +41,11 @@ public class UserServiceImpl  implements UserService {
         this.statsd=statsDClient;
     }
     @Override
+    public StatsDClient getStatsd()
+    {
+        return statsd;
+    }
+    @Override
     public JSONObject save(UserRepository userRepository,HttpServletResponse response)
     {
         long startTime=System.currentTimeMillis();

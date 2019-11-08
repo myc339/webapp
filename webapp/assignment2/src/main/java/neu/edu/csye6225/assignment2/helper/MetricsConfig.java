@@ -31,4 +31,8 @@ public class MetricsConfig extends MetricsConfigurerAdapter {
         return new NonBlockingStatsDClient(prefix,host,port);
     }
 
+    public static long getDuration(long startTime) {
+        long endTime = System.currentTimeMillis();
+        return endTime - startTime;
+    }
 }

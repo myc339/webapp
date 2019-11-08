@@ -30,17 +30,21 @@ public class RecipeServiceImpl implements RecipeService {
     @Autowired
     private OrderedListDao orderedListDao;
     private static final Logger log = LoggerFactory.getLogger(RecipeServiceImpl.class);
-    private static StatsDClient statsd;
+    public static StatsDClient statsd;
     @Autowired
     public RecipeServiceImpl(StatsDClient statsDClient ) {
         this.statsd=statsDClient;
     }
-
+    @Override
+    public StatsDClient getStatsd()
+    {
+        return statsd;
+    }
     @Override
     public JSONObject save(RecipeRepository recipeRepository,String authorId, HttpServletResponse response)
     {
         long startTime=System.currentTimeMillis();
-        statsd.incrementCounter("totalRequest.countPOST_RECIPE");
+//        statsd.incrementCounter("totalRequest.countPOST_RECIPE");
         if(!checkRequestBody(recipeRepository, response)){
             return null;
         }

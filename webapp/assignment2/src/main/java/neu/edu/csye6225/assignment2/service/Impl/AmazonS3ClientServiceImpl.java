@@ -11,6 +11,7 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.GetObjectMetadataRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.timgroup.statsd.StatsDClient;
 import neu.edu.csye6225.assignment2.dao.ImageDao;
 import neu.edu.csye6225.assignment2.dao.RecipeDao;
 import neu.edu.csye6225.assignment2.entity.ImageRepository;
@@ -56,13 +57,20 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
     private static final Logger log = LoggerFactory.getLogger(AmazonS3ClientServiceImpl.class);
     @Autowired
     private ImageDao imageDao;
+    public static StatsDClient statsd;
     @Autowired
-    public AmazonS3ClientServiceImpl(Region awsRegion, AmazonS3 amazonS3,String awsS3Bucket)
+    public AmazonS3ClientServiceImpl(Region awsRegion, AmazonS3 amazonS3,String awsS3Bucket,StatsDClient statsDClient)
     {
         this.amazonS3=amazonS3;
         this.awsS3Bucket=awsS3Bucket;
+        this.statsd=statsDClient;
         System.out.println("bucketName:"+this.awsS3Bucket);
         System.out.println("region:"+awsRegion.getName());
+    }
+    @Override
+    public StatsDClient getStatsd()
+    {
+        return statsd;
     }
 //    @Async
     public JSONObject uploadFileToS3Bucket(String recipeId,String authorId,MultipartFile[] files, boolean enablePublicReadAccess, HttpServletResponse response)

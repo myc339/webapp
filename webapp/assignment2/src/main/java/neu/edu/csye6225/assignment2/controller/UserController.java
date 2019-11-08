@@ -34,7 +34,7 @@ public class UserController {
         return endTime - startTime;
     }
 
-    private static final StatsDClient statsd = new NonBlockingStatsDClient("my.prefix", "localhost", 8125);
+    private  final StatsDClient statsd = userService.getStatsd();
 
     @RequestMapping(value = "v1/user/self",method= RequestMethod.GET)
     public JSONObject findByAccountAndPassword(HttpServletRequest request, HttpServletResponse response)
