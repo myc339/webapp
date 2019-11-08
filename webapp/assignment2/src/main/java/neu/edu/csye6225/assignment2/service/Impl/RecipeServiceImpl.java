@@ -30,7 +30,10 @@ public class RecipeServiceImpl implements RecipeService {
     @Autowired
     private OrderedListDao orderedListDao;
     private static final Logger log = LoggerFactory.getLogger(RecipeServiceImpl.class);
+    @Autowired
+    public RecipeServiceImpl( ) {
 
+    }
     @Override
     public JSONObject save(RecipeRepository recipeRepository,String authorId, HttpServletResponse response)
     {
