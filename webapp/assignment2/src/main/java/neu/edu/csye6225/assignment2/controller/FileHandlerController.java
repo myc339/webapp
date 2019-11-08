@@ -31,7 +31,7 @@ public class FileHandlerController {
         return endTime - startTime;
     }
 
-    private static final StatsDClient statsd=new NonBlockingStatsDClient("ccwebapp.","locahost",8125);
+    private static final StatsDClient statsd = new NonBlockingStatsDClient("ccwebapp.", "localhost", 8125);
     @Async
     @RequestMapping(value="/v1/recipe/{id}/image",method=RequestMethod.POST)
     public JSONObject attachRecipeImage(@PathVariable String id, @RequestPart(value = "image") MultipartFile[] file, HttpServletResponse response)
