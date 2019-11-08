@@ -26,7 +26,7 @@ public class RecipeController {
 
     @Autowired
     private RecipeService recipeService;
-    private static StatsDClient statsd=new NonBlockingStatsDClient("ccwebapp.","locahost",8125);
+    private static final StatsDClient statsd=new NonBlockingStatsDClient("ccwebapp.","locahost",8125);
     public long getDuration(long startTime) {
         long endTime = System.currentTimeMillis();
         return endTime - startTime;
