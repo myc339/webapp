@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-@Transactional
 public class RecipeServiceImpl implements RecipeService {
 
     @Autowired
@@ -30,12 +29,10 @@ public class RecipeServiceImpl implements RecipeService {
     @Autowired
     private OrderedListDao orderedListDao;
     private static final Logger log = LoggerFactory.getLogger(RecipeServiceImpl.class);
-
     @Autowired
     public RecipeServiceImpl(  ) {
 
     }
-
     @Override
     public JSONObject save(RecipeRepository recipeRepository,String authorId, HttpServletResponse response)
     {
@@ -43,7 +40,6 @@ public class RecipeServiceImpl implements RecipeService {
         if(!checkRequestBody(recipeRepository, response)){
             return null;
         }
-
         Date date =new Date();
         recipeRepository.setCreated_ts(date);
         recipeRepository.setUpdated_ts(date);

@@ -25,7 +25,6 @@ import java.util.Date;
 import java.util.UUID;
 
 @Service
-@Transactional
 public class UserServiceImpl  implements UserService {
 //    private final JSONObject jsonObject=new JSONObject(true);
     @Autowired
@@ -33,12 +32,10 @@ public class UserServiceImpl  implements UserService {
     @Resource
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
-
     private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
     @Autowired
     public UserServiceImpl(InMemoryUserDetailsManager inMemoryUserDetailsManager) {
         this.inMemoryUserDetailsManager = inMemoryUserDetailsManager;
-
     }
     @Override
     public JSONObject save(UserRepository userRepository,HttpServletResponse response)

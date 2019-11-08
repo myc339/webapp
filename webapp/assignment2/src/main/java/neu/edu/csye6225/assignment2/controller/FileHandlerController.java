@@ -26,13 +26,12 @@ public class FileHandlerController {
     private AmazonS3ClientService amazonS3ClientService;
     @Autowired
     private UserDao userDao;
-
     public long getDuration(long startTime) {
         long endTime = System.currentTimeMillis();
         return endTime - startTime;
     }
 
-    private static final StatsDClient statsd = new NonBlockingStatsDClient("my.prefix", "localhost", 8125);
+    private static final StatsDClient statsd = new NonBlockingStatsDClient("ccwebapp.", "localhost", 8125);
     @Async
     @RequestMapping(value="/v1/recipe/{id}/image",method=RequestMethod.POST)
     public JSONObject attachRecipeImage(@PathVariable String id, @RequestPart(value = "image") MultipartFile[] file, HttpServletResponse response)

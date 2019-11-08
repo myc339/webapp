@@ -50,7 +50,7 @@ public class AmazonClientHelper {
 //            GetInstanceProfileResult response = client.getInstanceProfile(request);
 //            System.out.println(response.toString());
             AWSCredentialsProviderChain providerChain = new AWSCredentialsProviderChain(
-                    
+
                     new InstanceProfileCredentialsProvider(false)
             );
 //            new ProfileCredentialsProvider()

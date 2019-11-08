@@ -24,17 +24,16 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
+    private static final StatsDClient statsd=new NonBlockingStatsDClient("ccwebapp.","locahost",8125);
     public long getDuration(long startTime) {
         long endTime = System.currentTimeMillis();
         return endTime - startTime;
     }
 
-    private static final StatsDClient statsd = new NonBlockingStatsDClient("my.prefix", "localhost", 8125);
-
     @RequestMapping(value = "v1/user/self",method= RequestMethod.GET)
     public JSONObject findByAccountAndPassword(HttpServletRequest request, HttpServletResponse response)
     {
+
         statsd.incrementCounter("endpoint.http.user.get");
         long startTime = System.currentTimeMillis();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
