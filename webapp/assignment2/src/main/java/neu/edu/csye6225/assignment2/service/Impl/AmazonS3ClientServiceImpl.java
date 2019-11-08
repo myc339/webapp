@@ -108,7 +108,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                 fos.write((File.getBytes()));
                 fos.close();
                 fileName = new Date().getTime() + "_" + fileName.replace(" ", "_");
-                PutObjectRequest putObjectRequest = new PutObjectRequest(this.awsS3Bucket,"/"+ fileName, file);
+                PutObjectRequest putObjectRequest = new PutObjectRequest(this.awsS3Bucket, fileName, file);
 
                 ImageRepository image = new ImageRepository(recipeRepository);
                 this.amazonS3.putObject(putObjectRequest);
