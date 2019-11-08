@@ -71,6 +71,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
         this.amazonS3=amazonS3;
         this.awsS3Bucket=awsS3Bucket;
         this.statsd=statsDClient;
+        System.out.println("imple:"+amazonS3.getRegionName());
         System.out.println("bucketName:"+this.awsS3Bucket);
         System.out.println("region:"+awsRegion.getName());
     }
