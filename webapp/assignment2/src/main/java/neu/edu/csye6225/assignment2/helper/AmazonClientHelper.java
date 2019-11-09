@@ -15,10 +15,10 @@ import javax.annotation.PostConstruct;
 @Configuration
 public class AmazonClientHelper {
     private AmazonS3 s3client;
-    @Value("${accessKey}")
+    @Value("${accesskey}")
     private String accessKey;
 
-    @Value("${secretKey}")
+    @Value("${secretkey}")
     private String secretKey;
 
     @Value("${region}")
@@ -28,7 +28,7 @@ public class AmazonClientHelper {
     private String bucketName;
 
     @Bean(name="awsCredentialsProvider")
-    public AmazonS3 getAWSCredentials() {
+    public AWSCredentialsProvider getAWSCredentials() {
         InstanceProfileCredentialsProvider credentialsProvider=new InstanceProfileCredentialsProvider(true);
 
 //        System.out.println("credentialsProvider:"+credentialsProvider.getCredentials().getAWSAccessKeyId());
@@ -38,16 +38,21 @@ public class AmazonClientHelper {
         {
             System.out.println("load credentials from properties");
             BasicAWSCredentials awsCredentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
-            return AmazonS3ClientBuilder.standard()
-                    .withCredentials( new AWSStaticCredentialsProvider(awsCredentials))
-                    .withRegion(getAWSRegion().getName()).build();
+            return new AWSStaticCredentialsProvider(awsCredentials);
 
         }
         else{
             System.out.println("load credentials from ec2 instance profile?");
-            return AmazonS3ClientBuilder.defaultClient();
+
+            return new InstanceProfileCredentialsProvider(false);
         }
 
+    }
+    @Bean(name="tomcat_flag")
+    public Boolean get_tomcat_flag(){
+        if(!accessKey.isEmpty())
+            return false;
+        else return true;
     }
     @Bean(name = "awsS3Bucket")
     public String getAWSS3Bucket() {

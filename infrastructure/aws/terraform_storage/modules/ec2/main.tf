@@ -44,69 +44,17 @@ Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment; filename="userdata.txt"
 
 #!/bin/bash
-/bin/sudo touch /var/tmp/user_data.txt
-/bin/echo "" > /var/tmp/user_data.txt
-/bin/echo "region=${var.region}" >> /var/tmp/user_data.txt
-/bin/echo "bucketName=${var.bucketName}" >>/var/tmp/user_data.txt
-/bin/echo "dbUrl=${var.dbUrl}" >> /var/tmp/user_data.txt
-/bin/echo "dbName=${var.dbName}" >>/var/tmp/user_data.txt
-/bin/echo "spring.datasource.username=${var.dbUsername}" >> /var/tmp/user_data.txt
-/bin/echo "spring.datasource.password=${var.dbPassword}" >>/var/tmp/user_data.txt
-
-####################################################
-# TOMCAT SHOULD BE INSTALLED WHEN BUILDING THE AMI #
-####################################################
-sudo apt-get update
-sudo apt install default-jdk -y
-sudo groupadd tomcat
-sudo useradd -s /bin/false -g tomcat -d /opt/tomcat tomcat
-cd /tmp
-curl -O http://mirror.cc.columbia.edu/pub/software/apache/tomcat/tomcat-9/v9.0.27/bin/apache-tomcat-9.0.27.tar.gz
-sudo mkdir /opt/tomcat
-sudo tar xzvf apache-tomcat-9*tar.gz -C /opt/tomcat --strip-components=1
-sudo chmod 755 -R /opt/tomcat
-sudo chown -R tomcat:tomcat /opt/tomcat
-cd /opt/tomcat
-sudo chown -R tomcat:tomcat webapps/ work/ temp/ logs/
-sudo chmod 755 -R /opt/tomcat
-sudo touch /etc/systemd/system/tomcat.service
-cd /etc/systemd/system/
-echo '[Unit]' > tomcat.service
-echo 'Description=Apache Tomcat Web Application Container' >> tomcat.service
-echo 'After=syslog.target network.target' >> tomcat.service
-echo '[Service]' >> tomcat.service
-echo 'Type=forking' >> tomcat.service
-echo 'Environment=JAVA_HOME=/usr/bin/java' >> tomcat.service
-echo 'Environment=CATALINA_PID=/opt/tomcat/temp/tomcat.pid' >> tomcat.service
-echo 'Environment=CATALINA_HOME=/opt/tomcat' >> tomcat.service
-echo 'Environment=CATALINA_BASE=/opt/tomcat' >> tomcat.service
-echo 'Environment="CATALINA_OPTS=-Xms256M -Xmx256M -server -XX:+UseParallelGC"' >> tomcat.service
-echo 'Environment="JAVA_OPTS=-Djava.awt.headless=true -Djava.security.egd=file:/dev/./urandom"' >> tomcat.service
-echo 'ExecStart=/opt/tomcat/bin/startup.sh' >> tomcat.service
-echo 'ExecStop=/opt/tomcat/bin/shutdown.sh' >> tomcat.service
-echo 'User=tomcat' >> tomcat.service
-echo 'Group=tomcat' >> tomcat.service
-echo 'UMask=0007' >> tomcat.service
-echo 'RestartSec=10' >> tomcat.service
-echo 'Restart=always' >> tomcat.service
-echo '[Install]' >> tomcat.service
-echo 'WantedBy=multi-user.target' >> tomcat.service
-# sudo systemctl daemon-reload
-# sudo systemctl enable tomcat
-# sudo systemctl start tomcat
-sudo ufw allow 8080
 ####################################################
 # Configure Tomcat JAVA_OPTS                       #
 ####################################################
 cd /opt/tomcat/bin
 touch setenv.sh
 echo "#!/bin/sh" > setenv.sh
-echo "JAVA_OPTS=\"\$JAVA_OPTS -Dspring.datasource.username=${var.dbUsername} -Dspring.datasource.password=${var.dbPassword} -DdbUrl=${var.dbUrl} -DdbName=${var.dbName} -DbucketName=${var.bucketName} -Dregion=${var.region}\"" >> setenv.sh
+echo "JAVA_OPTS=\"\$JAVA_OPTS -Dspring.datasource.username=${var.dbUsername} -Dspring.datasource.password=${var.dbPassword} -DdbUrl=${var.dbUrl} -DdbName=${var.dbName} -DbucketName=codedeploy.${var.bucketName} -Dregion=${var.region}  \"" >> setenv.sh
 chown tomcat:tomcat setenv.sh
 chmod +x setenv.sh
 sudo chmod 755 -R /opt/tomcat
 # Start Tomcat
-/bin/bash /opt/tomcat/bin/catalina.sh start
 --//
 EOF
 }
