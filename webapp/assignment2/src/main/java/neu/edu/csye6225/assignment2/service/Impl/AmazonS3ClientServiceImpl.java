@@ -104,9 +104,9 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
             for ( MultipartFile File :files) {
                 String fileName=File.getOriginalFilename();
                 File file = new File(fileName);
-//                FileOutputStream fos = new FileOutputStream(file);
-//                fos.write((File.getBytes()));
-//                fos.close();
+                FileOutputStream fos = new FileOutputStream(file);
+                fos.write((File.getBytes()));
+                fos.close();
                 SSEAwsKeyManagementParams kms=new SSEAwsKeyManagementParams();
                 fileName = new Date().getTime() + "_" + fileName.replace(" ", "_");
                 PutObjectRequest putObjectRequest = new PutObjectRequest(this.awsS3Bucket, fileName, file);
@@ -128,7 +128,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                 image.setRegion("http://s3.amazonaws.com");
                 image.setUrl(this.amazonS3.getUrl(this.awsS3Bucket,fileName).toString());
 
-//                file.delete();
+                file.delete();
                 images.add(image);
             }
             recipeRepository.setImage(images);
