@@ -13,3 +13,7 @@ output "circleci-ec2-ami" {
 output "CircleCI-Code-Deploy" {
   value = "${aws_iam_policy.CircleCI-Code-Deploy.arn}"
 }
+
+output "S3-Acess-With-Encryption" {
+  value = "${aws_iam_policy.S3-Acess-With-Encryption.arn}"
+}

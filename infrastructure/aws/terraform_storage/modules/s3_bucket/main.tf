@@ -1,17 +1,27 @@
-# # Change the aws_instance we declared earlier to now include "depends_on"
-# resource "aws_instance" "example" {
-#   ami           = "ami-2757f631"
-#   instance_type = "t2.micro"
-
-#   # Tells Terraform that this EC2 instance must be created only after the
-#   # S3 bucket has been created.
-#   depends_on = [aws_s3_bucket.example]
-# }
-
 # Enable Default Server Side Encryption
 resource "aws_kms_key" "mykey" {
   description             = "This key is used to encrypt bucket objects"
   deletion_window_in_days = 10
+  policy = <<POLICY
+{
+    "Version": "2012-10-17",
+    "Id": "key-default-1",
+    "Statement": [
+        {
+            "Sid": "Enable IAM User Permissions",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": [
+                    "arn:aws:iam::${var.account_id}:role/CodeDeployEC2ServiceRole",
+                    "arn:aws:iam::${var.account_id}:root"
+                ]
+            },
+            "Action": "kms:*",
+            "Resource": "*"
+        }
+    ]
+}
+POLICY
 }
 
 # New resource for the S3 bucket our application will use.

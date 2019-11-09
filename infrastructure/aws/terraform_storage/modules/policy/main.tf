@@ -139,3 +139,25 @@ resource "aws_iam_policy" "CircleCI-Code-Deploy" {
 }
 EOF
 }
+
+resource "aws_iam_policy" "S3-Acess-With-Encryption" {
+  name        = "S3-Acess-With-Encryption"
+  path        = "/"
+  description = "These permissions are required for multipart uploads to a bucket with AWS KMS default encryption."
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "kms:Decrypt",
+                "kms:GenerateDataKey"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+EOF
+}
