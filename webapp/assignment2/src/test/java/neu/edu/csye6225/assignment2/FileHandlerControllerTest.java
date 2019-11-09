@@ -87,7 +87,7 @@ public class FileHandlerControllerTest {
     }
     @Test
     public void Test_Attach_Recipe_Image() throws Exception {
-        InputStream inputStream =Thread.currentThread().getContextClassLoader().getResourceAsStream("images/1.jpg");
+        InputStream inputStream =Thread.currentThread().getContextClassLoader().getResourceAsStream("1.jpg");
         file = new MockMultipartFile(
                 "image", "1.jpg","image/jpg",inputStream);
        this.mvc.perform(multipart("/v1/recipe/"+recipe_id+"/image")
@@ -98,7 +98,7 @@ public class FileHandlerControllerTest {
     }
     @Test
     public void Test_Attach_Recipe_With_PDF() throws Exception{
-        InputStream inputStream =Thread.currentThread().getContextClassLoader().getResourceAsStream("images/1.pdf");
+        InputStream inputStream =Thread.currentThread().getContextClassLoader().getResourceAsStream("1.pdf");
         file = new MockMultipartFile(
                 "image", "1.pdf","application/pdf",inputStream);
         this.mvc.perform(multipart("/v1/recipe/"+recipe_id+"/image")
