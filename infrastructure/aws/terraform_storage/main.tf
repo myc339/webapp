@@ -24,6 +24,7 @@ module "security_group" {
 module "s3_bucket" {
   source = "./modules/s3_bucket"
   domain_name = "${var.domain_name}"
+  account_id = "${var.account_id}"
 }
 
 # Create RDS
@@ -78,6 +79,7 @@ module "role_policy_attachment" {
   CodeDeployEC2ServiceRole = "${module.role.CodeDeployEC2ServiceRole}"
   CodeDeployServiceRole = "${module.role.CodeDeployServiceRole}"
   CodeDeploy-EC2-S3 = "${module.policy.CodeDeploy-EC2-S3}"
+  S3AcessWithEncryption = "${module.policy.S3-Acess-With-Encryption}"
 }
 
 # Attach policy to user
