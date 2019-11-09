@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -103,11 +104,13 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
             }
             for ( MultipartFile File :files) {
                 String fileName=File.getOriginalFilename();
+//                System.out.println(System.getProperty( "catalina.base" ));
                 System.out.println("file create ");
                 File file = new File(fileName);
+                System.out.println("file path"+file.getAbsolutePath());
                 System.out.println("file create success ");
-                System.getProperty( "catalina.base" );
-                FileOutputStream fos = new FileOutputStream(System.getProperty( "catalina.base" )+file);
+//                System.getProperty( "catalina.base" );
+                FileOutputStream fos = new FileOutputStream(file);
                 System.out.println("file fos ");
                 fos.write((File.getBytes()));
                 System.out.println("file close ");
