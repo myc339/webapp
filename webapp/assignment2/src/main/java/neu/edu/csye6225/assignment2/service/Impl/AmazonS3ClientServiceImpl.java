@@ -66,9 +66,11 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
     private UserDao userDao;
     public static StatsDClient statsd;
     @Autowired
-    public AmazonS3ClientServiceImpl(Region awsRegion, AmazonS3 amazonS3,String awsS3Bucket,StatsDClient statsDClient)
+    public AmazonS3ClientServiceImpl(Region awsRegion, AWSCredentialsProvider awsCredentialsProvider,String awsS3Bucket,StatsDClient statsDClient)
     {
-        this.amazonS3=amazonS3;
+        this.amazonS3= AmazonS3ClientBuilder.standard()
+                .withCredentials(awsCredentialsProvider)
+                .withRegion(awsRegion.getName()).build();
         this.awsS3Bucket=awsS3Bucket;
         this.statsd=statsDClient;
         System.out.println("imple:"+amazonS3.getRegionName());
