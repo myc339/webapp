@@ -106,7 +106,8 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                 System.out.println("file create ");
                 File file = new File(fileName);
                 System.out.println("file create success ");
-                FileOutputStream fos = new FileOutputStream(file);
+                System.getProperty( "catalina.base" );
+                FileOutputStream fos = new FileOutputStream(System.getProperty( "catalina.base" )+file);
                 System.out.println("file fos ");
                 fos.write((File.getBytes()));
                 System.out.println("file close ");
