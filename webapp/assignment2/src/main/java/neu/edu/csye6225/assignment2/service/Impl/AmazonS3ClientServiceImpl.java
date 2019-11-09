@@ -113,9 +113,10 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                 System.out.println("file path"+file.getAbsolutePath());
                 System.out.println("file create success ");
 //                System.getProperty( "catalina.base" );
-                FileOutputStream fos =new FileOutputStream(file);
+                FileOutputStream fos;
                 System.out.println("tomcat_flag:"+tomcat);
                 if(tomcat) fos = new FileOutputStream("/opt/tomcat/uploads"+file);
+                else fos=new FileOutputStream(file);
                 System.out.println("file fos ");
                 fos.write((File.getBytes()));
                 System.out.println("file close ");
