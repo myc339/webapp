@@ -44,17 +44,14 @@ Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment; filename="userdata.txt"
 
 #!/bin/bash
-####################################################
-# Configure Tomcat JAVA_OPTS                       #
-####################################################
-cd /opt/tomcat/bin
-touch setenv.sh
-echo "#!/bin/sh" > setenv.sh
-echo "JAVA_OPTS=\"\$JAVA_OPTS -Dspring.datasource.username=${var.dbUsername} -Dspring.datasource.password=${var.dbPassword} -DdbUrl=${var.dbUrl} -DdbName=${var.dbName} -DbucketName=${var.bucketName} -Dregion=${var.region}  \"" >> setenv.sh
-chown tomcat:tomcat setenv.sh
-chmod +x setenv.sh
-sudo chmod 755 -R /opt/tomcat
-# Start Tomcat
+/bin/sudo touch /var/tmp/user_data.txt
+/bin/echo "" > /var/tmp/user_data.txt
+/bin/echo "region=${var.region}" >> /var/tmp/user_data.txt
+/bin/echo "bucketName=${var.bucketName}" >>/var/tmp/user_data.txt
+/bin/echo "dbUrl=${var.dbUrl}" >> /var/tmp/user_data.txt
+/bin/echo "dbName=${var.dbName}" >>/var/tmp/user_data.txt
+/bin/echo "spring.datasource.username=${var.dbUsername}" >> /var/tmp/user_data.txt
+/bin/echo "spring.datasource.password=${var.dbPassword}" >>/var/tmp/user_data.txt
 --//
 EOF
 }

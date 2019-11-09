@@ -6,7 +6,7 @@ import neu.edu.csye6225.assignment2.entity.NutritionInformationRepository;
 import neu.edu.csye6225.assignment2.entity.OrderedListRepository;
 import neu.edu.csye6225.assignment2.entity.RecipeRepository;
 import neu.edu.csye6225.assignment2.entity.UserRepository;
-import org.apache.commons.codec.binary.Base64;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -16,13 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.InputStream;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Stack;
@@ -54,9 +55,9 @@ public class FileHandlerControllerTest {
     @BeforeClass
     public static void init()
     {
-        password ="111RECIPEtest!!";
-//        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        email1 = "TESTS3@email3.com";
+        password ="1111Test!!";
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        email1 = timestamp.getTime()/100+"@email3.com";
         token1 = "Basic " + new String(Base64.encodeBase64((email1+":"+password).getBytes()));
         u1 = new UserRepository(email1,password,"test","admin");
         nutritionInformationRepository=

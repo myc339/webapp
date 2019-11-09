@@ -32,8 +32,7 @@ resource "aws_iam_policy" "CircleCI-Upload-To-S3" {
         {
             "Effect": "Allow",
             "Action": [
-                "s3:PutObject",
-                "s3:GetObject"
+                "s3:PutObject"
             ],
             "Resource": [
                 "*"

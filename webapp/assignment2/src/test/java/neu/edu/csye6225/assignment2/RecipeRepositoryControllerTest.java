@@ -6,17 +6,23 @@ import neu.edu.csye6225.assignment2.entity.NutritionInformationRepository;
 import neu.edu.csye6225.assignment2.entity.OrderedListRepository;
 import neu.edu.csye6225.assignment2.entity.RecipeRepository;
 import neu.edu.csye6225.assignment2.entity.UserRepository;
-import org.apache.commons.codec.binary.Base64;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -53,24 +59,23 @@ public class RecipeRepositoryControllerTest {
 
     private static String email1,email2;
     private static UserRepository u1,u2;
-    private static String password1,password2;
+    private static String password;
     private static String token1 ;
     private static String token2 ;
     private ObjectMapper objectMapper=new ObjectMapper();
     @BeforeClass
     public static void init()
     {
-        password1="222TestRECIPE!";
-        password2="111RECIPETest!";
+        password="1111Test!!";
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         email1="TESTRECIPE@email1.com";
         email2="RECIPE@email2.com";
-        token1="Basic " + new String(Base64.encodeBase64((email1+":"+password1).getBytes()));
-        token2="Basic " + new String(Base64.encodeBase64((email2+":"+password2).getBytes()));
+        token1="Basic " + new String(Base64.encodeBase64((email1+":"+password).getBytes()));
+        token2="Basic " + new String(Base64.encodeBase64((email2+":"+password).getBytes()));
         System.out.println("token1:"+token1);
         System.out.println("token2:"+token2);
-        u1 =new UserRepository(email1,password1,"test","admin");
-        u2 =new UserRepository(email2,password2,"test","admin");
+        u1 =new UserRepository(email1,password,"test","admin");
+        u2 =new UserRepository(email2,password,"test","admin");
     }
     @Test
     public void AddUsers1() throws Exception {

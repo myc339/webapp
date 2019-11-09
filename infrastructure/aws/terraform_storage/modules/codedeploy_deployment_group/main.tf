@@ -40,8 +40,8 @@ resource "aws_sns_topic" "example" {
   name = "example-topic"
 }
 
-# profile depends on CodeDeployServiceRole
+# profile depends on CodeDeployEC2ServiceRole
 resource "aws_iam_instance_profile" "test_profile" {
   name = "test_profile"
-  role = "CodeDeployServiceRole"
+  role = "CodeDeployEC2ServiceRole"
 }

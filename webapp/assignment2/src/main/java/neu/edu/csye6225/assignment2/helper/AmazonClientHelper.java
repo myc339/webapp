@@ -15,10 +15,10 @@ import javax.annotation.PostConstruct;
 @Configuration
 public class AmazonClientHelper {
     private AmazonS3 s3client;
-    @Value("${accesskey}")
+    @Value("${accessKey}")
     private String accessKey;
 
-    @Value("${secretkey}")
+    @Value("${secretKey}")
     private String secretKey;
 
     @Value("${region}")
