@@ -63,14 +63,17 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
     @Autowired
     private UserDao userDao;
     public static StatsDClient statsd;
+    private static  Boolean tomcat;
     @Autowired
-    public AmazonS3ClientServiceImpl(Region awsRegion, AWSCredentialsProvider awsCredentialsProvider,String awsS3Bucket,StatsDClient statsDClient)
+    public AmazonS3ClientServiceImpl(Region awsRegion, AWSCredentialsProvider awsCredentialsProvider,String awsS3Bucket,StatsDClient statsDClient
+    ,Boolean tomcat_flag)
     {
         this.amazonS3= AmazonS3ClientBuilder.standard()
                 .withCredentials(awsCredentialsProvider)
                 .withRegion(awsRegion.getName()).build();
         this.awsS3Bucket=awsS3Bucket;
         this.statsd=statsDClient;
+        this.tomcat=tomcat_flag;
         System.out.println("imple:"+amazonS3.getRegionName());
         System.out.println("bucketName:"+this.awsS3Bucket);
         System.out.println("region:"+awsRegion.getName());
@@ -110,7 +113,9 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                 System.out.println("file path"+file.getAbsolutePath());
                 System.out.println("file create success ");
 //                System.getProperty( "catalina.base" );
-                FileOutputStream fos = new FileOutputStream(file);
+                FileOutputStream fos =new FileOutputStream(file);
+                System.out.println("tomcat_flag:"+tomcat);
+                if(tomcat) fos = new FileOutputStream("/opt/tomcat/uploads"+file);
                 System.out.println("file fos ");
                 fos.write((File.getBytes()));
                 System.out.println("file close ");

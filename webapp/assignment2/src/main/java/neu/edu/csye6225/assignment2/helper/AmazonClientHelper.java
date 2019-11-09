@@ -48,6 +48,12 @@ public class AmazonClientHelper {
         }
 
     }
+    @Bean(name="tomcat_flag")
+    public Boolean get_tomcat_flag(){
+        if(!accessKey.isEmpty())
+            return false;
+        else return true;
+    }
     @Bean(name = "awsS3Bucket")
     public String getAWSS3Bucket() {
         return bucketName;
