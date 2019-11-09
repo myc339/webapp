@@ -103,18 +103,24 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
             }
             for ( MultipartFile File :files) {
                 String fileName=File.getOriginalFilename();
+                System.out.println("file create ");
                 File file = new File(fileName);
+                System.out.println("file create success ");
                 FileOutputStream fos = new FileOutputStream(file);
+                System.out.println("file fos ");
                 fos.write((File.getBytes()));
+                System.out.println("file close ");
                 fos.close();
+                System.out.println("file read ");
                 SSEAwsKeyManagementParams kms=new SSEAwsKeyManagementParams();
                 fileName = new Date().getTime() + "_" + fileName.replace(" ", "_");
+                System.out.println("file upload request ");
                 PutObjectRequest putObjectRequest = new PutObjectRequest(this.awsS3Bucket, fileName, file);
 //                        .withSSEAwsKeyManagementParams(kms);
-
+                System.out.println("file put  ");
                 ImageRepository image = new ImageRepository(recipeRepository);
                 this.amazonS3.putObject(putObjectRequest);
-
+                System.out.println("file get ");
                 GetObjectMetadataRequest getObjectMetadataRequest=new GetObjectMetadataRequest(this.awsS3Bucket,fileName);
 
                 ObjectMetadata metadata=this.amazonS3.getObjectMetadata(getObjectMetadataRequest);
