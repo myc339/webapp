@@ -7,10 +7,7 @@ import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.regions.Region;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.amazonaws.services.s3.model.GetObjectMetadataRequest;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.*;
 import com.timgroup.statsd.StatsDClient;
 import neu.edu.csye6225.assignment2.dao.ImageDao;
 import neu.edu.csye6225.assignment2.dao.RecipeDao;
@@ -111,7 +108,8 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                 fos.write((File.getBytes()));
                 fos.close();
                 fileName = new Date().getTime() + "_" + fileName.replace(" ", "_");
-                PutObjectRequest putObjectRequest = new PutObjectRequest(this.awsS3Bucket, fileName, file);
+                PutObjectRequest putObjectRequest = new PutObjectRequest(this.awsS3Bucket, fileName, file)
+                        .withSSEAwsKeyManagementParams(new SSEAwsKeyManagementParams());
 
                 ImageRepository image = new ImageRepository(recipeRepository);
                 this.amazonS3.putObject(putObjectRequest);
