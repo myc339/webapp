@@ -107,13 +107,16 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
 //                FileOutputStream fos = new FileOutputStream(file);
 //                fos.write((File.getBytes()));
 //                fos.close();
+                SSEAwsKeyManagementParams kms=new SSEAwsKeyManagementParams();
                 fileName = new Date().getTime() + "_" + fileName.replace(" ", "_");
-                PutObjectRequest putObjectRequest = new PutObjectRequest(this.awsS3Bucket, fileName, file)
-                        .withSSEAwsKeyManagementParams(new SSEAwsKeyManagementParams());
+                PutObjectRequest putObjectRequest = new PutObjectRequest(this.awsS3Bucket, fileName, file);
+//                        .withSSEAwsKeyManagementParams(kms);
 
                 ImageRepository image = new ImageRepository(recipeRepository);
                 this.amazonS3.putObject(putObjectRequest);
+
                 GetObjectMetadataRequest getObjectMetadataRequest=new GetObjectMetadataRequest(this.awsS3Bucket,fileName);
+
                 ObjectMetadata metadata=this.amazonS3.getObjectMetadata(getObjectMetadataRequest);
                 image.setMd5(metadata.getETag());
                 image.setSize(new DecimalFormat("0.0").format((metadata.getContentLength()*1.0)/1024)+" KB");
