@@ -63,7 +63,7 @@ jobs:
             cd ~/project/webapp/assignment2/src/test/resources
             echo "" > application-test.properties
             cd ~/project/webapp/assignment2
-#            mvn clean package -Dmaven.test.skip=true
+            mvn clean package -Dmaven.test.skip=true
     ### upload file to s3
       - run:
           name: "set env vars"
