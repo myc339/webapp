@@ -60,6 +60,13 @@ public class RecipeController {
         response.setStatus(HttpServletResponse.SC_OK);
         return recipeService.getNewestRecipe(response);
     }
+    @RequestMapping(value = "v1/myrecipes",method= RequestMethod.GET)
+    public String getRecipeLinks(HttpServletRequest request, HttpServletResponse response) {
+//        response.setStatus(HttpServletResponse.SC_OK);
+//
+        return request.getRequestURL().toString();
+    }
+
 
 
 }

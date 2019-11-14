@@ -7,7 +7,6 @@ import neu.edu.csye6225.assignment2.entity.OrderedListRepository;
 import neu.edu.csye6225.assignment2.entity.RecipeRepository;
 import neu.edu.csye6225.assignment2.entity.UserRepository;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
