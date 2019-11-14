@@ -18,12 +18,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class RecipeServiceImpl implements RecipeService {
@@ -271,4 +269,27 @@ public class RecipeServiceImpl implements RecipeService {
         statsd.recordExecutionTime("time.get_newest_recipe_success", System.currentTimeMillis() - startTime);
         return (JSONObject)JSON.toJSON(recipeRepository);
     }
+    @Override
+    public JSONObject getRecipeLinks(HttpServletRequest request, HttpServletResponse response)
+    {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserRepository userRepository =userDao.findQuery(auth.getName());
+        Date date =new Date();
+        int mindif=(int) (date.getTime()-userRepository.getAccount_updated().getTime())/1000/60;
+        if(mindif<30)
+            return null;
+        else {
+            userRepository.setAccount_updated(date);
+            String authorId = userRepository.getId();
+            List<String> ids = recipeDao.getRecipeIdsByAuthor(authorId);
+            String url = request.getRequestURL().toString();
+            List<String> urls = new ArrayList<String>();
+            for (String id : ids) urls.add(url + id);
+            userDao.save(userRepository);
+            return (JSONObject) JSON.toJSON(urls);
+
+        }
+
+    }
+
 }

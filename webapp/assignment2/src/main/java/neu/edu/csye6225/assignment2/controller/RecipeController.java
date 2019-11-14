@@ -91,10 +91,10 @@ public class RecipeController {
         }
     }
     @RequestMapping(value = "v1/myrecipes",method= RequestMethod.GET)
-    public String getRecipeLinks(HttpServletRequest request, HttpServletResponse response) {
+    public JSONObject getRecipeLinks(HttpServletRequest request, HttpServletResponse response) {
         try{
             response.setStatus(HttpServletResponse.SC_OK);
-            return request.getRequestURI();
+            return recipeService.getRecipeLinks(request,response);
         }catch (Exception e)
         {
             e.printStackTrace();
