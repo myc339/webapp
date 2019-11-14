@@ -90,6 +90,17 @@ public class RecipeController {
             return null;
         }
     }
+    @RequestMapping(value = "v1/myrecipes",method= RequestMethod.GET)
+    public String getRecipeLinks(HttpServletRequest request, HttpServletResponse response) {
+        try{
+            response.setStatus(HttpServletResponse.SC_OK);
+            return request.getRequestURI();
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 
 }
