@@ -7,10 +7,7 @@ import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.regions.Region;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.amazonaws.services.s3.model.GetObjectMetadataRequest;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.*;
 import com.timgroup.statsd.StatsDClient;
 import neu.edu.csye6225.assignment2.dao.ImageDao;
 import neu.edu.csye6225.assignment2.dao.RecipeDao;
@@ -25,11 +22,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,7 +48,7 @@ class Images{
     }
 }
 
-@Component
+@Service
 public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
     private String awsS3Bucket;
     private AmazonS3 amazonS3;
@@ -64,12 +63,18 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
     @Autowired
     private UserDao userDao;
     public static StatsDClient statsd;
+    private static  Boolean tomcat;
     @Autowired
-    public AmazonS3ClientServiceImpl(Region awsRegion, AmazonS3 amazonS3,String awsS3Bucket,StatsDClient statsDClient)
+    public AmazonS3ClientServiceImpl(Region awsRegion, AWSCredentialsProvider awsCredentialsProvider,String awsS3Bucket,StatsDClient statsDClient
+    ,Boolean tomcat_flag)
     {
-        this.amazonS3=amazonS3;
+        this.amazonS3= AmazonS3ClientBuilder.standard()
+                .withCredentials(awsCredentialsProvider)
+                .withRegion(awsRegion.getName()).build();
         this.awsS3Bucket=awsS3Bucket;
         this.statsd=statsDClient;
+        this.tomcat=tomcat_flag;
+        System.out.println("imple:"+amazonS3.getRegionName());
         System.out.println("bucketName:"+this.awsS3Bucket);
         System.out.println("region:"+awsRegion.getName());
     }
@@ -102,16 +107,38 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
             }
             for ( MultipartFile File :files) {
                 String fileName=File.getOriginalFilename();
-                File file = new File(fileName);
-                FileOutputStream fos = new FileOutputStream(file);
-                fos.write((File.getBytes()));
-                fos.close();
-                fileName = new Date().getTime() + "_" + fileName.replace(" ", "_");
-                PutObjectRequest putObjectRequest = new PutObjectRequest(this.awsS3Bucket, fileName, file);
+//                System.out.println(System.getProperty( "catalina.base" ));
+                System.out.println("file create ");
+                File file =new File(fileName);
+                System.out.println("file path"+file.getAbsolutePath());
+                System.out.println("file create success ");
+//                System.getProperty( "catalina.base" );
+                FileOutputStream fos;
+                System.out.println("tomcat_flag:"+tomcat);
 
+                if(tomcat)
+                {
+                    fos = new FileOutputStream("/opt/tomcat/temp/"+file);
+                }
+                else fos=new FileOutputStream(file);
+                System.out.println("file fos ");
+                fos.write((File.getBytes()));
+                System.out.println("file close ");
+                fos.close();
+                System.out.println("file read ");
+                SSEAwsKeyManagementParams kms=new SSEAwsKeyManagementParams();
+                fileName = new Date().getTime() + "_" + fileName.replace(" ", "_");
+                System.out.println("file upload request ");
+                PutObjectRequest putObjectRequest ;
+                if(tomcat) putObjectRequest=new PutObjectRequest(this.awsS3Bucket,fileName,"/opt/tomcat/temp/"+file);
+                else putObjectRequest=new PutObjectRequest(this.awsS3Bucket,fileName,file);
+//                        .withSSEAwsKeyManagementParams(kms);
+                System.out.println("file put  ");
                 ImageRepository image = new ImageRepository(recipeRepository);
                 this.amazonS3.putObject(putObjectRequest);
+                System.out.println("file get ");
                 GetObjectMetadataRequest getObjectMetadataRequest=new GetObjectMetadataRequest(this.awsS3Bucket,fileName);
+
                 ObjectMetadata metadata=this.amazonS3.getObjectMetadata(getObjectMetadataRequest);
                 image.setMd5(metadata.getETag());
                 image.setSize(new DecimalFormat("0.0").format((metadata.getContentLength()*1.0)/1024)+" KB");
@@ -205,9 +232,9 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                     String fileName=files.getOriginalFilename();
                     File file = new File(fileName);
 
-                    FileOutputStream fos = new FileOutputStream(file);
-                    fos.write((files.getBytes()));
-                    fos.close();
+//                    FileOutputStream fos = new FileOutputStream(file);
+//                    fos.write((files.getBytes()));
+//                    fos.close();
                     fileName = new Date().getTime() + "_" + fileName.replace(" ", "_");
                     PutObjectRequest putObjectRequest = new PutObjectRequest(this.awsS3Bucket, fileName, file);
                     this.amazonS3.putObject(putObjectRequest);
@@ -222,7 +249,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                     image.setFileName(fileName);
                     image.setRegion("http://s3.amazonaws.com");
                     image.setUrl(this.amazonS3.getUrl(this.awsS3Bucket,fileName).toString());
-                    file.delete();
+//                    file.delete();
 
 
                     imageDao.save(image);

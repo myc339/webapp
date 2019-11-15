@@ -24,15 +24,6 @@ import com.timgroup.statsd.NonBlockingStatsDClient;
 public class FileHandlerController {
     @Autowired
     private AmazonS3ClientService amazonS3ClientService;
-    @Autowired
-    private UserDao userDao;
-
-    public long getDuration(long startTime) {
-        long endTime = System.currentTimeMillis();
-        return endTime - startTime;
-    }
-
-    private  final StatsDClient statsd = new NonBlockingStatsDClient("","localhost",8125);
     @Async
     @RequestMapping(value="/v1/recipe/{id}/image",method=RequestMethod.POST)
     public JSONObject attachRecipeImage(@PathVariable String id, @RequestPart(value = "image") MultipartFile[] file, HttpServletResponse response)
@@ -50,6 +41,7 @@ public class FileHandlerController {
     @RequestMapping(value="v1/recipe/{id}/image/{imageId}",method = RequestMethod.GET)
     public JSONObject getRecipeImage(@PathVariable String id,@PathVariable String imageId,HttpServletResponse response)
     {
+
         try{
             response.setStatus(HttpServletResponse.SC_OK);
             return this.amazonS3ClientService.getRecipeImage(id,imageId,response);

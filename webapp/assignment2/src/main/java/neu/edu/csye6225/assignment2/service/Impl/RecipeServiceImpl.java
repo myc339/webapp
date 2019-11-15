@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-@Transactional
 public class RecipeServiceImpl implements RecipeService {
 
     @Autowired
@@ -36,6 +35,7 @@ public class RecipeServiceImpl implements RecipeService {
     @Autowired
     private OrderedListDao orderedListDao;
     private static final Logger log = LoggerFactory.getLogger(RecipeServiceImpl.class);
+
     public static StatsDClient statsd;
     @Autowired
     public RecipeServiceImpl(StatsDClient statsDClient ) {
@@ -45,6 +45,7 @@ public class RecipeServiceImpl implements RecipeService {
     public JSONObject save(RecipeRepository recipeRepository, HttpServletResponse response)
     {
         long startTime=System.currentTimeMillis();
+
         statsd.incrementCounter("count.post_recipe_times");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
@@ -66,6 +67,7 @@ public class RecipeServiceImpl implements RecipeService {
 
         recipeRepository.setIngredients1(recipeRepository.getIngredients().toString());
         recipeDao.save(recipeRepository);
+//        statsd.recordExecutionTime("POST_RECIPE_TIME", System.currentTimeMillis() - startTime);
         statsd.recordExecutionTime("time.post_recipe_success", System.currentTimeMillis() - startTime);
         log.info("RECIPE_CREATED");
         return (JSONObject) JSON.toJSON(recipeRepository);

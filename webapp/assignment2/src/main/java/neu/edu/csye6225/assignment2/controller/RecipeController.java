@@ -57,6 +57,7 @@ public class RecipeController {
 
     @RequestMapping(value="v1/recipe/{id}",method = RequestMethod.DELETE)
     public JSONObject deleteRecipe(@PathVariable String id,HttpServletResponse response){
+
         try{
         response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         return recipeService.deleteRecipe(id,response);

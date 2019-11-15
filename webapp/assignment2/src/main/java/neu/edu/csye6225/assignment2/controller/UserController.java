@@ -2,13 +2,9 @@ package neu.edu.csye6225.assignment2.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import neu.edu.csye6225.assignment2.common.CommonResult;
 import neu.edu.csye6225.assignment2.dao.UserDao;
 import neu.edu.csye6225.assignment2.entity.UserRepository;
-import neu.edu.csye6225.assignment2.helper.MetricsConfig;
 import neu.edu.csye6225.assignment2.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,15 +20,13 @@ import com.timgroup.statsd.NonBlockingStatsDClient;
 public class UserController {
 
     @Autowired
-    private UserDao userDao;
-
-    @Autowired
     private UserService userService;
 
 
     @RequestMapping(value = "v1/user/self",method= RequestMethod.GET)
     public JSONObject findByAccountAndPassword(HttpServletRequest request, HttpServletResponse response)
     {
+
 
         try {
             response.setStatus(HttpServletResponse.SC_OK);
@@ -62,6 +56,7 @@ public class UserController {
     //only permit update firstname,lastname,password
     @RequestMapping(value="v1/user/self",method = RequestMethod.PUT)
     public JSONObject updateSelf(@RequestBody UserRepository request,HttpServletResponse response){
+
         try{
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
             return userService.updateSelf(request,response);

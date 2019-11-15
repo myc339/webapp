@@ -27,7 +27,6 @@ import java.util.Date;
 import java.util.UUID;
 
 @Service
-@Transactional
 public class UserServiceImpl  implements UserService {
     //    private final JSONObject jsonObject=new JSONObject(true);
     @Autowired
@@ -46,6 +45,7 @@ public class UserServiceImpl  implements UserService {
     public JSONObject save(UserRepository userRepository,HttpServletResponse response)
     {
         long startTime=System.currentTimeMillis();
+
         statsd.incrementCounter("count.post_user_times");
         if(userDao.findQuery(userRepository.getEmail_address())!=null) {
             try {
@@ -88,6 +88,7 @@ public class UserServiceImpl  implements UserService {
         userRepository.setPassword(bCryptPasswordEncoder.encode(userRepository.getPassword()));
         userDao.save(userRepository);
         inMemoryUserDetailsManager.createUser(User.withUsername(userRepository.getEmail_address()).password(userRepository.getPassword()).roles("USER").build());
+
         statsd.recordExecutionTime("timer.post_user_success", System.currentTimeMillis() - startTime);
         log.info("USER_CREATED");
         return (JSONObject)JSON.toJSON(userRepository);
