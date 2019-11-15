@@ -7,6 +7,7 @@ import com.amazonaws.regions.Region;
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClient;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
+import com.amazonaws.services.sns.model.MessageAttributeValue;
 import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.services.sns.model.PublishResult;
 import com.timgroup.statsd.StatsDClient;
@@ -16,6 +17,7 @@ import neu.edu.csye6225.assignment2.dao.UserDao;
 import neu.edu.csye6225.assignment2.entity.OrderedListRepository;
 import neu.edu.csye6225.assignment2.entity.RecipeRepository;
 import neu.edu.csye6225.assignment2.entity.UserRepository;
+import neu.edu.csye6225.assignment2.helper.SNSMessageAttributes;
 import neu.edu.csye6225.assignment2.service.RecipeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,11 +45,12 @@ public class RecipeServiceImpl implements RecipeService {
     private UserDao userDao;
     private static final Logger log = LoggerFactory.getLogger(RecipeServiceImpl.class);
     private AmazonSNS snsClient;
+    private String SnsArn;
     @Autowired
-    public RecipeServiceImpl(StatsDClient statsDClient, Region awsRegion, AWSCredentialsProvider awsCredentialsProvider ) {
+    public RecipeServiceImpl(StatsDClient statsDClient, Region awsRegion, AWSCredentialsProvider awsCredentialsProvider,String snsArn) {
         this.statsd=statsDClient;
         this.snsClient= AmazonSNSClientBuilder.standard().withCredentials(awsCredentialsProvider).withRegion(awsRegion.getName()).build();
-
+        this.SnsArn=snsArn;
     }
 
     @Override
@@ -278,27 +281,31 @@ public class RecipeServiceImpl implements RecipeService {
     {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
+        String user=userRepository.getEmail_address();
         Date date =new Date();
         int mindif=(int) (date.getTime()-userRepository.getAccount_updated().getTime())/1000/60;
-        if(mindif!=0)
+        String authorId = userRepository.getId();
+        List<String> ids = recipeDao.getRecipeIdsByAuthor(authorId);
+        String url = request.getRequestURL().toString();
+        ArrayList<String> urls = new ArrayList<String>();
+        for (String id : ids) urls.add(url+"/" + id);
+        RecipeLinks links=new RecipeLinks();
+        links.setLinks(urls);
+        if(mindif>=30)
         {
+            links.setMsg("request send");
             userRepository.setAccount_updated(date);
             userDao.save(userRepository);
             // Publish a message to an Amazon SNS topic.
-            final String msg = "If you receive this message, publishing a message to an Amazon SNS topic works.";
-            PublishResult publishResponse = snsClient.publish(new PublishRequest()
-                    .withMessage(msg).withTopicArn("arn:aws:sns:us-east-1:589079856728:email_request"));
+            SNSMessageAttributes msg= new SNSMessageAttributes();
+            msg.addAttribute(user,urls);
+            PublishResult publishResponse = snsClient.publish(new PublishRequest().addMessageAttributesEntry(user,new MessageAttributeValue())
+                   .withTopicArn(SnsArn));
 
             // Print the MessageId of the message.
             System.out.println("MessageId: " + publishResponse.getMessageId());
         }
-        String authorId = userRepository.getId();
-        List<String> ids = recipeDao.getRecipeIdsByAuthor(authorId);
-        String url = request.getRequestURL().toString();
-        List<String> urls = new ArrayList<String>();
-        for (String id : ids) urls.add(url+"/" + id);
-        RecipeLinks links=new RecipeLinks();
-        links.setLinks(urls);
+        else links.setMsg("request ignored,you can't send multiple request within 30 mins");
         return (JSONObject) JSON.toJSON(links);
 
     }
@@ -307,9 +314,18 @@ public class RecipeServiceImpl implements RecipeService {
 
 class RecipeLinks{
     private List<String> links;
+    private String msg;
     public RecipeLinks(){}
     public List<String> getLinks() {
         return links;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 
     public void setLinks(List<String> links) {

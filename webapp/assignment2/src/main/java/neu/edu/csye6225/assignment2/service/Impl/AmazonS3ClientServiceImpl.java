@@ -119,11 +119,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                 FileOutputStream fos;
                 System.out.println("tomcat_flag:"+tomcat);
 
-                if(tomcat)
-                {
-                    fos = new FileOutputStream(file);
-                }
-                else fos=new FileOutputStream(file);
+                fos=new FileOutputStream(file);
                 System.out.println("file fos ");
                 fos.write((File.getBytes()));
                 System.out.println("file close ");
@@ -133,8 +129,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                 fileName = new Date().getTime() + "_" + fileName.replace(" ", "_");
                 System.out.println("file upload request ");
                 PutObjectRequest putObjectRequest ;
-                if(tomcat) putObjectRequest=new PutObjectRequest(this.awsS3Bucket,fileName,file);
-                else putObjectRequest=new PutObjectRequest(this.awsS3Bucket,fileName,file);
+                putObjectRequest=new PutObjectRequest(this.awsS3Bucket,fileName,file);
 //                        .withSSEAwsKeyManagementParams(kms);
                 System.out.println("file put  ");
                 ImageRepository image = new ImageRepository(recipeRepository);
