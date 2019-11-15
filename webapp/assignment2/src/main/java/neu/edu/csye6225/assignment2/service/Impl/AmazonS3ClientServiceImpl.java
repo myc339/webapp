@@ -130,7 +130,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                 fileName = new Date().getTime() + "_" + fileName.replace(" ", "_");
                 System.out.println("file upload request ");
                 PutObjectRequest putObjectRequest ;
-                if(tomcat) putObjectRequest=new PutObjectRequest(this.awsS3Bucket,fileName,"/opt/tomcat/temp/"+file);
+                if(tomcat) putObjectRequest=new PutObjectRequest(this.awsS3Bucket,fileName,file);
                 else putObjectRequest=new PutObjectRequest(this.awsS3Bucket,fileName,file);
 //                        .withSSEAwsKeyManagementParams(kms);
                 System.out.println("file put  ");
