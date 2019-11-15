@@ -109,7 +109,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                 String fileName=File.getOriginalFilename();
 //                System.out.println(System.getProperty( "catalina.base" ));
                 System.out.println("file create ");
-                File file =new File(fileName);
+                File file =new File("/opt/tomcat/temp/"+fileName);
                 System.out.println("file path"+file.getAbsolutePath());
                 System.out.println("file create success ");
 //                System.getProperty( "catalina.base" );
@@ -130,7 +130,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                 fileName = new Date().getTime() + "_" + fileName.replace(" ", "_");
                 System.out.println("file upload request ");
                 PutObjectRequest putObjectRequest ;
-                if(tomcat) putObjectRequest=new PutObjectRequest(this.awsS3Bucket,fileName,file);
+                if(tomcat) putObjectRequest=new PutObjectRequest(this.awsS3Bucket,fileName,"/opt/tomcat/temp/"+file);
                 else putObjectRequest=new PutObjectRequest(this.awsS3Bucket,fileName,file);
 //                        .withSSEAwsKeyManagementParams(kms);
                 System.out.println("file put  ");
