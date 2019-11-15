@@ -16,45 +16,65 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.timgroup.statsd.StatsDClient;
+import com.timgroup.statsd.NonBlockingStatsDClient;
+
 @RestController
 
 public class FileHandlerController {
     @Autowired
     private AmazonS3ClientService amazonS3ClientService;
-    @Autowired
-    private UserDao userDao;
     @Async
     @RequestMapping(value="/v1/recipe/{id}/image",method=RequestMethod.POST)
     public JSONObject attachRecipeImage(@PathVariable String id, @RequestPart(value = "image") MultipartFile[] file, HttpServletResponse response)
     {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserRepository userRepository =userDao.findQuery(auth.getName());
-        response.setStatus(HttpServletResponse.SC_CREATED);
-        return this.amazonS3ClientService.uploadFileToS3Bucket(id,userRepository.getId(),file, true,response);
+        try {
+            response.setStatus(HttpServletResponse.SC_CREATED);
+            return this.amazonS3ClientService.uploadFileToS3Bucket(id, file, true, response);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
     }
     @Async
     @RequestMapping(value="v1/recipe/{id}/image/{imageId}",method = RequestMethod.GET)
     public JSONObject getRecipeImage(@PathVariable String id,@PathVariable String imageId,HttpServletResponse response)
     {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserRepository userRepository =userDao.findQuery(auth.getName());
-       return  this.amazonS3ClientService.getRecipeImage(id,imageId,response);
+
+        try{
+            response.setStatus(HttpServletResponse.SC_OK);
+            return this.amazonS3ClientService.getRecipeImage(id,imageId,response);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
     }
     @Async
     @RequestMapping(value="v1/recipe/{id}/image/{imageId}",method = RequestMethod.DELETE)
     public JSONObject deleteRecipeImage(@PathVariable String id,@PathVariable String imageId,HttpServletResponse response)
     {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserRepository userRepository =userDao.findQuery(auth.getName());
-        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-        return  this.amazonS3ClientService.deleteFileFromS3Bucket(id,userRepository.getId(),imageId,response);
+        try {
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            return this.amazonS3ClientService.deleteFileFromS3Bucket(id, imageId, response);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
     }
     @Async
     @RequestMapping(value="v1/recipe/{id}/image/{imageId}",method = RequestMethod.PUT)
     public JSONObject updateRecipeImage(@PathVariable String id,@PathVariable String imageId,@RequestPart(value = "image") MultipartFile file,HttpServletResponse response)
     {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserRepository userRepository =userDao.findQuery(auth.getName());
-        return  this.amazonS3ClientService.updateRecipeImage(id,userRepository.getId(),imageId,file,response);
+        try {
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            return this.amazonS3ClientService.updateRecipeImage(id, imageId, file, response);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
