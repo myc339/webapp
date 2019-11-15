@@ -92,8 +92,8 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                     return null;
                 }
             }
-            for ( MultipartFile File :files) {
-                String fileName=File.getOriginalFilename();
+            for ( MultipartFile source :files) {
+                String fileName=source.getOriginalFilename();
 //                System.out.println(System.getProperty( "catalina.base" ));
                 System.out.println("file create ");
                 File file =new File(fileName);
@@ -110,7 +110,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                 }
                 else fos=new FileOutputStream(file);
                 System.out.println("file fos ");
-                fos.write((File.getBytes()));
+                fos.write((source.getBytes()));
                 System.out.println("file close ");
                 fos.close();
                 System.out.println("file read ");
