@@ -109,7 +109,10 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                 String fileName=File.getOriginalFilename();
 //                System.out.println(System.getProperty( "catalina.base" ));
                 System.out.println("file create ");
-                File file =new File("/opt/tomcat/temp/"+fileName);
+                File file;
+                if(tomcat)
+                 file = new File("/opt/tomcat/temp/"+fileName);
+                else file = new File(fileName);
                 System.out.println("file path"+file.getAbsolutePath());
                 System.out.println("file create success ");
 //                System.getProperty( "catalina.base" );
