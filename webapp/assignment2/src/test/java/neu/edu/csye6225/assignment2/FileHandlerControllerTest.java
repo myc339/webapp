@@ -88,7 +88,7 @@ public class FileHandlerControllerTest {
     }
     @Test
     public void Test_Attach_Recipe_Image() throws Exception {
-        InputStream inputStream =Thread.currentThread().getContextClassLoader().getResourceAsStream("images/1.jpg");
+        InputStream inputStream =Thread.currentThread().getContextClassLoader().getResourceAsStream("1.jpg");
         file = new MockMultipartFile(
                 "image", "1.jpg","image/jpg",inputStream);
        this.mvc.perform(multipart("/v1/recipe/"+recipe_id+"/image")
@@ -99,7 +99,7 @@ public class FileHandlerControllerTest {
     }
     @Test
     public void Test_Attach_Recipe_With_PDF() throws Exception{
-        InputStream inputStream =Thread.currentThread().getContextClassLoader().getResourceAsStream("images/1.pdf");
+        InputStream inputStream =Thread.currentThread().getContextClassLoader().getResourceAsStream("1.pdf");
         file = new MockMultipartFile(
                 "image", "1.pdf","application/pdf",inputStream);
         this.mvc.perform(multipart("/v1/recipe/"+recipe_id+"/image")
@@ -114,6 +114,7 @@ public class FileHandlerControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn();
+        System.out.println(mvcResult.getResponse().getContentAsString());
        Object obj= JSON.parseObject(mvcResult.getResponse().getContentAsString()).get("image");
 //       System.out.println(String.valueOf(obj));
        for (Object o:JSON.parseArray(String.valueOf(obj)))

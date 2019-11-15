@@ -2,22 +2,31 @@ package neu.edu.csye6225.assignment2.service.Impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.regions.Region;
+import com.amazonaws.services.sns.AmazonSNS;
+import com.amazonaws.services.sns.AmazonSNSClient;
+import com.amazonaws.services.sns.AmazonSNSClientBuilder;
+import com.amazonaws.services.sns.model.PublishRequest;
+import com.amazonaws.services.sns.model.PublishResult;
 import com.timgroup.statsd.StatsDClient;
 import neu.edu.csye6225.assignment2.dao.OrderedListDao;
 import neu.edu.csye6225.assignment2.dao.RecipeDao;
+import neu.edu.csye6225.assignment2.dao.UserDao;
 import neu.edu.csye6225.assignment2.entity.OrderedListRepository;
 import neu.edu.csye6225.assignment2.entity.RecipeRepository;
+import neu.edu.csye6225.assignment2.entity.UserRepository;
 import neu.edu.csye6225.assignment2.service.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Transactional
@@ -29,8 +38,13 @@ public class RecipeServiceImpl implements RecipeService {
     private OrderedListDao orderedListDao;
     private static StatsDClient statsd;
     @Autowired
-    public RecipeServiceImpl(StatsDClient statsDClient ) {
+    private UserDao userDao;
+    private AmazonSNS snsClient;
+    @Autowired
+    public RecipeServiceImpl(StatsDClient statsDClient, Region awsRegion, AWSCredentialsProvider awsCredentialsProvider ) {
         this.statsd=statsDClient;
+        this.snsClient= AmazonSNSClientBuilder.standard().withCredentials(awsCredentialsProvider).withRegion(awsRegion.getName()).build();
+
     }
 
     @Override
@@ -222,5 +236,47 @@ public class RecipeServiceImpl implements RecipeService {
     {
         RecipeRepository recipeRepository = recipeDao.findNewestRecipe();
         return (JSONObject)JSON.toJSON(recipeRepository);
+    }
+    @Override
+    public JSONObject getRecipeLinks(HttpServletRequest request, HttpServletResponse response)
+    {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserRepository userRepository =userDao.findQuery(auth.getName());
+        Date date =new Date();
+        int mindif=(int) (date.getTime()-userRepository.getAccount_updated().getTime())/1000/60;
+        if(mindif!=0)
+        {
+            userRepository.setAccount_updated(date);
+            userDao.save(userRepository);
+            // Publish a message to an Amazon SNS topic.
+            final String msg = "If you receive this message, publishing a message to an Amazon SNS topic works.";
+            PublishResult publishResponse = snsClient.publish(new PublishRequest()
+                    .withMessage(msg).withTopicArn("arn:aws:sns:us-east-1:589079856728:email_request"));
+
+            // Print the MessageId of the message.
+            System.out.println("MessageId: " + publishResponse.getMessageId());
+        }
+        String authorId = userRepository.getId();
+        List<String> ids = recipeDao.getRecipeIdsByAuthor(authorId);
+        String url = request.getRequestURL().toString();
+        List<String> urls = new ArrayList<String>();
+        for (String id : ids) urls.add(url+"/" + id);
+        RecipeLinks links=new RecipeLinks();
+        links.setLinks(urls);
+        return (JSONObject) JSON.toJSON(links);
+
+    }
+
+}
+
+class RecipeLinks{
+    private List<String> links;
+    public RecipeLinks(){}
+    public List<String> getLinks() {
+        return links;
+    }
+
+    public void setLinks(List<String> links) {
+        this.links = links;
     }
 }

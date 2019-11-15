@@ -24,6 +24,7 @@ module "security_group" {
 module "s3_bucket" {
   source = "./modules/s3_bucket"
   domain_name = "${var.domain_name}"
+  account_id = "${var.account_id}"
 }
 
 # Create RDS
@@ -57,6 +58,7 @@ module "ec2" {
   dbUsername = "${var.dbUsername}"
   aws_secret_key="${var.aws_secret_key}"
   aws_access_key="${var.aws_access_key}"
+  sns_arn = "${module.sns.sns_arn}"
 }
 
 # Create policies
@@ -78,6 +80,7 @@ module "role_policy_attachment" {
   CodeDeployEC2ServiceRole = "${module.role.CodeDeployEC2ServiceRole}"
   CodeDeployServiceRole = "${module.role.CodeDeployServiceRole}"
   CodeDeploy-EC2-S3 = "${module.policy.CodeDeploy-EC2-S3}"
+  S3AcessWithEncryption = "${module.policy.S3-Acess-With-Encryption}"
 }
 
 # Attach policy to user
@@ -100,4 +103,8 @@ module "codedeploy_development_group" {
   source = "./modules/codedeploy_deployment_group"
   appName = "${module.codedeploy_app.name}"
   CodeDeployServiceRoleArn = "${module.role.CodeDeployServiceRoleArn}"
+}
+#create sns topic
+module "sns"{
+  source = "./modules/sns"
 }
