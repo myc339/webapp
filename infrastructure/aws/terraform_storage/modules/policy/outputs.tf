@@ -6,10 +6,6 @@ output "CircleCI-Upload-To-S3" {
   value = "${aws_iam_policy.CircleCI-Upload-To-S3.arn}"
 }
 
-output "circleci-ec2-ami" {
-  value = "${aws_iam_policy.circleci-ec2-ami.arn}"
-}
-
 output "CircleCI-Code-Deploy" {
   value = "${aws_iam_policy.CircleCI-Code-Deploy.arn}"
 }

@@ -12,7 +12,7 @@ jobs:
           FILE_NAME: webapp_${CIRCLE_BUILD_NUM}.zip
     steps:
       - checkout
-      - run: echo "export BUCKET_NAME=codedeploy.${aws_bucketName}" >>$BASH_ENV
+      - run: echo "export BUCKET_NAME=${aws_bucketName}" >>$BASH_ENV
       - run:
           name: "install mysql,aws-cli,zip,mvn"
           command: |
@@ -35,7 +35,7 @@ jobs:
           command: |
             cd ~/project/webapp/assignment2/src/test/resources
             echo "region=${region}">>application-test.properties
-            echo "bucketName=${BUCKET_NAME}">>application-test.properties
+            echo "bucketName=webapp.${BUCKET_NAME}">>application-test.properties
             echo "accesskey=${aws_access_key}">>application-test.properties
             echo "secretkey=${aws_secret_key}">>application-test.properties
     ## run integration test
@@ -78,8 +78,8 @@ jobs:
             zip -r ~/$FILE_NAME *
       - run:
           name: "update zip file on s3"
-          command: aws s3 cp ~/$FILE_NAME s3://${BUCKET_NAME} --sse aws:kms
+          command: aws s3 cp ~/$FILE_NAME s3://codedeploy.${BUCKET_NAME} --sse aws:kms
     #### send codedeploy request
       - run:
           name: "create code deployment"
-          command: aws deploy create-deployment  --region ${region} --application-name csye6225-webapp  --deployment-group-name csye6225-webapp-deployment --s3-location bucket=${BUCKET_NAME},bundleType=zip,key=$FILE_NAME
+          command: aws deploy create-deployment  --region ${region} --application-name csye6225-webapp  --deployment-group-name csye6225-webapp-deployment --s3-location bucket=codedeploy.${BUCKET_NAME},bundleType=zip,key=$FILE_NAME

@@ -48,11 +48,8 @@ module "ec2" {
   CodeDeployEC2ServiceRole = "${module.role.CodeDeployEC2ServiceRole}"
   # application params
   region = "${var.aws_region}"
-//  accessKey = "${var.aws_access_key}"
-//  secretKey = "${var.aws_secret_key}"
   dbUrl = "${module.rds.dbUrl}"
   dbPassword = "${var.dbPassword}"
-//  bucketName = "${module.s3_bucket.bucketName}"
   bucketName="${var.domain_name}"
   dbName = "${var.dbName}"
   dbUsername = "${var.dbUsername}"
@@ -87,8 +84,6 @@ module "user_policy_attachment" {
   source = "./modules/user_policy_attachment"
   CircleCI-Upload-To-S3 = "${module.policy.CircleCI-Upload-To-S3}"
   CircleCI-Code-Deploy = "${module.policy.CircleCI-Code-Deploy}"
-  circleci-ec2-ami = "${module.policy.circleci-ec2-ami}"
-
 }
 
 # Create codedeploy application

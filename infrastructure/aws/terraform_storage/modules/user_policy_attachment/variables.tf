@@ -5,7 +5,3 @@ variable "CircleCI-Upload-To-S3" {
 variable "CircleCI-Code-Deploy" {
   type = string
 }
-
-variable "circleci-ec2-ami" {
-  type = string
-}
