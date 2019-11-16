@@ -1,0 +1,6 @@
+
+
+
+variable "LambdaServiceRole"{
+  type = string
+}

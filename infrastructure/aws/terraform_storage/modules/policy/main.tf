@@ -160,3 +160,4 @@ resource "aws_iam_policy" "S3-Acess-With-Encryption" {
 }
 EOF
 }
+

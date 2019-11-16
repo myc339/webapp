@@ -6,7 +6,9 @@ variable "CodeDeployEC2ServiceRole" {
 variable "CodeDeployServiceRole" {
   type = string
 }
-
+variable "LambdaServiceRole"{
+  type = string
+}
 # Policy arn
 variable "CodeDeploy-EC2-S3" {
   type = string
