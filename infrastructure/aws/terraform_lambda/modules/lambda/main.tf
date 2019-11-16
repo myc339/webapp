@@ -7,11 +7,11 @@ data "archive_file" "init"{
   }
 }
 resource "aws_sns_topic" "sns" {
-  name = "email_request"
+  name = "email_request_test"
 }
 resource "aws_lambda_function" "lambda" {
   filename = "${data.archive_file.init.output_path}"
-  function_name = "csye6225_lambda"
+  function_name = "csye6225_lambda_test"
   role          = "${var.LambdaServiceRole}"
   handler = "sns::handleRequest"
   # The filebase64sha256() function is available in Terraform 0.11.12 and later
@@ -19,6 +19,9 @@ resource "aws_lambda_function" "lambda" {
   # source_code_hash = "${base64sha256(file("lambda_function_payload.zip"))}"
   //  source_code_hash = "${filebase64sha256("lambda_function_payload.zip")}"
   runtime = "java8"
+  reserved_concurrent_executions = 1
+  timeout = 15*60
+  memory_size = 512
   //  environment {
   //    variables = {
   //      foo = "bar"

@@ -314,14 +314,21 @@ public class RecipeServiceImpl implements RecipeService {
     {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
-        String user=userRepository.getEmail_address();
+        String user_mail=userRepository.getEmail_address();
         Date date =new Date();
         int mindif=(int) (date.getTime()-userRepository.getAccount_updated().getTime())/1000/60;
         String authorId = userRepository.getId();
         List<String> ids = recipeDao.getRecipeIdsByAuthor(authorId);
         String url = request.getRequestURL().toString();
         ArrayList<String> urls = new ArrayList<String>();
-        for (String id : ids) urls.add(url+"/" + id);
+        String link ="";
+        for (String id : ids){
+            urls.add(url+"/" + id);
+        }
+        for (String e: urls)
+        {
+            link+=e;
+        }
         RecipeLinks links=new RecipeLinks();
         links.setLinks(urls);
         if(mindif>=30)
@@ -330,9 +337,10 @@ public class RecipeServiceImpl implements RecipeService {
             userRepository.setAccount_updated(date);
             userDao.save(userRepository);
             // Publish a message to an Amazon SNS topic.
-            SNSMessageAttributes msg= new SNSMessageAttributes();
-            msg.addAttribute(user,urls);
-            PublishResult publishResponse = snsClient.publish(new PublishRequest().addMessageAttributesEntry(user,new MessageAttributeValue())
+
+            PublishResult publishResponse = snsClient.publish(new PublishRequest()
+                    .addMessageAttributesEntry("id",new MessageAttributeValue().withStringValue(user_mail))
+                    .addMessageAttributesEntry("links",new MessageAttributeValue().withStringValue(link))
                    .withTopicArn(SnsArn));
 
             // Print the MessageId of the message.

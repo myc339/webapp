@@ -1,5 +1,5 @@
 resource "aws_iam_policy" "Lambda-DynamoDb" {
-  name        = "Lambda-DynamoDb"
+  name        = "Lambda-DynamoDb_demo"
   path        = "/"
   description = "allow lambda put and read items in dynamodb"
 
@@ -10,9 +10,8 @@ resource "aws_iam_policy" "Lambda-DynamoDb" {
         {
             "Effect": "Allow",
             "Action": [
-                "dynamodb:PutItem",
-                "dynamodb:GetItem",
-                "dynamodb:GetRecords"
+                "dynamodb:*"
+
             ],
             "Resource": "*"
         }

@@ -122,9 +122,7 @@ resource "aws_iam_policy" "Lambda-DynamoDb" {
         {
             "Effect": "Allow",
             "Action": [
-                "dynamodb:PutItem",
-                "dynamodb:GetItem",
-                "dynamodb:GetRecords"
+                "dynamodb:*"
             ],
             "Resource": "*"
         }
