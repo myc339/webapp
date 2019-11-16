@@ -51,7 +51,7 @@ Content-Disposition: attachment; filename="userdata.txt"
 cd /opt/tomcat/bin
 touch setenv.sh
 echo "#!/bin/sh" > setenv.sh
-echo "JAVA_OPTS=\"\$JAVA_OPTS -Dspring.datasource.username=${var.dbUsername} -Dspring.datasource.password=${var.dbPassword} -DdbUrl=${var.dbUrl} -DdbName=${var.dbName} -DbucketName=codedeploy.${var.bucketName} -Dregion=${var.region}   \"" >> setenv.sh
+echo "JAVA_OPTS=\"\$JAVA_OPTS -Dspring.datasource.username=${var.dbUsername} -Dspring.datasource.password=${var.dbPassword} -DdbUrl=${var.dbUrl} -DdbName=${var.dbName} -DbucketName=webapp.${var.bucketName} -Dregion=${var.region}  \"" >> setenv.sh
 chown tomcat:tomcat setenv.sh
 chmod +x setenv.sh
 sudo chmod 755 -R /opt/tomcat

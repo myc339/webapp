@@ -50,17 +50,14 @@ module "ec2" {
   CodeDeployEC2ServiceRole = "${module.role.CodeDeployEC2ServiceRole}"
   # application params
   region = "${var.aws_region}"
-//  accessKey = "${var.aws_access_key}"
-//  secretKey = "${var.aws_secret_key}"
   dbUrl = "${module.rds.dbUrl}"
   dbPassword = "${var.dbPassword}"
-//  bucketName = "${module.s3_bucket.bucketName}"
   bucketName="${var.domain_name}"
   dbName = "${var.dbName}"
   dbUsername = "${var.dbUsername}"
   aws_secret_key="${var.aws_secret_key}"
   aws_access_key="${var.aws_access_key}"
-
+  snsArn = "${module.lambda.snsArn}"
 }
 
 # Create policies
@@ -81,9 +78,11 @@ module "role_policy_attachment" {
   source = "./modules/role_policy_attachment"
   CodeDeployEC2ServiceRole = "${module.role.CodeDeployEC2ServiceRole}"
   CodeDeployServiceRole = "${module.role.CodeDeployServiceRole}"
+  LambdaServiceRole="${module.role.LambdaServiceRole}"
 
   CodeDeploy-EC2-S3 = "${module.policy.CodeDeploy-EC2-S3}"
   S3AcessWithEncryption = "${module.policy.S3-Acess-With-Encryption}"
+  Lambda-DynamoDb="${module.policy.Lambda-DynamoDb}"
 
 }
 
@@ -92,8 +91,6 @@ module "user_policy_attachment" {
   source = "./modules/user_policy_attachment"
   CircleCI-Upload-To-S3 = "${module.policy.CircleCI-Upload-To-S3}"
   CircleCI-Code-Deploy = "${module.policy.CircleCI-Code-Deploy}"
-  circleci-ec2-ami = "${module.policy.circleci-ec2-ami}"
-
 }
 
 # Create codedeploy application
@@ -107,4 +104,10 @@ module "codedeploy_development_group" {
   source = "./modules/codedeploy_deployment_group"
   appName = "${module.codedeploy_app.name}"
   CodeDeployServiceRoleArn = "${module.role.CodeDeployServiceRoleArn}"
+}
+
+#create lambda
+module "lambda" {
+  source = "./modules/lambda"
+  LambdaServiceRole="${module.role.LambdaServiceRoleArn}"
 }
