@@ -110,4 +110,5 @@ module "codedeploy_development_group" {
 module "lambda" {
   source = "./modules/lambda"
   LambdaServiceRole="${module.role.LambdaServiceRoleArn}"
+  dynamodbName = "${module.dynamodb.dynamodbName}"
 }

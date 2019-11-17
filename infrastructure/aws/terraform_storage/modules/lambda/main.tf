@@ -7,11 +7,11 @@ data "archive_file" "init"{
   }
 }
 resource "aws_sns_topic" "sns" {
-  name = "email_request_test"
+  name = "email_request"
 }
 resource "aws_lambda_function" "lambda" {
   filename = "${data.archive_file.init.output_path}"
-  function_name = "csye6225_lambda_test"
+  function_name = "csye6225_lambda"
   role          = "${var.LambdaServiceRole}"
   handler = "sns::handleRequest"
   # The filebase64sha256() function is available in Terraform 0.11.12 and later
@@ -22,11 +22,11 @@ resource "aws_lambda_function" "lambda" {
   reserved_concurrent_executions = 1
   timeout = 15*60
   memory_size = 512
-  //  environment {
-  //    variables = {
-  //      foo = "bar"
-  //    }
-  //  }
+    environment {
+      variables = {
+        tableName ="${var.dynamodbName}"
+      }
+    }
 }
 resource "aws_sns_topic_subscription" "lambda" {
   topic_arn = "${aws_sns_topic.sns.arn}"

@@ -20,6 +20,10 @@ resource "aws_iam_role_policy_attachment" "S3AcessWithEncryption_attachment" {
   role = "${var.CodeDeployEC2ServiceRole}"
   policy_arn = "${var.S3AcessWithEncryption}"
 }
+resource "aws_iam_role_policy_attachment" "EC2_SNS_attachment" {
+  role = "${var.CodeDeployEC2ServiceRole}"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSNSFullAccess"
+}
 
 resource "aws_iam_role_policy_attachment" "LambdaBasicExecuteion_attachment" {
   role = "${var.LambdaServiceRole}"
