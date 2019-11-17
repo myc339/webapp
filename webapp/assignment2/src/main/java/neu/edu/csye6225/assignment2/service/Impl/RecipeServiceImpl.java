@@ -337,7 +337,7 @@ public class RecipeServiceImpl implements RecipeService {
 
         SNSMessageAttributes msg =new SNSMessageAttributes();
         msg.addAttribute("id",user_mail);
-        msg.addAttribute("links",link);
+        msg.addAttribute("links",urls);
         if(mindif>=30 || userRepository.getAccount_updated().getTime()==userRepository.getAccount_created().getTime())
         {
             links.setMsg("request send");
