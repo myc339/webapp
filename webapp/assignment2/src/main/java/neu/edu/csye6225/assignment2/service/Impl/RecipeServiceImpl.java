@@ -334,20 +334,25 @@ public class RecipeServiceImpl implements RecipeService {
         }
         RecipeLinks links=new RecipeLinks();
         links.setLinks(urls);
+
+        SNSMessageAttributes msg =new SNSMessageAttributes();
+        msg.addAttribute("id",user_mail);
+        msg.addAttribute("links",link);
         if(mindif>=30 || userRepository.getAccount_updated().getTime()==userRepository.getAccount_created().getTime())
         {
             links.setMsg("request send");
             userRepository.setAccount_updated(date);
             userDao.save(userRepository);
             // Publish a message to an Amazon SNS topic.
-
-            PublishResult publishResponse = snsClient.publish(new PublishRequest()
-                    .addMessageAttributesEntry("id",new MessageAttributeValue().withStringValue(user_mail))
-                    .addMessageAttributesEntry("links",new MessageAttributeValue().withStringValue(link))
-                   .withTopicArn(SnsArn));
+            msg.setMessage(user_mail+"request to get all recipe links");
+            msg.publish(snsClient,SnsArn);
+//            PublishResult publishResponse = snsClient.publish(new PublishRequest()
+//                    .addMessageAttributesEntry("id",new MessageAttributeValue().withStringValue(user_mail))
+//                    .addMessageAttributesEntry("links",new MessageAttributeValue().withStringValue(link))
+//                   .withTopicArn(SnsArn));
 
             // Print the MessageId of the message.
-            System.out.println("MessageId: " + publishResponse.getMessageId());
+//            System.out.println("MessageId: " + publishResponse.getMessageId());
         }
         else links.setMsg("request ignored,you can't send multiple request within 30 mins");
         return (JSONObject) JSON.toJSON(links);
