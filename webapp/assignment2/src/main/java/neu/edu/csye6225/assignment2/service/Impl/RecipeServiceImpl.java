@@ -323,7 +323,7 @@ public class RecipeServiceImpl implements RecipeService {
         String authorId = userRepository.getId();
         List<String> ids = recipeDao.getRecipeIdsByAuthor(authorId);
         String url = request.getRequestURL().toString();
-        url = url.substring(0,url.length()-10);
+        url = url.substring(0,url.length()-9);
         ArrayList<String> urls = new ArrayList<String>();
         String link ="";
         for (String id : ids){
