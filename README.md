@@ -79,4 +79,10 @@ check cloudwatch agent status,it should be running after code deployment succeed
 <pre><code>
 /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -m ec2 -a status</code></pre>
 
+## JMeter
+<pre><code>
+brew install jmeter
+open /usr/local/Cellar/jmeter/5.2/bin/jmeter
+open jmeter_script.jmx
+
 
