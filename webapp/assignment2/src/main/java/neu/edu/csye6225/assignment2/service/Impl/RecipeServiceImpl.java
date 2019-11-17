@@ -322,9 +322,8 @@ public class RecipeServiceImpl implements RecipeService {
         int mindif=(int) (date.getTime()-userRepository.getAccount_updated().getTime())/1000/60;
         String authorId = userRepository.getId();
         List<String> ids = recipeDao.getRecipeIdsByAuthor(authorId);
-        String url = request.getScheme()+"://" +
-                request.getServerName() +
-                "/recipe";
+        String url = request.getRequestURL().toString();
+        url = url.substring(0,url.length()-10);
         ArrayList<String> urls = new ArrayList<String>();
         String link ="";
         for (String id : ids){
