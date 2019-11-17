@@ -24,7 +24,8 @@ resource "aws_lambda_function" "lambda" {
   memory_size = 512
     environment {
       variables = {
-        tableName ="${var.dynamodbName}"
+        tableName = "${var.dynamodbName}"
+        region = "${var.region}"
       }
     }
 }

@@ -43,6 +43,26 @@ resource "aws_iam_policy" "CircleCI-Upload-To-S3" {
 EOF
 }
 
+resource "aws_iam_policy" "CircleCI-Update-LambdaFunctionCode" {
+  name        = "CircleCI-Update-LambdaFunctionCode"
+  path        = "/"
+  description = "These permissions are required to update lambda function code by circle ci ."
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "lambda:UpdateFunctionCode"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+EOF
+}
 resource "aws_iam_policy" "CircleCI-Code-Deploy" {
   name        = "CircleCI-Code-Deploy"
   path        = "/"
@@ -130,3 +150,4 @@ resource "aws_iam_policy" "Lambda-DynamoDb" {
 }
 EOF
 }
+

@@ -16,6 +16,7 @@ variable "S3AcessWithEncryption"{
   type = string
 }
 
+
 # Role name
 
 variable "LambdaServiceRole"{

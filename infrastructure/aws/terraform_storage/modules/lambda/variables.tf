@@ -8,3 +8,7 @@ variable "LambdaServiceRole"{
 variable "dynamodbName" {
   type = string
 }
+
+variable "region" {
+  type = string
+}

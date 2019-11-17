@@ -91,6 +91,7 @@ module "user_policy_attachment" {
   source = "./modules/user_policy_attachment"
   CircleCI-Upload-To-S3 = "${module.policy.CircleCI-Upload-To-S3}"
   CircleCI-Code-Deploy = "${module.policy.CircleCI-Code-Deploy}"
+  CircleCI-Update-LambdaFunctionCode = "${module.policy.CircleCI-Update-LambdaFunctionCode}"
 }
 
 # Create codedeploy application
@@ -111,4 +112,5 @@ module "lambda" {
   source = "./modules/lambda"
   LambdaServiceRole="${module.role.LambdaServiceRoleArn}"
   dynamodbName = "${module.dynamodb.dynamodbName}"
+  region = "${var.aws_region}"
 }
