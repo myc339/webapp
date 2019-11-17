@@ -327,7 +327,7 @@ public class RecipeServiceImpl implements RecipeService {
         ArrayList<String> urls = new ArrayList<String>();
         String link ="";
         for (String id : ids){
-            urls.add(url+"/" + id);
+            urls.add(url+"recipe/" + id);
         }
         for (String e: urls)
         {
