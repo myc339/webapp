@@ -318,6 +318,7 @@ public class RecipeServiceImpl implements RecipeService {
         UserRepository userRepository =userDao.findQuery(auth.getName());
         String user_mail=userRepository.getEmail_address();
         Date date =new Date();
+
         int mindif=(int) (date.getTime()-userRepository.getAccount_updated().getTime())/1000/60;
         String authorId = userRepository.getId();
         List<String> ids = recipeDao.getRecipeIdsByAuthor(authorId);
@@ -333,7 +334,7 @@ public class RecipeServiceImpl implements RecipeService {
         }
         RecipeLinks links=new RecipeLinks();
         links.setLinks(urls);
-        if(mindif>=30)
+        if(mindif>=30 || userRepository.getAccount_updated().getTime()==userRepository.getAccount_created().getTime())
         {
             links.setMsg("request send");
             userRepository.setAccount_updated(date);
