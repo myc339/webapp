@@ -8,15 +8,12 @@ import com.amazonaws.regions.Region;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
-<<<<<<< HEAD
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClient;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.amazonaws.services.sns.model.MessageAttributeValue;
 import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.services.sns.model.PublishResult;
-=======
->>>>>>> d986ffa7935c984b3603c9bb65a3a8b278bf7a4a
 import com.timgroup.statsd.StatsDClient;
 import neu.edu.csye6225.assignment2.dao.ImageDao;
 import neu.edu.csye6225.assignment2.dao.OrderedListDao;
@@ -200,6 +197,7 @@ public class RecipeServiceImpl implements RecipeService {
         {
             e.printStackTrace();
         }
+
         recipeDao.delete(recipeRepository);
         log.info("recipe deleted");
         statsd.recordExecutionTime("time.delete_recipe_success", System.currentTimeMillis() - startTime);
