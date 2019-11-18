@@ -1,5 +1,6 @@
 package neu.edu.csye6225.assignment2.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.amazonaws.services.s3.AmazonS3Client;
 import neu.edu.csye6225.assignment2.dao.UserDao;
@@ -96,6 +97,10 @@ public class RecipeController {
             return null;
         }
     }
-
+    @RequestMapping(value = "v1/sns/handle-bounces",method = RequestMethod.GET)
+    public JSONObject handle_ses_bounces(HttpServletRequest request)
+    {
+        return (JSONObject) JSON.toJSON(request);
+    }
 
 }
