@@ -11,3 +11,8 @@ variable "account_id" {
 variable "CodeDeployEC2ServiceRole" {
   type = string
 }
+
+variable "depends_on_role" {
+  type			= any
+  default		= null
+}

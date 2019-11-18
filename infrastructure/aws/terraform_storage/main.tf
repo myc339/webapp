@@ -23,6 +23,7 @@ module "security_group" {
 # Create S3 bucket
 module "s3_bucket" {
   source = "./modules/s3_bucket"
+  depends_on_role = [module.role.role]
   domain_name = "${var.domain_name}"
   account_id = "${var.account_id}"
   CodeDeployEC2ServiceRole = "${module.role.CodeDeployEC2ServiceRole}"
