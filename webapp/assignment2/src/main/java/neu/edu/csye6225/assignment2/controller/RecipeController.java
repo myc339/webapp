@@ -97,10 +97,6 @@ public class RecipeController {
             return null;
         }
     }
-    @RequestMapping(value = "v1/sns/handle-bounces",method = RequestMethod.POST)
-    public JSONObject handle_ses_bounces(HttpServletRequest request)
-    {
-        return (JSONObject) JSON.toJSON(request);
-    }
+    
 
 }

@@ -11,9 +11,7 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClient;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
-import com.amazonaws.services.sns.model.MessageAttributeValue;
-import com.amazonaws.services.sns.model.PublishRequest;
-import com.amazonaws.services.sns.model.PublishResult;
+import com.amazonaws.services.sns.model.*;
 import com.timgroup.statsd.StatsDClient;
 import neu.edu.csye6225.assignment2.dao.ImageDao;
 import neu.edu.csye6225.assignment2.dao.OrderedListDao;
@@ -343,7 +341,7 @@ public class RecipeServiceImpl implements RecipeService {
             SNSMessageAttributes msg = new SNSMessageAttributes();
             msg.addAttribute("id", user_mail);
             msg.addAttribute("links", urls);
-            if (mindif >= 1 || userRepository.getAccount_updated().getTime() == userRepository.getAccount_created().getTime()) {
+//            if (mindif >= 1 || userRepository.getAccount_updated().getTime() == userRepository.getAccount_created().getTime()) {
                 links.setMsg("request send");
                 userRepository.setAccount_updated(date);
                 userDao.save(userRepository);
@@ -357,7 +355,7 @@ public class RecipeServiceImpl implements RecipeService {
 
                 // Print the MessageId of the message.
 //            System.out.println("MessageId: " + publishResponse.getMessageId());
-            } else links.setMsg("request ignored,you can't send multiple request within 30 mins");
+//            } else links.setMsg("request ignored,you can't send multiple request within 30 mins");
             return (JSONObject) JSON.toJSON(links);
         }catch (Exception e)
         {
