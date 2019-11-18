@@ -12,7 +12,7 @@ resource "aws_kms_key" "mykey" {
             "Effect": "Allow",
             "Principal": {
                 "AWS": [
-                    "arn:aws:iam::${var.account_id}:role/CodeDeployEC2ServiceRole",
+                    "arn:aws:iam::${var.account_id}:role/${var.CodeDeployEC2ServiceRole}",
                     "arn:aws:iam::${var.account_id}:root"
                 ]
             },

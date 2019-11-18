@@ -25,6 +25,7 @@ module "s3_bucket" {
   source = "./modules/s3_bucket"
   domain_name = "${var.domain_name}"
   account_id = "${var.account_id}"
+  CodeDeployEC2ServiceRole = "${module.role.CodeDeployEC2ServiceRole}"
 }
 # Create lambda bucket
 

@@ -7,3 +7,7 @@ variable "account_id" {
     description = "aws account ID"
     type = string
 }
+
+variable "CodeDeployEC2ServiceRole" {
+  type = string
+}
