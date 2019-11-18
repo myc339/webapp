@@ -52,3 +52,7 @@ variable "dbUsername" {
 variable "dbPassword" {
   type = string
 }
+
+variable "snsArn" {
+  type = string
+}
