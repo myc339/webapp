@@ -368,6 +368,8 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public  JSONObject handSES_Bounces(HttpServletRequest request, HttpServletResponse response)
     {
+
+        System.out.println((JSONObject) JSON.toJSON(request));
         SubscribeResult result=snsClient.subscribe(new SubscribeRequest("arn:aws:sns:us-east-1:589079856728:ses-success",
                         "http","://52.87.170.124/v1/myrecipes"));
 
