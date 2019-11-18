@@ -97,17 +97,6 @@ public class RecipeController {
             return null;
         }
     }
-    @RequestMapping(value = "v1/sns/handle-bounces",method = RequestMethod.POST)
-    public JSONObject handle_ses_bounces(HttpServletRequest request,HttpServletResponse response)
-    {
-        try{
-
-            return recipeService.handSES_Bounces(request,response);
-        }catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-
-    }
+    
 
 }

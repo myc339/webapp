@@ -341,7 +341,7 @@ public class RecipeServiceImpl implements RecipeService {
             SNSMessageAttributes msg = new SNSMessageAttributes();
             msg.addAttribute("id", user_mail);
             msg.addAttribute("links", urls);
-            if (mindif >= 1 || userRepository.getAccount_updated().getTime() == userRepository.getAccount_created().getTime()) {
+//            if (mindif >= 1 || userRepository.getAccount_updated().getTime() == userRepository.getAccount_created().getTime()) {
                 links.setMsg("request send");
                 userRepository.setAccount_updated(date);
                 userDao.save(userRepository);
@@ -355,7 +355,7 @@ public class RecipeServiceImpl implements RecipeService {
 
                 // Print the MessageId of the message.
 //            System.out.println("MessageId: " + publishResponse.getMessageId());
-            } else links.setMsg("request ignored,you can't send multiple request within 30 mins");
+//            } else links.setMsg("request ignored,you can't send multiple request within 30 mins");
             return (JSONObject) JSON.toJSON(links);
         }catch (Exception e)
         {
@@ -364,16 +364,6 @@ public class RecipeServiceImpl implements RecipeService {
         }
 
 
-    }
-    @Override
-    public  JSONObject handSES_Bounces(HttpServletRequest request, HttpServletResponse response)
-    {
-
-//        System.out.println((JSONObject) JSON.toJSON(request));
-        SubscribeResult result=snsClient.subscribe(new SubscribeRequest("arn:aws:sns:us-east-1:589079856728:ses-success",
-                        "http","dev.myc339.me/v1/myrecipes"));
-
-        return (JSONObject)JSON.toJSON(result);
     }
 
 }
