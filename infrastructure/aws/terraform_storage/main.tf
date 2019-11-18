@@ -83,7 +83,7 @@ module "role_policy_attachment" {
   CodeDeploy-EC2-S3 = "${module.policy.CodeDeploy-EC2-S3}"
   S3AcessWithEncryption = "${module.policy.S3-Acess-With-Encryption}"
   Lambda-DynamoDb="${module.policy.Lambda-DynamoDb}"
-
+  Lambda-SES = "${module.policy.Lambda-SES}"
 }
 
 # Attach policy to user

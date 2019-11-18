@@ -34,3 +34,7 @@ resource "aws_iam_role_policy_attachment" "LambdaDynamodb_attachment" {
   role = "${var.LambdaServiceRole}"
   policy_arn = "${var.Lambda-DynamoDb}"
 }
+resource "aws_iam_role_policy_attachment" "LambdaSES_attachment" {
+  policy_arn = "${var.Lambda-SES}"
+  role = "${var.LambdaServiceRole}"
+}

@@ -27,3 +27,7 @@ variable "LambdaServiceRole"{
 variable "Lambda-DynamoDb" {
   type = string
 }
+
+variable "Lambda-SES" {
+  type = string
+}

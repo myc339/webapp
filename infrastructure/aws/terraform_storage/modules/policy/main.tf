@@ -150,4 +150,24 @@ resource "aws_iam_policy" "Lambda-DynamoDb" {
 }
 EOF
 }
+resource "aws_iam_policy" "Lambda-SES" {
+  name        = "Lambda-SES"
+  path        = "/"
+  description = "allow lambda operate SES"
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ses:*"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+EOF
+}
 
