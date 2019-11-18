@@ -371,7 +371,7 @@ public class RecipeServiceImpl implements RecipeService {
 
 //        System.out.println((JSONObject) JSON.toJSON(request));
         SubscribeResult result=snsClient.subscribe(new SubscribeRequest("arn:aws:sns:us-east-1:589079856728:ses-success",
-                        "http","://52.87.170.124/v1/myrecipes"));
+                        "http","dev.myc339.me/v1/myrecipes"));
 
         return (JSONObject)JSON.toJSON(result);
     }
