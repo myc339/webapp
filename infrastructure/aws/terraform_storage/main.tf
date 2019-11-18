@@ -154,6 +154,7 @@ module "load_balancer" {
 # Create waf
 module "waf" {
   source = "./modules/waf"
+}
 
 #create lambda
 module "lambda" {
