@@ -322,41 +322,49 @@ public class RecipeServiceImpl implements RecipeService {
         int mindif=(int) (date.getTime()-userRepository.getAccount_updated().getTime())/1000/60;
         String authorId = userRepository.getId();
         List<String> ids = recipeDao.getRecipeIdsByAuthor(authorId);
-        String url = request.getRequestURL().toString();
-        url = url.substring(0,url.length()-9);
-        ArrayList<String> urls = new ArrayList<String>();
-        String link ="";
-        for (String id : ids){
-            urls.add(url+"recipe/" + id);
-        }
-        for (String e: urls)
-        {
-            link+=e;
-        }
-        RecipeLinks links=new RecipeLinks();
-        links.setLinks(urls);
+        try {
+            if (ids.isEmpty()) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "you dont have any recipes");
+                return null;
+            }
+            String url = request.getRequestURL().toString();
+            url = url.substring(0, url.length() - 9);
+            ArrayList<String> urls = new ArrayList<String>();
+            String link = "";
+            for (String id : ids) {
+                urls.add(url + "recipe/" + id);
+            }
+            for (String e : urls) {
+                link += e;
+            }
+            RecipeLinks links = new RecipeLinks();
+            links.setLinks(urls);
 
-        SNSMessageAttributes msg =new SNSMessageAttributes();
-        msg.addAttribute("id",user_mail);
-        msg.addAttribute("links",urls);
-        if(mindif>=30 || userRepository.getAccount_updated().getTime()==userRepository.getAccount_created().getTime())
-        {
-            links.setMsg("request send");
-            userRepository.setAccount_updated(date);
-            userDao.save(userRepository);
-            // Publish a message to an Amazon SNS topic.
-            msg.setMessage(user_mail+"request to get all recipe links");
-            msg.publish(snsClient,SnsArn);
+            SNSMessageAttributes msg = new SNSMessageAttributes();
+            msg.addAttribute("id", user_mail);
+            msg.addAttribute("links", urls);
+            if (mindif >= 30 || userRepository.getAccount_updated().getTime() == userRepository.getAccount_created().getTime()) {
+                links.setMsg("request send");
+                userRepository.setAccount_updated(date);
+                userDao.save(userRepository);
+                // Publish a message to an Amazon SNS topic.
+                msg.setMessage(user_mail + "request to get all recipe links");
+                msg.publish(snsClient, SnsArn);
 //            PublishResult publishResponse = snsClient.publish(new PublishRequest()
 //                    .addMessageAttributesEntry("id",new MessageAttributeValue().withStringValue(user_mail))
 //                    .addMessageAttributesEntry("links",new MessageAttributeValue().withStringValue(link))
 //                   .withTopicArn(SnsArn));
 
-            // Print the MessageId of the message.
+                // Print the MessageId of the message.
 //            System.out.println("MessageId: " + publishResponse.getMessageId());
+            } else links.setMsg("request ignored,you can't send multiple request within 30 mins");
+            return (JSONObject) JSON.toJSON(links);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
         }
-        else links.setMsg("request ignored,you can't send multiple request within 30 mins");
-        return (JSONObject) JSON.toJSON(links);
+
 
     }
 
