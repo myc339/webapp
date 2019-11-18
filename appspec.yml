@@ -4,7 +4,7 @@ files:
   - source: webapp
     destination: /var/webapps
   - source: webapp/assignment2/target/assignment2-0.0.1-SNAPSHOT.war
-    destination: /opt/tomcat/webapps/1.war
+    destination: /opt/tomcat/webapps/app.war
 hooks:
   BeforeInstall:
     - location: scripts/cleanup.sh
