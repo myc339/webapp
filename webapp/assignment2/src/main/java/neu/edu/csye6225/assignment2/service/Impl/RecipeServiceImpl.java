@@ -2,13 +2,28 @@ package neu.edu.csye6225.assignment2.service.Impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.regions.Region;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.sns.AmazonSNS;
+import com.amazonaws.services.sns.AmazonSNSClient;
+import com.amazonaws.services.sns.AmazonSNSClientBuilder;
+import com.amazonaws.services.sns.model.MessageAttributeValue;
+import com.amazonaws.services.sns.model.PublishRequest;
+import com.amazonaws.services.sns.model.PublishResult;
 import com.timgroup.statsd.StatsDClient;
+import neu.edu.csye6225.assignment2.dao.ImageDao;
 import neu.edu.csye6225.assignment2.dao.OrderedListDao;
 import neu.edu.csye6225.assignment2.dao.RecipeDao;
 import neu.edu.csye6225.assignment2.dao.UserDao;
+import neu.edu.csye6225.assignment2.entity.ImageRepository;
 import neu.edu.csye6225.assignment2.entity.OrderedListRepository;
 import neu.edu.csye6225.assignment2.entity.RecipeRepository;
 import neu.edu.csye6225.assignment2.entity.UserRepository;
+import neu.edu.csye6225.assignment2.helper.SNSMessageAttributes;
 import neu.edu.csye6225.assignment2.service.RecipeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,29 +33,41 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
+@Transactional
 public class RecipeServiceImpl implements RecipeService {
 
     @Autowired
     private RecipeDao recipeDao;
     @Autowired
+    private ImageDao imageDao;
+    @Autowired
     private UserDao userDao;
     @Autowired
     private OrderedListDao orderedListDao;
+    private static StatsDClient statsd;
+    private AmazonS3 amazonS3;
+    private String awsS3Bucket;
     private static final Logger log = LoggerFactory.getLogger(RecipeServiceImpl.class);
-
-    public static StatsDClient statsd;
+    private AmazonSNS snsClient;
+    private String SnsArn;
     @Autowired
-    public RecipeServiceImpl(StatsDClient statsDClient ) {
+    public RecipeServiceImpl(StatsDClient statsDClient, Region awsRegion, AWSCredentialsProvider awsCredentialsProvider,String snsArn, String awsS3Bucket) {
         this.statsd=statsDClient;
+        this.snsClient= AmazonSNSClientBuilder.standard().withCredentials(awsCredentialsProvider).withRegion(awsRegion.getName()).build();
+        this.SnsArn=snsArn;
+        this.amazonS3= AmazonS3ClientBuilder.standard()
+                .withCredentials(awsCredentialsProvider)
+                .withRegion(awsRegion.getName()).build();
+        this.awsS3Bucket=awsS3Bucket;
+
     }
+
     @Override
     public JSONObject save(RecipeRepository recipeRepository, HttpServletResponse response)
     {
@@ -151,6 +178,26 @@ public class RecipeServiceImpl implements RecipeService {
         }
 
         RecipeRepository recipeRepository = recipeDao.getOne(recipeId);
+
+        Images images=new Images(recipeRepository.getImage());
+        boolean exist=false;
+        try{
+            for(ImageRepository image:images.getImage()) {
+
+
+                exist = true;
+                amazonS3.deleteObject(new DeleteObjectRequest(image.getBucketName(), image.getFileName()));
+                imageDao.DeleteImage(image.getId());
+                log.info("image deleted");
+                statsd.recordExecutionTime("timer.delete_image", System.currentTimeMillis() - startTime);
+                return null;
+
+            }
+        }catch (AmazonServiceException e)
+        {
+            e.printStackTrace();
+        }
+
         recipeDao.delete(recipeRepository);
         log.info("recipe deleted");
         statsd.recordExecutionTime("time.delete_recipe_success", System.currentTimeMillis() - startTime);
@@ -176,8 +223,6 @@ public class RecipeServiceImpl implements RecipeService {
                 ||request.getUpdated_ts()!=null){
 
             try {
-                log.error("You can't update field including id,created_ts,updated_ts," +
-                        "author_id and total_time_in_min!");
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "You can't update field including id,created_ts,updated_ts," +
                         "author_id and total_time_in_min!");
             } catch (IOException e) {
@@ -189,7 +234,6 @@ public class RecipeServiceImpl implements RecipeService {
         for(OrderedListRepository o : request.getSteps()){
             if(o.getPosition() < 1){
                 try {
-                    log.error("Position filed of OrderList can't be smaller than 1!");
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Position filed of OrderList can't be smaller than 1!");
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -201,7 +245,6 @@ public class RecipeServiceImpl implements RecipeService {
         //check cook&pre time's Min & Max
         if(request.getCook_time_in_min()%5 != 0 || request.getPrep_time_in_min()%5 != 0 ||request.getCook_time_in_min() < 0 || request.getPrep_time_in_min() < 0){
             try {
-                log.error("Cook time & prepare time should be multiple of 5!");
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Cook time & prepare time should be multiple of 5!");
             } catch (IOException e) {
                 e.printStackTrace();
@@ -211,7 +254,6 @@ public class RecipeServiceImpl implements RecipeService {
         //check serving of recipe
         if(request.getServings() < 1 || request.getServings() >5){
             try {
-                log.error("Serving's minimum is 1, maximum is 5!");
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Serving's minimum is 1, maximum is 5!");
             } catch (IOException e) {
                 e.printStackTrace();
@@ -223,7 +265,6 @@ public class RecipeServiceImpl implements RecipeService {
         for(String s : request.getIngredients()){
             if(set.contains(s)){
                 try {
-                    log.error("Ingredients's item should be unique!");
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Ingredients's item should be unique!");
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -253,7 +294,6 @@ public class RecipeServiceImpl implements RecipeService {
         }
         catch (Exception e){
             try {
-                log.error("There is no such recipe with this ID!!!");
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no such recipe with this ID!!!");
                 return false;
             } catch (IOException ie) {
@@ -270,5 +310,83 @@ public class RecipeServiceImpl implements RecipeService {
         RecipeRepository recipeRepository = recipeDao.findNewestRecipe();
         statsd.recordExecutionTime("time.get_newest_recipe_success", System.currentTimeMillis() - startTime);
         return (JSONObject)JSON.toJSON(recipeRepository);
+    }
+    @Override
+    public JSONObject getRecipeLinks(HttpServletRequest request, HttpServletResponse response)
+    {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserRepository userRepository =userDao.findQuery(auth.getName());
+        String user_mail=userRepository.getEmail_address();
+        Date date =new Date();
+
+        int mindif=(int) (date.getTime()-userRepository.getAccount_updated().getTime())/1000/60;
+        String authorId = userRepository.getId();
+        List<String> ids = recipeDao.getRecipeIdsByAuthor(authorId);
+        try {
+            if (ids.isEmpty()) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "you dont have any recipes");
+                return null;
+            }
+            String url = request.getRequestURL().toString();
+            url = url.substring(0, url.length() - 9);
+            ArrayList<String> urls = new ArrayList<String>();
+            String link = "";
+            for (String id : ids) {
+                urls.add(url + "recipe/" + id);
+            }
+            for (String e : urls) {
+                link += e;
+            }
+            RecipeLinks links = new RecipeLinks();
+            links.setLinks(urls);
+
+            SNSMessageAttributes msg = new SNSMessageAttributes();
+            msg.addAttribute("id", user_mail);
+            msg.addAttribute("links", urls);
+            if (mindif >= 1 || userRepository.getAccount_updated().getTime() == userRepository.getAccount_created().getTime()) {
+                links.setMsg("request send");
+                userRepository.setAccount_updated(date);
+                userDao.save(userRepository);
+                // Publish a message to an Amazon SNS topic.
+                msg.setMessage(user_mail + "request to get all recipe links");
+                msg.publish(snsClient, SnsArn);
+//            PublishResult publishResponse = snsClient.publish(new PublishRequest()
+//                    .addMessageAttributesEntry("id",new MessageAttributeValue().withStringValue(user_mail))
+//                    .addMessageAttributesEntry("links",new MessageAttributeValue().withStringValue(link))
+//                   .withTopicArn(SnsArn));
+
+                // Print the MessageId of the message.
+//            System.out.println("MessageId: " + publishResponse.getMessageId());
+            } else links.setMsg("request ignored,you can't send multiple request within 30 mins");
+            return (JSONObject) JSON.toJSON(links);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+
+
+    }
+
+}
+
+class RecipeLinks{
+    private List<String> links;
+    private String msg;
+    public RecipeLinks(){}
+    public List<String> getLinks() {
+        return links;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
+    public void setLinks(List<String> links) {
+        this.links = links;
     }
 }

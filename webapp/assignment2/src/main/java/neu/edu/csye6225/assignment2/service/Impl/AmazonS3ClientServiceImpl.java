@@ -52,7 +52,7 @@ class Images{
 public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
     private String awsS3Bucket;
     private AmazonS3 amazonS3;
-//    private static final Logger logger = LoggerFactory.getLogger(AmazonS3ClientServiceImpl.class);
+    //    private static final Logger logger = LoggerFactory.getLogger(AmazonS3ClientServiceImpl.class);
     @Autowired
     private RecipeDao recipeDao;
     @Autowired
@@ -66,7 +66,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
     private static  Boolean tomcat;
     @Autowired
     public AmazonS3ClientServiceImpl(Region awsRegion, AWSCredentialsProvider awsCredentialsProvider,String awsS3Bucket,StatsDClient statsDClient
-    ,Boolean tomcat_flag)
+            ,Boolean tomcat_flag)
     {
         this.amazonS3= AmazonS3ClientBuilder.standard()
                 .withCredentials(awsCredentialsProvider)
@@ -79,7 +79,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
         System.out.println("region:"+awsRegion.getName());
     }
 
-//    @Async
+    //    @Async
     public JSONObject uploadFileToS3Bucket(String recipeId,MultipartFile[] files, boolean enablePublicReadAccess, HttpServletResponse response)
     {
         long startTime=System.currentTimeMillis();
@@ -109,18 +109,17 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                 String fileName=File.getOriginalFilename();
 //                System.out.println(System.getProperty( "catalina.base" ));
                 System.out.println("file create ");
-                File file =new File(fileName);
+                File file;
+                if(tomcat)
+                 file = new File("/opt/tomcat/temp/"+fileName);
+                else file = new File(fileName);
                 System.out.println("file path"+file.getAbsolutePath());
                 System.out.println("file create success ");
 //                System.getProperty( "catalina.base" );
                 FileOutputStream fos;
                 System.out.println("tomcat_flag:"+tomcat);
 
-                if(tomcat)
-                {
-                    fos = new FileOutputStream("/opt/tomcat/temp/"+file);
-                }
-                else fos=new FileOutputStream(file);
+                fos=new FileOutputStream(file);
                 System.out.println("file fos ");
                 fos.write((File.getBytes()));
                 System.out.println("file close ");
@@ -130,8 +129,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
                 fileName = new Date().getTime() + "_" + fileName.replace(" ", "_");
                 System.out.println("file upload request ");
                 PutObjectRequest putObjectRequest ;
-                if(tomcat) putObjectRequest=new PutObjectRequest(this.awsS3Bucket,fileName,"/opt/tomcat/temp/"+file);
-                else putObjectRequest=new PutObjectRequest(this.awsS3Bucket,fileName,file);
+                putObjectRequest=new PutObjectRequest(this.awsS3Bucket,fileName,file);
 //                        .withSSEAwsKeyManagementParams(kms);
                 System.out.println("file put  ");
                 ImageRepository image = new ImageRepository(recipeRepository);
@@ -158,10 +156,10 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
 
         }catch(IOException| AmazonServiceException ex)
         {
-         log.error("error [" + ex.getMessage() + "] occurred while uploading ");
-         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-         statsd.recordExecutionTime("timer.post_image_success", System.currentTimeMillis() - startTime);
-         return null;
+            log.error("error [" + ex.getMessage() + "] occurred while uploading ");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            statsd.recordExecutionTime("timer.post_image_success", System.currentTimeMillis() - startTime);
+            return null;
         }
         Images ImageData=new Images(images);
         log.info("image uploaded");
@@ -169,7 +167,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
         return  (JSONObject)JSON.toJSON(ImageData);
     }
 
-//    @Async
+    //    @Async
     public JSONObject deleteFileFromS3Bucket( String recipeId, String imageId,HttpServletResponse response)
     {
         long startTime=System.currentTimeMillis();
@@ -271,6 +269,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
         return null;
 
     }
+
     @Override
     public JSONObject getRecipeImage(String recipeId, String imageId, HttpServletResponse response)
     {

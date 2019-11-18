@@ -7,4 +7,8 @@ resource "aws_dynamodb_table" "csye6225" {
   	name = "id"
   	type = "S"
   }
+  ttl {
+    attribute_name = "ttl"
+    enabled        = true
+  }
 }

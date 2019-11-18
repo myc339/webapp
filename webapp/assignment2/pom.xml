@@ -16,7 +16,7 @@
     <description>Demo project for Spring Boot</description>
     <properties>
         <java.version>1.8</java.version>
-<!--        <start-class>com.mkyong.SpringBootWebApplication</start-class>-->
+        <!--        <start-class>com.mkyong.SpringBootWebApplication</start-class>-->
     </properties>
 
     <dependencies>
@@ -113,10 +113,10 @@
             <groupId>com.timgroup</groupId>
             <artifactId>java-statsd-client</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>io.dropwizard.metrics</groupId>-->
-<!--            <artifactId>metrics-core</artifactId>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>io.dropwizard.metrics</groupId>-->
+        <!--            <artifactId>metrics-core</artifactId>-->
+        <!--        </dependency>-->
         <dependency>
             <groupId>com.ryantenney.metrics</groupId>
             <artifactId>metrics-spring</artifactId>
@@ -131,6 +131,7 @@
     </dependencies>
 
     <build>
+        <finalName>ROOT</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

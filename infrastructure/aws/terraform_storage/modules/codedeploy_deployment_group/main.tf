@@ -28,20 +28,12 @@ resource "aws_codedeploy_deployment_group" "csye6225-webapp-deployment" {
     enabled = true
     events  = ["DEPLOYMENT_FAILURE"]
   }
-
-  trigger_configuration {
-    trigger_events     = ["DeploymentFailure"]
-    trigger_name       = "example-trigger"
-    trigger_target_arn = "${aws_sns_topic.example.arn}"
-  }
 }
 
-resource "aws_sns_topic" "example" {
-  name = "example-topic"
-}
 
-# profile depends on CodeDeployServiceRole
+
+# profile depends on CodeDeployEC2ServiceRole
 resource "aws_iam_instance_profile" "test_profile" {
   name = "test_profile"
-  role = "CodeDeployServiceRole"
+  role = "CodeDeployEC2ServiceRole"
 }

@@ -1,7 +1,6 @@
 package neu.edu.csye6225.assignment2.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.timgroup.statsd.StatsDClient;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;

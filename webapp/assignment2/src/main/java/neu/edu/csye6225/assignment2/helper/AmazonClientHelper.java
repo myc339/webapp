@@ -26,6 +26,8 @@ public class AmazonClientHelper {
 
     @Value("${bucketName}")
     private String bucketName;
+    @Value("${snsarn}")
+    private String snsArn;
 
     @Bean(name="awsCredentialsProvider")
     public AWSCredentialsProvider getAWSCredentials() {
@@ -63,4 +65,6 @@ public class AmazonClientHelper {
     {
         return Region.getRegion(Regions.fromName(region));
     }
+    @Bean(name="snsArn")
+    public String getSnsArn()   {return snsArn;}
 }

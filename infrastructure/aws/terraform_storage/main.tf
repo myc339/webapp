@@ -26,6 +26,8 @@ module "s3_bucket" {
   domain_name = "${var.domain_name}"
   account_id = "${var.account_id}"
 }
+# Create lambda bucket
+
 
 # Create RDS
 module "rds" {
@@ -55,6 +57,7 @@ module "rds" {
 #   dbUsername = "${var.dbUsername}"
 #   aws_secret_key="${var.aws_secret_key}"
 #   aws_access_key="${var.aws_access_key}"
+#   snsArn = "${module.lambda.snsArn}"
 # }
 
 # Create policies
@@ -75,8 +78,12 @@ module "role_policy_attachment" {
   source = "./modules/role_policy_attachment"
   CodeDeployEC2ServiceRole = "${module.role.CodeDeployEC2ServiceRole}"
   CodeDeployServiceRole = "${module.role.CodeDeployServiceRole}"
+  LambdaServiceRole="${module.role.LambdaServiceRole}"
+
   CodeDeploy-EC2-S3 = "${module.policy.CodeDeploy-EC2-S3}"
   S3AcessWithEncryption = "${module.policy.S3-Acess-With-Encryption}"
+  Lambda-DynamoDb="${module.policy.Lambda-DynamoDb}"
+  Lambda-SES = "${module.policy.Lambda-SES}"
 }
 
 # Attach policy to user
@@ -84,6 +91,7 @@ module "user_policy_attachment" {
   source = "./modules/user_policy_attachment"
   CircleCI-Upload-To-S3 = "${module.policy.CircleCI-Upload-To-S3}"
   CircleCI-Code-Deploy = "${module.policy.CircleCI-Code-Deploy}"
+  CircleCI-Update-LambdaFunctionCode = "${module.policy.CircleCI-Update-LambdaFunctionCode}"
 }
 
 # Create codedeploy application
@@ -116,6 +124,7 @@ module "launch_config" {
   dbUsername = "${var.dbUsername}"
   aws_secret_key="${var.aws_secret_key}"
   aws_access_key="${var.aws_access_key}"
+  snsArn = "${module.lambda.snsArn}"
 }
 
 # Create auto scaling group
@@ -145,4 +154,11 @@ module "load_balancer" {
 # Create waf
 module "waf" {
   source = "./modules/waf"
+
+#create lambda
+module "lambda" {
+  source = "./modules/lambda"
+  LambdaServiceRole="${module.role.LambdaServiceRoleArn}"
+  dynamodbName = "${module.dynamodb.dynamodbName}"
+  region = "${var.aws_region}"
 }

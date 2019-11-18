@@ -15,3 +15,19 @@ variable "CodeDeploy-EC2-S3" {
 variable "S3AcessWithEncryption"{
   type = string
 }
+
+
+# Role name
+
+variable "LambdaServiceRole"{
+  type = string
+}
+# Policy arn
+
+variable "Lambda-DynamoDb" {
+  type = string
+}
+
+variable "Lambda-SES" {
+  type = string
+}

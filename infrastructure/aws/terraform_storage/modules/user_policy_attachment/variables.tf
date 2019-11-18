@@ -5,3 +5,6 @@ variable "CircleCI-Upload-To-S3" {
 variable "CircleCI-Code-Deploy" {
   type = string
 }
+variable "CircleCI-Update-LambdaFunctionCode" {
+  type = string
+}

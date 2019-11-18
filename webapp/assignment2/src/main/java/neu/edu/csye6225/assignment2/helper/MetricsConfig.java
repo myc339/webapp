@@ -25,7 +25,7 @@ public class MetricsConfig extends MetricsConfigurerAdapter {
     @Value("${management.metrics.export.statsd.port}")
     private int port;
 
-    @Bean(name="statsDClient")
+    @Bean
     public StatsDClient GetStatsDClient()
     {
         return new NonBlockingStatsDClient(prefix,host,port);
