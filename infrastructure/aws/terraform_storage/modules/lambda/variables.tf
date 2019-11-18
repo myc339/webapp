@@ -12,3 +12,6 @@ variable "dynamodbName" {
 variable "region" {
   type = string
 }
+variable "domainName" {
+  type = string
+}

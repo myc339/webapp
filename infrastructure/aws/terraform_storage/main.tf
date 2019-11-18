@@ -163,4 +163,5 @@ module "lambda" {
   LambdaServiceRole="${module.role.LambdaServiceRoleArn}"
   dynamodbName = "${module.dynamodb.dynamodbName}"
   region = "${var.aws_region}"
+  domainName = "${var.domain_name}"
 }
