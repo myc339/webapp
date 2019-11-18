@@ -38,24 +38,24 @@ module "rds" {
 }
 
 # Create EC2
-module "ec2" {
-  source = "./modules/ec2"
-  depends_on_rds = [module.rds.rds]
-  vpc_security_group_id = "${module.security_group.app_sg_id}"
-  subnet_ids = "${module.vpc.subnet_ids}"
-  key_pair_name = "${var.key_pair_name}"
-  ami = "${var.ami}"
-  CodeDeployEC2ServiceRole = "${module.role.CodeDeployEC2ServiceRole}"
-  # application params
-  region = "${var.aws_region}"
-  dbUrl = "${module.rds.dbUrl}"
-  dbPassword = "${var.dbPassword}"
-  bucketName="${var.domain_name}"
-  dbName = "${var.dbName}"
-  dbUsername = "${var.dbUsername}"
-  aws_secret_key="${var.aws_secret_key}"
-  aws_access_key="${var.aws_access_key}"
-}
+# module "ec2" {
+#   source = "./modules/ec2"
+#   depends_on_rds = [module.rds.rds]
+#   vpc_security_group_id = "${module.security_group.app_sg_id}"
+#   subnet_ids = "${module.vpc.subnet_ids}"
+#   key_pair_name = "${var.key_pair_name}"
+#   ami = "${var.ami}"
+#   CodeDeployEC2ServiceRole = "${module.role.CodeDeployEC2ServiceRole}"
+#   # application params
+#   region = "${var.aws_region}"
+#   dbUrl = "${module.rds.dbUrl}"
+#   dbPassword = "${var.dbPassword}"
+#   bucketName="${var.domain_name}"
+#   dbName = "${var.dbName}"
+#   dbUsername = "${var.dbUsername}"
+#   aws_secret_key="${var.aws_secret_key}"
+#   aws_access_key="${var.aws_access_key}"
+# }
 
 # Create policies
 module "policy" {
@@ -97,4 +97,52 @@ module "codedeploy_development_group" {
   source = "./modules/codedeploy_deployment_group"
   appName = "${module.codedeploy_app.name}"
   CodeDeployServiceRoleArn = "${module.role.CodeDeployServiceRoleArn}"
+}
+
+# Create launch configuration
+module "launch_config" {
+  source = "./modules/launch_config"
+  depends_on_rds = [module.rds.rds]
+  vpc_security_group_id = "${module.security_group.app_sg_id}"
+  key_pair_name = "${var.key_pair_name}"
+  ami = "${var.ami}"
+  CodeDeployEC2ServiceRole = "${module.role.CodeDeployEC2ServiceRole}"
+  # application params
+  region = "${var.aws_region}"
+  dbUrl = "${module.rds.dbUrl}"
+  dbPassword = "${var.dbPassword}"
+  bucketName="${var.domain_name}"
+  dbName = "${var.dbName}"
+  dbUsername = "${var.dbUsername}"
+  aws_secret_key="${var.aws_secret_key}"
+  aws_access_key="${var.aws_access_key}"
+}
+
+# Create auto scaling group
+module "auto_scaling_group" {
+  source = "./modules/auto_scaling_group"
+  launch_config = "${module.launch_config.launch_config_name}"
+  tg_arn = "${module.load_balancer.tg_arn}"
+  subnet_ids = "${module.vpc.subnet_ids}"
+}
+
+# Create auto scaling policy
+module "autoscaling_policy" {
+  source = "./modules/autoscaling_policy"
+  asg_name = "${module.auto_scaling_group.asg_name}"
+}
+
+# Create auto load balancer
+module "load_balancer" {
+  source = "./modules/load_balancer"
+  asg_arn = "${module.auto_scaling_group.asg_arn}"
+  web_acl_id = "${module.waf.wafWebACL}"
+  subnet_ids = "${module.vpc.subnet_ids}"
+  vpc_id = "${module.vpc.vpc_id}"
+  sg_id = "${module.security_group.app_sg_id}"
+}
+
+# Create waf
+module "waf" {
+  source = "./modules/waf"
 }
