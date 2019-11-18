@@ -14,4 +14,5 @@ public interface RecipeService {
     JSONObject getRecipe(String id, HttpServletResponse response);
     JSONObject getNewestRecipe(HttpServletResponse response);
     JSONObject getRecipeLinks(HttpServletRequest request, HttpServletResponse response);
+    JSONObject handSES_Bounces(HttpServletRequest request, HttpServletResponse response);
 }

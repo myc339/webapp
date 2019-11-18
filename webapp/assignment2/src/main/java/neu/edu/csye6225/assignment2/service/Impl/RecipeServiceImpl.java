@@ -11,9 +11,7 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClient;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
-import com.amazonaws.services.sns.model.MessageAttributeValue;
-import com.amazonaws.services.sns.model.PublishRequest;
-import com.amazonaws.services.sns.model.PublishResult;
+import com.amazonaws.services.sns.model.*;
 import com.timgroup.statsd.StatsDClient;
 import neu.edu.csye6225.assignment2.dao.ImageDao;
 import neu.edu.csye6225.assignment2.dao.OrderedListDao;
@@ -366,6 +364,14 @@ public class RecipeServiceImpl implements RecipeService {
         }
 
 
+    }
+    @Override
+    public  JSONObject handSES_Bounces(HttpServletRequest request, HttpServletResponse response)
+    {
+        SubscribeResult result=snsClient.subscribe("arn:aws:sns:us-east-1:589079856728:ses-bounce:2e0cc38b-2e54-4499-bf75-2fd4eba21d0f",
+                "http","52.87.170.124/v1/sns/handle-bounces");
+
+        return (JSONObject)JSON.toJSON(result);
     }
 
 }
