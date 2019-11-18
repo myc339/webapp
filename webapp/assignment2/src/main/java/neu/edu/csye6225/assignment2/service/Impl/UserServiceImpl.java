@@ -57,7 +57,7 @@ public class UserServiceImpl  implements UserService {
             statsd.recordExecutionTime("timer.post_user_fail", System.currentTimeMillis() - startTime);
             return null;
         }
-        if(!userRepository.getEmail_address().matches("^[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)*$@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$"))
+        if(!userRepository.getEmail_address().matches("^[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)*@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$"))
         {
             try {
                 log.error("email format invalid");
