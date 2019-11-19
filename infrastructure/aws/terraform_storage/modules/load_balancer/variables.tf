@@ -30,5 +30,5 @@ variable "domain_name" {
 
 variable "certificate" {
   type = string
-  default = "arn:aws:acm:us-east-1:403196973460:certificate/c6a1db07-57a2-4313-a485-31ea7cf33edb"
+  default = "arn:aws:acm:us-east-1:403196973460:certificate/b5bc821f-1129-4750-a372-46eee304b8bf"
 }

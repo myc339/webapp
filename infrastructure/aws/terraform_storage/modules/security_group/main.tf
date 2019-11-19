@@ -4,42 +4,42 @@ resource "aws_security_group" "app_sg" {
   description = "Allow TLS inbound traffic"
   vpc_id      = "${var.vpc_id}"
 
-  ingress {
-    # TLS (change to whatever ports you need)
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    # Please restrict your ingress to only necessary IPs and ports.
-    # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
-    cidr_blocks     = ["0.0.0.0/0"]
-  }
-  ingress {
-    # TLS (change to whatever ports you need)
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    # Please restrict your ingress to only necessary IPs and ports.
-    # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
-    cidr_blocks     = ["0.0.0.0/0"]
-  }
-  ingress {
-    # TLS (change to whatever ports you need)
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    # Please restrict your ingress to only necessary IPs and ports.
-    # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
-    cidr_blocks     = ["0.0.0.0/0"]
-  }
-  ingress {
-    # TLS (change to whatever ports you need)
-    from_port   = 8080
-    to_port     = 8080
-    protocol    = "tcp"
-    # Please restrict your ingress to only necessary IPs and ports.
-    # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
-    cidr_blocks     = ["0.0.0.0/0"]
-  }
+  # ingress {
+  #   # TLS (change to whatever ports you need)
+  #   from_port   = 22
+  #   to_port     = 22
+  #   protocol    = "tcp"
+  #   # Please restrict your ingress to only necessary IPs and ports.
+  #   # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
+  #   cidr_blocks     = ["0.0.0.0/0"]
+  # }
+  # ingress {
+  #   # TLS (change to whatever ports you need)
+  #   from_port   = 80
+  #   to_port     = 80
+  #   protocol    = "tcp"
+  #   # Please restrict your ingress to only necessary IPs and ports.
+  #   # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
+  #   cidr_blocks     = ["0.0.0.0/0"]
+  # }
+  # ingress {
+  #   # TLS (change to whatever ports you need)
+  #   from_port   = 443
+  #   to_port     = 443
+  #   protocol    = "tcp"
+  #   # Please restrict your ingress to only necessary IPs and ports.
+  #   # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
+  #   cidr_blocks     = ["0.0.0.0/0"]
+  # }
+  # ingress {
+  #   # TLS (change to whatever ports you need)
+  #   from_port   = 8080
+  #   to_port     = 8080
+  #   protocol    = "tcp"
+  #   # Please restrict your ingress to only necessary IPs and ports.
+  #   # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
+  #   cidr_blocks     = ["0.0.0.0/0"]
+  # }
   # load balancer's request
   ingress {
     # TLS (change to whatever ports you need)
