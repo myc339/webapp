@@ -17,7 +17,7 @@ resource "aws_lb" "applb" {
 
 resource "aws_lb_listener" "listener" {
   load_balancer_arn = "${aws_lb.applb.arn}"
-  port              = "80"
+  port              = 443
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
   certificate_arn   = "${var.certificate}"
@@ -31,7 +31,7 @@ resource "aws_lb_listener" "listener" {
 resource "aws_lb_target_group" "targetGroup" {
   name        = "targetGroup"
   target_type = "instance"
-  port        = 80
+  port        = 443
   protocol    = "HTTPS"
   vpc_id      = "${var.vpc_id}"
 }

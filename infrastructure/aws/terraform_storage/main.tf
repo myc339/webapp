@@ -150,7 +150,7 @@ module "load_balancer" {
   web_acl_id = "${module.waf.wafWebACL}"
   subnet_ids = "${module.vpc.subnet_ids}"
   vpc_id = "${module.vpc.vpc_id}"
-  sg_id = "${module.security_group.app_sg_id}"
+  sg_id = "${module.security_group.lb_sg_id}"
 }
 
 # Create waf
