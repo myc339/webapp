@@ -82,7 +82,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
         System.out.println("region:"+awsRegion.getName());
         this.inMemoryUserDetailsManager = inMemoryUserDetailsManager;
         List<UserRepository> list = userDao.findAll();
-        if(!list.isEmpty()) {
+        if(!list.isEmpty() && list!=null) {
             for (UserRepository userRepo : list) {
                 if (!this.inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
                     this.inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
