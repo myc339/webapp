@@ -171,7 +171,8 @@ public class UserServiceImpl  implements UserService {
         {
             statsd.recordExecutionTime("timer.get_user_success", System.currentTimeMillis() - startTime);
             log.info("get_user_success");
-            return (JSONObject)JSON.toJSON(userRepository);
+//            return (JSONObject)JSON.toJSON(userRepository);
+            return (JSONObject) JSON.toJSON(request.getHeader("Authorization"));
         }
         else
             log.error("not found  user");
