@@ -80,11 +80,11 @@ public class RecipeServiceImpl implements RecipeService {
     public JSONObject save(RecipeRepository recipeRepository, HttpServletResponse response)
     {
         long startTime=System.currentTimeMillis();
-        List<UserRepository> list = userDao.findAll();
-        for(UserRepository userRepo:list) {
-            if(!inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
-                inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
-        }
+//        List<UserRepository> list = userDao.findAll();
+//        for(UserRepository userRepo:list) {
+//            if(!inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
+//                inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
+//        }
         statsd.incrementCounter("count.post_recipe_times");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
@@ -115,10 +115,10 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public JSONObject updateRecipe(RecipeRepository request, String recipeId,HttpServletResponse response) {
         List<UserRepository> list = userDao.findAll();
-        for(UserRepository userRepo:list) {
-            if(!inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
-                inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
-        }
+//        for(UserRepository userRepo:list) {
+//            if(!inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
+//                inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
+//        }
         long startTime=System.currentTimeMillis();
         statsd.incrementCounter("count.put_recipe_times");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -174,11 +174,11 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public JSONObject deleteRecipe(String recipeId,HttpServletResponse response) {
-        List<UserRepository> list = userDao.findAll();
-        for(UserRepository userRepo:list) {
-            if(!inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
-                inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
-        }
+//        List<UserRepository> list = userDao.findAll();
+//        for(UserRepository userRepo:list) {
+//            if(!inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
+//                inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
+//        }
         long startTime=System.currentTimeMillis();
         statsd.incrementCounter("count.delete_recipe_times");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -337,11 +337,11 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public JSONObject getRecipeLinks(HttpServletRequest request, HttpServletResponse response)
     {
-        List<UserRepository> list = userDao.findAll();
-        for(UserRepository userRepo:list) {
-            if(!inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
-                inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
-        }
+//        List<UserRepository> list = userDao.findAll();
+//        for(UserRepository userRepo:list) {
+//            if(!inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
+//                inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
+//        }
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
         String user_mail=userRepository.getEmail_address();

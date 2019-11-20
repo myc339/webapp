@@ -91,11 +91,11 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
     //    @Async
     public JSONObject uploadFileToS3Bucket(String recipeId,MultipartFile[] files, boolean enablePublicReadAccess, HttpServletResponse response)
     {
-        List<UserRepository> list = userDao.findAll();
-        for(UserRepository userRepo:list) {
-            if(!inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
-                inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
-        }
+//        List<UserRepository> list = userDao.findAll();
+//        for(UserRepository userRepo:list) {
+//            if(!inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
+//                inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
+//        }
         long startTime=System.currentTimeMillis();
         statsd.incrementCounter("count.post_image_times");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -184,11 +184,11 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
     //    @Async
     public JSONObject deleteFileFromS3Bucket( String recipeId, String imageId,HttpServletResponse response)
     {
-        List<UserRepository> list = userDao.findAll();
-        for(UserRepository userRepo:list) {
-            if(!inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
-                inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
-        }
+//        List<UserRepository> list = userDao.findAll();
+//        for(UserRepository userRepo:list) {
+//            if(!inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
+//                inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
+//        }
         long startTime=System.currentTimeMillis();
         statsd.incrementCounter("count.delete_image_times");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -292,11 +292,11 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
     @Override
     public JSONObject getRecipeImage(String recipeId, String imageId, HttpServletResponse response)
     {
-        List<UserRepository> list = userDao.findAll();
-        for(UserRepository userRepo:list) {
-            if(!inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
-                inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
-        }
+//        List<UserRepository> list = userDao.findAll();
+//        for(UserRepository userRepo:list) {
+//            if(!inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
+//                inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
+//        }
         if (!recipeService.exist(recipeId,response)) {
             return null;
         }

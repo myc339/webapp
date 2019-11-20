@@ -103,11 +103,11 @@ public class UserServiceImpl  implements UserService {
     public JSONObject updateSelf(UserRepository request,HttpServletResponse response) {
         long startTime=System.currentTimeMillis();
         statsd.incrementCounter("count.put_user_times");
-        List<UserRepository> list = userDao.findAll();
-        for(UserRepository userRepo:list) {
-            if(!inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
-                inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
-        }
+//        List<UserRepository> list = userDao.findAll();
+//        for(UserRepository userRepo:list) {
+//            if(!inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
+//                inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
+//        }
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
         if(request.checkUpdateInfo())
@@ -148,11 +148,11 @@ public class UserServiceImpl  implements UserService {
     }
     @Override
     public JSONObject getSelf(){
-        List<UserRepository> list = userDao.findAll();
-        for(UserRepository userRepo:list) {
-            if(!inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
-                inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
-        }
+//        List<UserRepository> list = userDao.findAll();
+//        for(UserRepository userRepo:list) {
+//            if(!inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
+//                inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
+//        }
         long startTime=System.currentTimeMillis();
         statsd.incrementCounter("count.get_user_times");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
