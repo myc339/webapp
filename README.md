@@ -85,4 +85,3 @@ brew install jmeter
 open /usr/local/Cellar/jmeter/5.2/bin/jmeter
 open jmeter_script.jmx
 
-
