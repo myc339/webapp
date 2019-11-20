@@ -40,16 +40,17 @@ public class UserServiceImpl  implements UserService {
     public UserServiceImpl(InMemoryUserDetailsManager inMemoryUserDetailsManager,StatsDClient statsDClient) {
         this.inMemoryUserDetailsManager = inMemoryUserDetailsManager;
         this.statsd=statsDClient;
+        List<UserRepository> list = userDao.findAll();
+        for(UserRepository userRepo:list) {
+            if(!inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
+                inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
+        }
     }
     @Override
     public JSONObject save(UserRepository userRepository,HttpServletResponse response)
     {
         long startTime=System.currentTimeMillis();
-        List<UserRepository> list = userDao.findAll();
-        for(UserRepository userRepo:list) {
-            if(!inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
-            inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
-        }
+
         statsd.incrementCounter("count.post_user_times");
         if(userDao.findQuery(userRepository.getEmail_address())!=null) {
             try {

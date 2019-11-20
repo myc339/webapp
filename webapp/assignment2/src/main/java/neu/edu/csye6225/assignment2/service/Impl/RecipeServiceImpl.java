@@ -68,6 +68,11 @@ public class RecipeServiceImpl implements RecipeService {
                 .withRegion(awsRegion.getName()).build();
         this.awsS3Bucket=awsS3Bucket;
         this.inMemoryUserDetailsManager = inMemoryUserDetailsManager;
+        List<UserRepository> list = userDao.findAll();
+        for(UserRepository userRepo:list) {
+            if(!inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
+                inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
+        }
 
     }
 
