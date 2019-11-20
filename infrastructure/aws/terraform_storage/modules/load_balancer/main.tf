@@ -4,11 +4,11 @@ resource "aws_lb" "applb" {
   load_balancer_type = "application"
   security_groups    = ["${var.sg_id}"]
   subnets            = "${var.subnet_ids}"
-#   access_logs {
-#     bucket  = "${aws_s3_bucket.lb_logs.bucket}"
-#     prefix  = "test-lb"
-#     enabled = true
-#   }
+  # access_logs {
+  #   bucket  = "${aws_s3_bucket.b.bucket}"
+  #   prefix  = "test-lb"
+  #   enabled = true
+  # }
 
   tags = {
     Environment = "production"
