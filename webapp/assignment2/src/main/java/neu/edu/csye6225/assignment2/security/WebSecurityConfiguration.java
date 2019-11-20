@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configurers.provisioning.InMemoryUserDetailsManagerConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -77,16 +78,16 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter imple
         return new InMemoryUserDetailsManager(usersList);
     }
 
-//    @Autowired
-//    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//
-//        //这里访问数据库
-//        InMemoryUserDetailsManagerConfigurer<AuthenticationManagerBuilder> mngConfig = auth.inMemoryAuthentication();
-//        List<UserRepository> list = userDao.findAll();
-//        for(UserRepository u: list){
-//            UserDetails userDetails = User.withUsername(u.getEmail()).password(u.getPassword()).roles("USER").build();
-//            mngConfig.withUser(userDetails);
-//        }
-//    }
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+
+        //这里访问数据库
+        InMemoryUserDetailsManagerConfigurer<AuthenticationManagerBuilder> mngConfig = auth.inMemoryAuthentication();
+        List<UserRepository> list = userDao.findAll();
+        for(UserRepository u: list){
+            UserDetails userDetails = User.withUsername(u.getEmail_address()).password(u.getPassword()).roles("USER").build();
+            mngConfig.withUser(userDetails);
+        }
+    }
 
 }

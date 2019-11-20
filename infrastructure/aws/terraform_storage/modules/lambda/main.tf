@@ -47,7 +47,7 @@ resource "aws_lambda_permission" "with_sns" {
 ## ses main send
 resource "aws_ses_domain_mail_from" "example" {
   domain           = "${var.domainName}"
-  mail_from_domain = "noreply.${var.domainName}"
+  mail_from_domain = "noreply@${var.domainName}"
 }
 
 # Example Route53 MX record
