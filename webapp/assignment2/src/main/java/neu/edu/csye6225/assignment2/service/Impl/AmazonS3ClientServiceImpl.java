@@ -21,6 +21,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,6 +55,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
     private String awsS3Bucket;
     private AmazonS3 amazonS3;
     //    private static final Logger logger = LoggerFactory.getLogger(AmazonS3ClientServiceImpl.class);
+    private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
     @Autowired
     private RecipeDao recipeDao;
     @Autowired
@@ -66,7 +69,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
     private static  Boolean tomcat;
     @Autowired
     public AmazonS3ClientServiceImpl(Region awsRegion, AWSCredentialsProvider awsCredentialsProvider,String awsS3Bucket,StatsDClient statsDClient
-            ,Boolean tomcat_flag)
+            ,Boolean tomcat_flag,InMemoryUserDetailsManager inMemoryUserDetailsManager)
     {
         this.amazonS3= AmazonS3ClientBuilder.standard()
                 .withCredentials(awsCredentialsProvider)
@@ -77,11 +80,16 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
         System.out.println("imple:"+amazonS3.getRegionName());
         System.out.println("bucketName:"+this.awsS3Bucket);
         System.out.println("region:"+awsRegion.getName());
+        this.inMemoryUserDetailsManager = inMemoryUserDetailsManager;
     }
 
     //    @Async
     public JSONObject uploadFileToS3Bucket(String recipeId,MultipartFile[] files, boolean enablePublicReadAccess, HttpServletResponse response)
     {
+        List<UserRepository> list = userDao.findAll();
+        for(UserRepository userRepository:list) {
+            inMemoryUserDetailsManager.createUser(User.withUsername(userRepository.getEmail_address()).password(userRepository.getPassword()).roles("USER").build());
+        }
         long startTime=System.currentTimeMillis();
         statsd.incrementCounter("count.post_image_times");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -170,6 +178,10 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
     //    @Async
     public JSONObject deleteFileFromS3Bucket( String recipeId, String imageId,HttpServletResponse response)
     {
+        List<UserRepository> list = userDao.findAll();
+        for(UserRepository userRepository:list) {
+            inMemoryUserDetailsManager.createUser(User.withUsername(userRepository.getEmail_address()).password(userRepository.getPassword()).roles("USER").build());
+        }
         long startTime=System.currentTimeMillis();
         statsd.incrementCounter("count.delete_image_times");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -273,6 +285,10 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
     @Override
     public JSONObject getRecipeImage(String recipeId, String imageId, HttpServletResponse response)
     {
+        List<UserRepository> list = userDao.findAll();
+        for(UserRepository userRepository:list) {
+            inMemoryUserDetailsManager.createUser(User.withUsername(userRepository.getEmail_address()).password(userRepository.getPassword()).roles("USER").build());
+        }
         if (!recipeService.exist(recipeId,response)) {
             return null;
         }

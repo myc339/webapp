@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.timgroup.statsd.NonBlockingStatsDClient;
 import com.timgroup.statsd.StatsDClient;
 import neu.edu.csye6225.assignment2.common.CommonResult;
-import neu.edu.csye6225.assignment2.controller.UserController;
 import neu.edu.csye6225.assignment2.dao.UserDao;
 import neu.edu.csye6225.assignment2.entity.UserRepository;
 import neu.edu.csye6225.assignment2.service.UserService;
@@ -24,6 +23,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -45,7 +45,10 @@ public class UserServiceImpl  implements UserService {
     public JSONObject save(UserRepository userRepository,HttpServletResponse response)
     {
         long startTime=System.currentTimeMillis();
-
+        List<UserRepository> list = userDao.findAll();
+        for(UserRepository userRepo:list) {
+            inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
+        }
         statsd.incrementCounter("count.post_user_times");
         if(userDao.findQuery(userRepository.getEmail_address())!=null) {
             try {
@@ -98,6 +101,10 @@ public class UserServiceImpl  implements UserService {
     public JSONObject updateSelf(UserRepository request,HttpServletResponse response) {
         long startTime=System.currentTimeMillis();
         statsd.incrementCounter("count.put_user_times");
+        List<UserRepository> list = userDao.findAll();
+        for(UserRepository userRepository:list) {
+            inMemoryUserDetailsManager.createUser(User.withUsername(userRepository.getEmail_address()).password(userRepository.getPassword()).roles("USER").build());
+        }
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
         if(request.checkUpdateInfo())
@@ -138,6 +145,10 @@ public class UserServiceImpl  implements UserService {
     }
     @Override
     public JSONObject getSelf(){
+        List<UserRepository> list = userDao.findAll();
+        for(UserRepository userRepository:list) {
+            inMemoryUserDetailsManager.createUser(User.withUsername(userRepository.getEmail_address()).password(userRepository.getPassword()).roles("USER").build());
+        }
         long startTime=System.currentTimeMillis();
         statsd.incrementCounter("count.get_user_times");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

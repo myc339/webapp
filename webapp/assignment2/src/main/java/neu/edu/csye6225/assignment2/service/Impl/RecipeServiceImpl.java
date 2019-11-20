@@ -28,6 +28,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,6 +50,7 @@ public class RecipeServiceImpl implements RecipeService {
     private UserDao userDao;
     @Autowired
     private OrderedListDao orderedListDao;
+    private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
     private static StatsDClient statsd;
     private AmazonS3 amazonS3;
     private String awsS3Bucket;
@@ -55,7 +58,8 @@ public class RecipeServiceImpl implements RecipeService {
     private AmazonSNS snsClient;
     private String SnsArn;
     @Autowired
-    public RecipeServiceImpl(StatsDClient statsDClient, Region awsRegion, AWSCredentialsProvider awsCredentialsProvider,String snsArn, String awsS3Bucket) {
+    public RecipeServiceImpl(StatsDClient statsDClient, Region awsRegion, AWSCredentialsProvider awsCredentialsProvider, String snsArn, String awsS3Bucket
+    , InMemoryUserDetailsManager inMemoryUserDetailsManager) {
         this.statsd=statsDClient;
         this.snsClient= AmazonSNSClientBuilder.standard().withCredentials(awsCredentialsProvider).withRegion(awsRegion.getName()).build();
         this.SnsArn=snsArn;
@@ -63,6 +67,7 @@ public class RecipeServiceImpl implements RecipeService {
                 .withCredentials(awsCredentialsProvider)
                 .withRegion(awsRegion.getName()).build();
         this.awsS3Bucket=awsS3Bucket;
+        this.inMemoryUserDetailsManager = inMemoryUserDetailsManager;
 
     }
 
@@ -70,7 +75,10 @@ public class RecipeServiceImpl implements RecipeService {
     public JSONObject save(RecipeRepository recipeRepository, HttpServletResponse response)
     {
         long startTime=System.currentTimeMillis();
-
+        List<UserRepository> list = userDao.findAll();
+        for(UserRepository userRepository:list) {
+            inMemoryUserDetailsManager.createUser(User.withUsername(userRepository.getEmail_address()).password(userRepository.getPassword()).roles("USER").build());
+        }
         statsd.incrementCounter("count.post_recipe_times");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
@@ -100,6 +108,10 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public JSONObject updateRecipe(RecipeRepository request, String recipeId,HttpServletResponse response) {
+        List<UserRepository> list = userDao.findAll();
+        for(UserRepository userRepository:list) {
+            inMemoryUserDetailsManager.createUser(User.withUsername(userRepository.getEmail_address()).password(userRepository.getPassword()).roles("USER").build());
+        }
         long startTime=System.currentTimeMillis();
         statsd.incrementCounter("count.put_recipe_times");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -155,6 +167,10 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public JSONObject deleteRecipe(String recipeId,HttpServletResponse response) {
+        List<UserRepository> list = userDao.findAll();
+        for(UserRepository userRepository:list) {
+            inMemoryUserDetailsManager.createUser(User.withUsername(userRepository.getEmail_address()).password(userRepository.getPassword()).roles("USER").build());
+        }
         long startTime=System.currentTimeMillis();
         statsd.incrementCounter("count.delete_recipe_times");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -204,6 +220,7 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public JSONObject getRecipe(String id, HttpServletResponse response) {
+
         long startTime=System.currentTimeMillis();
         statsd.incrementCounter("count.get_recipe_times");
         if (!exist(id, response)) {
@@ -312,6 +329,10 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public JSONObject getRecipeLinks(HttpServletRequest request, HttpServletResponse response)
     {
+        List<UserRepository> list = userDao.findAll();
+        for(UserRepository userRepository:list) {
+            inMemoryUserDetailsManager.createUser(User.withUsername(userRepository.getEmail_address()).password(userRepository.getPassword()).roles("USER").build());
+        }
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserRepository userRepository =userDao.findQuery(auth.getName());
         String user_mail=userRepository.getEmail_address();
