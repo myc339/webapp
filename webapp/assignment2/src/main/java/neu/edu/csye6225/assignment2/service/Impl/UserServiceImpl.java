@@ -53,11 +53,11 @@ public class UserServiceImpl  implements UserService {
             try {
 
                 if (!this.inMemoryUserDetailsManager.userExists(userRepository.getEmail_address())) {
-                    System.out.println("user not exist");
+                    log.info("user not exist");
                     this.inMemoryUserDetailsManager.createUser(User.withUsername(userRepository.getEmail_address())
                             .password(userRepository.getPassword()).roles("USER").build());
                 }
-                System.out.println("user exist");
+                log.info("user exist");
                 log.error("email exists");
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "email exists");
             } catch (IOException e) {
