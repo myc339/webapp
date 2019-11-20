@@ -26,7 +26,7 @@ resource "aws_lambda_function" "lambda" {
       variables = {
         tableName = "${var.dynamodbName}"
         region = "${var.region}"
-        system_mail = "${aws_ses_domain_mail_from.example.mail_from_domain}"
+        system_mail = "system@${aws_ses_domain_mail_from.example.mail_from_domain}"
         ttl = "30"
       }
     }

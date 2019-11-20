@@ -50,6 +50,9 @@ public class UserServiceImpl  implements UserService {
         statsd.incrementCounter("count.post_user_times");
         if(userDao.findQuery(userRepository.getEmail_address())!=null) {
             try {
+                if (!this.inMemoryUserDetailsManager.userExists(userRepository.getEmail_address()))
+                            this.inMemoryUserDetailsManager.createUser(User.withUsername(userRepository.getEmail_address()).password(userRepository.getPassword()).roles("USER").build());
+
                 log.error("email exists");
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "email exists");
             } catch (IOException e) {
