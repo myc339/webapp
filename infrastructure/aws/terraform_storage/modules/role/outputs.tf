@@ -17,3 +17,7 @@ output "LambdaServiceRole"{
 output "LambdaServiceRoleArn"{
   value="${aws_iam_role.LambdaServiceRole.arn}"
 }
+
+output "role" {
+  value = "${aws_iam_role.CodeDeployEC2ServiceRole}"
+}

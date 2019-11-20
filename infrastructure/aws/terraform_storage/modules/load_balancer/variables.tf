@@ -20,15 +20,15 @@ variable "sg_id" {
 
 variable "zone_id" {
   type = string
-  default = "Z2OBD6XZ6VFH6R"
+//  default = "Z2OBD6XZ6VFH6R"
 }
 
 variable "domain_name" {
   type = string
-  default = "dev.myc339.me"
+//  default = "dev.myc339.me"
 }
 
 variable "certificate" {
   type = string
-  default = "arn:aws:acm:us-east-1:589079856728:certificate/9fb04e11-7b87-4f95-8587-009278c687d1"
+//  default = "arn:aws:acm:us-east-1:589079856728:certificate/cac51dbb-1c88-4905-92be-7591f346bc56"
 }

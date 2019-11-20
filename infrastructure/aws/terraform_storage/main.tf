@@ -23,6 +23,7 @@ module "security_group" {
 # Create S3 bucket
 module "s3_bucket" {
   source = "./modules/s3_bucket"
+  depends_on_role = [module.role.role]
   domain_name = "${var.domain_name}"
   account_id = "${var.account_id}"
   CodeDeployEC2ServiceRole = "${module.role.CodeDeployEC2ServiceRole}"
@@ -149,7 +150,10 @@ module "load_balancer" {
   web_acl_id = "${module.waf.wafWebACL}"
   subnet_ids = "${module.vpc.subnet_ids}"
   vpc_id = "${module.vpc.vpc_id}"
-  sg_id = "${module.security_group.app_sg_id}"
+  sg_id = "${module.security_group.lb_sg_id}"
+  zone_id = "${var.SSLzoneId}"
+  domain_name = "${var.domain_name}"
+  certificate = "${var.certificate}"
 }
 
 # Create waf
@@ -164,4 +168,5 @@ module "lambda" {
   dynamodbName = "${module.dynamodb.dynamodbName}"
   region = "${var.aws_region}"
   domainName = "${var.domain_name}"
+  zoneId = "${var.SSLzoneId}"
 }

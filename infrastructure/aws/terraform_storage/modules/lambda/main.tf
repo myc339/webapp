@@ -26,7 +26,7 @@ resource "aws_lambda_function" "lambda" {
       variables = {
         tableName = "${var.dynamodbName}"
         region = "${var.region}"
-        system_mail = "admin@${var.domainName}"
+        system_mail = "${aws_ses_domain_mail_from.example.mail_from_domain}"
         ttl = "30"
       }
     }
@@ -42,4 +42,28 @@ resource "aws_lambda_permission" "with_sns" {
   function_name = "${aws_lambda_function.lambda.arn}"
   principal = "sns.amazonaws.com"
   source_arn = "${aws_sns_topic.sns.arn}"
+}
+
+## ses main send
+resource "aws_ses_domain_mail_from" "example" {
+  domain           = "${var.domainName}"
+  mail_from_domain = "noreply.${var.domainName}"
+}
+
+# Example Route53 MX record
+resource "aws_route53_record" "example_ses_domain_mail_from_mx" {
+  zone_id = "${var.zoneId}"
+  name    = "${aws_ses_domain_mail_from.example.mail_from_domain}"
+  type    = "MX"
+  ttl     = "600"
+  records = ["10 feedback-smtp.us-east-1.amazonses.com"]           # Change to the region in which `aws_ses_domain_identity.example` is created
+}
+
+# Example Route53 TXT record for SPF
+resource "aws_route53_record" "example_ses_domain_mail_from_txt" {
+  zone_id = "${var.zoneId}"
+  name    = "${aws_ses_domain_mail_from.example.mail_from_domain}"
+  type    = "TXT"
+  ttl     = "600"
+  records = ["v=spf1 include:amazonses.com -all"]
 }

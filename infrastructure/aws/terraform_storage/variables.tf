@@ -54,3 +54,10 @@ variable "dbUsername" {
 variable "dbPassword" {
   type = string
 }
+
+variable "HostzoneId" {
+  type = string
+}
+variable "certificate" {
+  type = string
+}

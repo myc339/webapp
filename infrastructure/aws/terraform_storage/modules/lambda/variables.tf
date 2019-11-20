@@ -15,3 +15,6 @@ variable "region" {
 variable "domainName" {
   type = string
 }
+variable "zoneId" {
+  type = string
+}

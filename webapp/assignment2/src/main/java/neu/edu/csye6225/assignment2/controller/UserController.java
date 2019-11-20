@@ -46,6 +46,7 @@ public class UserController {
     @ResponseBody
     public JSONObject saveUser(@RequestBody UserRepository request,HttpServletResponse response)
     {
+        System.out.println("Here is user POST method!!!!!");
         try{
             response.setStatus(HttpServletResponse.SC_CREATED);
             return userService.save(request,response);

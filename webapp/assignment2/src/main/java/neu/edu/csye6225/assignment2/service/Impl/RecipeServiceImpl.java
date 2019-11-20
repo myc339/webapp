@@ -326,7 +326,10 @@ public class RecipeServiceImpl implements RecipeService {
                 return null;
             }
             String url = request.getRequestURL().toString();
+
             url = url.substring(0, url.length() - 9);
+            StringBuilder sb= new StringBuilder(url);
+            url=sb.insert(4,"s").toString();
             ArrayList<String> urls = new ArrayList<String>();
             String link = "";
             for (String id : ids) {
