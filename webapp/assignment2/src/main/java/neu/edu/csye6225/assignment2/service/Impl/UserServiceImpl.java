@@ -41,12 +41,12 @@ public class UserServiceImpl  implements UserService {
         this.inMemoryUserDetailsManager = inMemoryUserDetailsManager;
         this.statsd=statsDClient;
         List<UserRepository> list = userDao.findAll();
-        if(!list.isEmpty() && list!=null) {
-            for (UserRepository userRepo : list) {
-                if (!this.inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
-                    this.inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
-            }
-        }
+//        if(!list.isEmpty() && list!=null) {
+//            for (UserRepository userRepo : list) {
+//                if (!this.inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
+//                    this.inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
+//            }
+//        }
     }
     @Override
     public JSONObject save(UserRepository userRepository,HttpServletResponse response)

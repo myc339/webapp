@@ -69,12 +69,12 @@ public class RecipeServiceImpl implements RecipeService {
         this.awsS3Bucket=awsS3Bucket;
         this.inMemoryUserDetailsManager = inMemoryUserDetailsManager;
         List<UserRepository> list = userDao.findAll();
-        if(!list.isEmpty() && list!=null) {
-            for (UserRepository userRepo : list) {
-                if (!this.inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
-                    this.inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
-            }
-        }
+//        if(!list.isEmpty() && list!=null) {
+//            for (UserRepository userRepo : list) {
+//                if (!this.inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
+//                    this.inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
+//            }
+//        }
 
     }
 
