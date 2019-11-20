@@ -26,7 +26,7 @@ resource "aws_lambda_function" "lambda" {
       variables = {
         tableName = "${var.dynamodbName}"
         region = "${var.region}"
-        system_mail = "${aws_ses_domain_mail_from.example.mail_from_domain}"
+        system_mail = "admin@${aws_ses_domain_mail_from.example.mail_from_domain}"
         ttl = "30"
       }
     }
@@ -47,7 +47,7 @@ resource "aws_lambda_permission" "with_sns" {
 ## ses main send
 resource "aws_ses_domain_mail_from" "example" {
   domain           = "${var.domainName}"
-  mail_from_domain = "noreply@${var.domainName}"
+  mail_from_domain = "noreply.${var.domainName}"
 }
 
 # Example Route53 MX record
