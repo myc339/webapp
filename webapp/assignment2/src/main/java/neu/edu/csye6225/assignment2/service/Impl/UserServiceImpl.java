@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
@@ -147,12 +148,14 @@ public class UserServiceImpl  implements UserService {
                 e.printStackTrace();
             }
             statsd.recordExecutionTime("timer.put_user_fail", System.currentTimeMillis() - startTime);
+
             return null;
         }
 
     }
     @Override
-    public JSONObject getSelf(){
+    public JSONObject getSelf(HttpServletRequest request){
+        System.out.println(request.getHeader("Authorization"));
         List<UserRepository> list = userDao.findAll();
         if(!list.isEmpty() && list!=null) {
             for (UserRepository userRepo : list) {
@@ -173,7 +176,7 @@ public class UserServiceImpl  implements UserService {
         else
             log.error("not found  user");
         statsd.recordExecutionTime("timer.get_user_fail", System.currentTimeMillis() - startTime);
-        return null;
+        return (JSONObject) JSON.toJSON(request.getHeader("Authorization"));
     }
 
 }

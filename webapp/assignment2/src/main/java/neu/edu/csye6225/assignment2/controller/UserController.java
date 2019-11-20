@@ -33,7 +33,7 @@ public class UserController {
 
         try {
             response.setStatus(HttpServletResponse.SC_OK);
-            return userService.getSelf();
+            return userService.getSelf(request);
         }catch(Exception e){
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
