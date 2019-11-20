@@ -87,8 +87,9 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
     public JSONObject uploadFileToS3Bucket(String recipeId,MultipartFile[] files, boolean enablePublicReadAccess, HttpServletResponse response)
     {
         List<UserRepository> list = userDao.findAll();
-        for(UserRepository userRepository:list) {
-            inMemoryUserDetailsManager.createUser(User.withUsername(userRepository.getEmail_address()).password(userRepository.getPassword()).roles("USER").build());
+        for(UserRepository userRepo:list) {
+            if(!inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
+                inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
         }
         long startTime=System.currentTimeMillis();
         statsd.incrementCounter("count.post_image_times");
@@ -179,8 +180,9 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
     public JSONObject deleteFileFromS3Bucket( String recipeId, String imageId,HttpServletResponse response)
     {
         List<UserRepository> list = userDao.findAll();
-        for(UserRepository userRepository:list) {
-            inMemoryUserDetailsManager.createUser(User.withUsername(userRepository.getEmail_address()).password(userRepository.getPassword()).roles("USER").build());
+        for(UserRepository userRepo:list) {
+            if(!inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
+                inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
         }
         long startTime=System.currentTimeMillis();
         statsd.incrementCounter("count.delete_image_times");
@@ -286,8 +288,9 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService {
     public JSONObject getRecipeImage(String recipeId, String imageId, HttpServletResponse response)
     {
         List<UserRepository> list = userDao.findAll();
-        for(UserRepository userRepository:list) {
-            inMemoryUserDetailsManager.createUser(User.withUsername(userRepository.getEmail_address()).password(userRepository.getPassword()).roles("USER").build());
+        for(UserRepository userRepo:list) {
+            if(!inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
+                inMemoryUserDetailsManager.createUser(User.withUsername(userRepo.getEmail_address()).password(userRepo.getPassword()).roles("USER").build());
         }
         if (!recipeService.exist(recipeId,response)) {
             return null;
