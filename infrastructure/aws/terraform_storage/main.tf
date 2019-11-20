@@ -151,6 +151,9 @@ module "load_balancer" {
   subnet_ids = "${module.vpc.subnet_ids}"
   vpc_id = "${module.vpc.vpc_id}"
   sg_id = "${module.security_group.lb_sg_id}"
+  zone_id = "${var.HostzoneId}"
+  domain_name = "${var.domain_name}"
+  certificate = "${var.certificate}"
 }
 
 # Create waf
@@ -164,4 +167,6 @@ module "lambda" {
   LambdaServiceRole="${module.role.LambdaServiceRoleArn}"
   dynamodbName = "${module.dynamodb.dynamodbName}"
   region = "${var.aws_region}"
+  domainName = "${var.domain_name}"
+  zoneId = "${var.HostzoneId}"
 }
