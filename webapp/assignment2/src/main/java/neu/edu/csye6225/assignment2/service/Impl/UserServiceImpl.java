@@ -40,7 +40,7 @@ public class UserServiceImpl  implements UserService {
     public UserServiceImpl(InMemoryUserDetailsManager inMemoryUserDetailsManager,StatsDClient statsDClient) {
         this.inMemoryUserDetailsManager = inMemoryUserDetailsManager;
         this.statsd=statsDClient;
-        List<UserRepository> list = userDao.findAll();
+//        List<UserRepository> list = userDao.findAll();
 //        if(!list.isEmpty() && list!=null) {
 //            for (UserRepository userRepo : list) {
 //                if (!this.inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))

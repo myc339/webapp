@@ -68,7 +68,7 @@ public class RecipeServiceImpl implements RecipeService {
                 .withRegion(awsRegion.getName()).build();
         this.awsS3Bucket=awsS3Bucket;
         this.inMemoryUserDetailsManager = inMemoryUserDetailsManager;
-        List<UserRepository> list = userDao.findAll();
+//        List<UserRepository> list = userDao.findAll();
 //        if(!list.isEmpty() && list!=null) {
 //            for (UserRepository userRepo : list) {
 //                if (!this.inMemoryUserDetailsManager.userExists(userRepo.getEmail_address()))
